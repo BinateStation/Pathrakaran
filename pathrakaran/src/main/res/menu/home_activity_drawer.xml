@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group
+        android:id="@+id/nav_subscriberModule"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_SM_home"
+            android:checked="true"
+            android:icon="@drawable/ic_my_library_books_24dp"
+            android:title="@string/home" />
+        <item
+            android:id="@+id/nav_SM_subscriptionList"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="@string/subscription_list" />
+        <item
+            android:id="@+id/nav_SM_transactions"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="@string/transactions" />
+        <item
+            android:id="@+id/nav_SM_profile"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="@string/profile" />
+    </group>
+    <group
+        android:id="@+id/nav_agentModule"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_AM_home"
+            android:checked="true"
+            android:icon="@drawable/ic_my_library_books_24dp"
+            android:title="@string/home" />
+        <item
+            android:id="@+id/nav_AM_subscribersList"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="@string/subscription_list" />
+        <item
+            android:id="@+id/nav_AM_transactions"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="@string/transactions" />
+        <item
+            android:id="@+id/nav_AM_productList"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="@string/profile" />
+        <item
+            android:id="@+id/nav_AM_suppliersList"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="@string/subscription_list" />
+        <item
+            android:id="@+id/nav_AM_routeMap"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="@string/transactions" />
+        <item
+            android:id="@+id/nav_AM_profile"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="@string/profile" />
+    </group>
+    <group
+        android:id="@+id/nav_suppliersModule"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_SPM_home"
+            android:checked="true"
+            android:icon="@drawable/ic_my_library_books_24dp"
+            android:title="@string/home" />
+        <item
+            android:id="@+id/nav_SPM_subscribersList"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="@string/subscription_list" />
+        <item
+            android:id="@+id/nav_SPM_transactions"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="@string/transactions" />
+        <item
+            android:id="@+id/nav_SPM_productList"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="@string/profile" />
+        <item
+            android:id="@+id/nav_SPM_routeMap"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="@string/subscription_list" />
+        <item
+            android:id="@+id/nav_SPM_profile"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="@string/transactions" />
+    </group>
+</menu>
