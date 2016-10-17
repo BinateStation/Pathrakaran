@@ -8,7 +8,7 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="rkr.larc.mynewspaperagent.activities.MapPicker" />
+        tools:context=".activities.MapPicker" />
 
     <SearchView
         android:id="@+id/MP_mapSearch"

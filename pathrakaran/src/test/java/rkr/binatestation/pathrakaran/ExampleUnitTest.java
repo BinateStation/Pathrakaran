@@ -1,4 +1,4 @@
-package rkr.larc.mynewspaperagent;
+package rkr.binatestation.pathrakaran;
 
 import org.junit.Test;
 
