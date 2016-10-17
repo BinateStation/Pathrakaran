@@ -30,7 +30,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ItemHolder> {
 
     class ItemHolder extends RecyclerView.ViewHolder {
 
-        public ItemHolder(View itemView) {
+        ItemHolder(View itemView) {
             super(itemView);
         }
     }
