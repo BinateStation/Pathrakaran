@@ -1,21 +1,15 @@
 package rkr.binatestation.pathrakaran.modules.login;
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -27,55 +21,37 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import rkr.binatestation.pathrakaran.R;
 import rkr.binatestation.pathrakaran.activities.RegisterActivity;
 import rkr.binatestation.pathrakaran.activities.SplashScreen;
-import rkr.binatestation.pathrakaran.network.VolleySingleTon;
-import rkr.binatestation.pathrakaran.utils.Constants;
-import rkr.binatestation.pathrakaran.utils.Util;
 
 import static android.Manifest.permission.READ_CONTACTS;
-import static rkr.binatestation.pathrakaran.utils.Constants.KEY_IS_LOGGED_IN;
-import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_CONTACT;
-import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_NAME;
-import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_USER_ID;
-import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_PASSWORD;
-import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_USER_NAME;
-import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_USER_TYPE;
-import static rkr.binatestation.pathrakaran.utils.Constants.KEY_USER_ID;
-import static rkr.binatestation.pathrakaran.utils.Constants.KEY_USER_NAME;
-import static rkr.binatestation.pathrakaran.utils.Constants.KEY_USER_PHONE;
-import static rkr.binatestation.pathrakaran.utils.Constants.PROFILE_LOGIN;
+import static rkr.binatestation.pathrakaran.utils.Constants.REQUEST_READ_CONTACTS;
 
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class LoginActivity extends AppCompatActivity implements LoginListeners.ViewListener {
 
     private static final String TAG = "LoginActivity";
+    LoginListeners.PresenterListener presenterListener;
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
+
+    private boolean isPresenterLive() {
+        return presenterListener != null;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
+
+        presenterListener = new LoginPresenter(this);
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.L_username);
         populateAutoComplete();
@@ -86,7 +62,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == R.id.login || id == EditorInfo.IME_NULL) {
                     Log.d(TAG, "onEditorAction() called with: textView = [" + textView + "], id = [" + id + "], keyEvent = [" + keyEvent + "]");
-                    attemptLogin();
+                    if (isPresenterLive()) {
+                        presenterListener.attemptLogin(mEmailView.getText().toString(), mPasswordView.getText().toString());
+                    }
                     return true;
                 }
                 return false;
@@ -106,7 +84,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         login.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                attemptLogin();
+                if (isPresenterLive()) {
+                    presenterListener.attemptLogin(mEmailView.getText().toString(), mPasswordView.getText().toString());
+                }
             }
         });
 
@@ -114,10 +94,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
 
     private void populateAutoComplete() {
         Log.d(TAG, "populateAutoComplete() called");
-        if (!mayRequestContacts()) {
-            return;
+        if (mayRequestContacts() && isPresenterLive()) {
+            presenterListener.populateAutoComplete(getSupportLoaderManager());
         }
-        getSupportLoaderManager().initLoader(0, null, this);
     }
 
     private boolean mayRequestContacts() {
@@ -134,11 +113,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
                         @Override
                         @TargetApi(Build.VERSION_CODES.M)
                         public void onClick(View v) {
-                            requestPermissions(new String[]{READ_CONTACTS}, Constants.REQUEST_READ_CONTACTS);
+                            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
                         }
                     });
         } else {
-            requestPermissions(new String[]{READ_CONTACTS}, Constants.REQUEST_READ_CONTACTS);
+            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
         }
         return false;
     }
@@ -149,53 +128,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         Log.d(TAG, "onRequestPermissionsResult() called with: requestCode = [" + requestCode + "], permissions = [" + Arrays.toString(permissions) + "], grantResults = [" + Arrays.toString(grantResults) + "]");
-        if (requestCode == Constants.REQUEST_READ_CONTACTS) {
+        if (requestCode == REQUEST_READ_CONTACTS) {
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 populateAutoComplete();
             }
         }
     }
 
-
-    /**
-     * Attempts to sign in or register the account specified by the login form.
-     * If there are form errors (invalid email, missing fields, etc.), the
-     * errors are presented and no actual login attempt is made.
-     */
-    private void attemptLogin() {
-        Log.d(TAG, "attemptLogin() called");
-        // Reset errors.
-        mEmailView.setError(null);
-        mPasswordView.setError(null);
-
-        // Store values at the time of the login attempt.
-        String email = mEmailView.getText().toString();
-        String password = mPasswordView.getText().toString();
-
-        boolean cancel = false;
-        View focusView = null;
-
-        // Check for a valid password, if the user entered one.
-        if (TextUtils.isEmpty(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
-            focusView = mPasswordView;
-            cancel = true;
-        }
-
-        // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
-            mEmailView.setError(getString(R.string.error_field_required));
-            focusView = mEmailView;
-            cancel = true;
-        }
-        if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
-            focusView.requestFocus();
-        } else {
-            login(email, password, "N");
-        }
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -207,113 +146,51 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return new CursorLoader(this,
-                // Retrieve data rows for the device user's 'profile' contact.
-                Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI,
-                        ContactsContract.Contacts.Data.CONTENT_DIRECTORY), ProfileQuery.PROJECTION,
-
-                // Select only email addresses.
-                ContactsContract.Contacts.Data.MIMETYPE +
-                        " = ?", new String[]{ContactsContract.CommonDataKinds.Email
-                .CONTENT_ITEM_TYPE},
-
-                // Show primary email addresses first. Note that there won't be
-                // a primary email address if the user hasn't specified one.
-                ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
-    }
-
-    @Override
-    public void onLoadFinished(android.support.v4.content.Loader<Cursor> loader, Cursor data) {
-        Log.d(TAG, "onLoadFinished() called with: loader = [" + loader + "], data = [" + data + "]");
-        List<String> emails = new ArrayList<>();
-        data.moveToFirst();
-        while (!data.isAfterLast()) {
-            emails.add(data.getString(ProfileQuery.ADDRESS));
-            data.moveToNext();
-        }
-
-        addEmailsToAutoComplete(emails);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-
-    }
-
-    private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
+    public void addEmailsToAutoComplete(List<String> emailAddressCollection) {
         Log.d(TAG, "addEmailsToAutoComplete() called with: emailAddressCollection = [" + emailAddressCollection + "]");
         //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(LoginActivity.this,
-                        android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
-
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                LoginActivity.this,
+                android.R.layout.simple_dropdown_item_1line,
+                emailAddressCollection
+        );
         mEmailView.setAdapter(adapter);
     }
 
-    /**
-     * Method which calls the network for login with following post parameters
-     *
-     * @param username  the username for login
-     * @param password  the password for login
-     * @param loginType the type of login like N- Normal , F- facebook, G - google etc...
-     */
-    private void login(final String username, final String password, final String loginType) {
-        Log.d(TAG, "login() called with: username = [" + username + "], password = [" +
-                password + "], loginType = [" + loginType + "]");
-        final StringRequest stringRequest = new StringRequest(Request.Method.POST,
-                VolleySingleTon.getDomainUrl() + PROFILE_LOGIN, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Log.d(TAG, "onResponse() called with: response = [" + response + "]");
-                try {
-                    JSONObject jsonObject = new JSONObject(response);
-                    getSharedPreferences(getPackageName(), MODE_PRIVATE).edit()
-                            .putString(KEY_USER_ID, jsonObject.getString(KEY_JSON_USER_ID))
-                            .putString(KEY_USER_NAME, jsonObject.getString(KEY_JSON_NAME))
-                            .putString(KEY_USER_PHONE, jsonObject.getString(KEY_JSON_CONTACT))
-                            .putBoolean(KEY_IS_LOGGED_IN, true).apply();
-                    startActivity(new Intent(LoginActivity.this, SplashScreen.class));
-                    finish();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Util.alert(LoginActivity.this, "Error", "Username not available, try another one");
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, "onErrorResponse: ", error);
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put(KEY_POST_USER_NAME, username);
-                params.put(KEY_POST_PASSWORD, password);
-                params.put(KEY_POST_USER_TYPE, loginType);
-
-                Log.d(TAG, "getParams() returned: " + getUrl() + "  " + params);
-                return params;
-            }
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                params.put("Content-Type", "application/x-www-form-urlencoded");
-                return params;
-            }
-        };
-        VolleySingleTon.getInstance(LoginActivity.this).addToRequestQueue(LoginActivity.this, stringRequest);
+    @Override
+    public void resetErrors() {
+        // Reset errors.
+        if (mEmailView != null && mPasswordView != null) {
+            mEmailView.setError(null);
+            mPasswordView.setError(null);
+        }
     }
 
-    private interface ProfileQuery {
-        String[] PROJECTION = {
-                ContactsContract.CommonDataKinds.Email.ADDRESS,
-                ContactsContract.CommonDataKinds.Email.IS_PRIMARY,
-        };
+    @Override
+    public void passwordError() {
+        if (mPasswordView != null) {
+            mPasswordView.setError(getString(R.string.error_invalid_password));
+            mPasswordView.requestFocus();
+        }
+    }
 
-        int ADDRESS = 0;
+    @Override
+    public void usernameError() {
+        if (mEmailView != null) {
+            mEmailView.setError(getString(R.string.error_field_required));
+            mEmailView.requestFocus();
+        }
+    }
+
+    @Override
+    public void onSuccessfulLogin() {
+        startActivity(new Intent(LoginActivity.this, SplashScreen.class));
+        finish();
+    }
+
+    @Override
+    public Context getContext() {
+        return LoginActivity.this;
     }
 }
 
