@@ -5,15 +5,11 @@
     android:background="@color/colorPrimary"
     tools:context=".activities.SplashScreen">
 
-    <!-- The primary full-screen view. This can be replaced with whatever view
-         is needed to present your content, e.g. VideoView, SurfaceView,
-         TextureView, etc. -->
-    <TextView
+   <TextView
         android:id="@+id/fullscreen_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:drawableTint="@color/colorAccent"
         android:drawableTop="@drawable/ic_my_library_books_24dp"
         android:keepScreenOn="true"
         android:text="@string/dummy_content"

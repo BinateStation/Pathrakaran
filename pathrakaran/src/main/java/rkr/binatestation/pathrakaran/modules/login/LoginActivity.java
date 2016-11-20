@@ -1,4 +1,4 @@
-package rkr.binatestation.pathrakaran.activities;
+package rkr.binatestation.pathrakaran.modules.login;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
@@ -43,11 +43,24 @@ import java.util.List;
 import java.util.Map;
 
 import rkr.binatestation.pathrakaran.R;
+import rkr.binatestation.pathrakaran.activities.RegisterActivity;
+import rkr.binatestation.pathrakaran.activities.SplashScreen;
 import rkr.binatestation.pathrakaran.network.VolleySingleTon;
 import rkr.binatestation.pathrakaran.utils.Constants;
 import rkr.binatestation.pathrakaran.utils.Util;
 
 import static android.Manifest.permission.READ_CONTACTS;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_IS_LOGGED_IN;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_CONTACT;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_NAME;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_USER_ID;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_PASSWORD;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_USER_NAME;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_USER_TYPE;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_USER_ID;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_USER_NAME;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_USER_PHONE;
+import static rkr.binatestation.pathrakaran.utils.Constants.PROFILE_LOGIN;
 
 /**
  * A login screen that offers login via email/password.
@@ -85,7 +98,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick() called with: v = [" + v + "]");
-                startActivity(new Intent(LoginActivity.this, Register.class));
+                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
                 finish();
             }
         });
@@ -238,20 +251,28 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         mEmailView.setAdapter(adapter);
     }
 
+    /**
+     * Method which calls the network for login with following post parameters
+     *
+     * @param username  the username for login
+     * @param password  the password for login
+     * @param loginType the type of login like N- Normal , F- facebook, G - google etc...
+     */
     private void login(final String username, final String password, final String loginType) {
-        Log.d(TAG, "login() called with: username = [" + username + "], password = [" + password + "], loginType = [" + loginType + "]");
+        Log.d(TAG, "login() called with: username = [" + username + "], password = [" +
+                password + "], loginType = [" + loginType + "]");
         final StringRequest stringRequest = new StringRequest(Request.Method.POST,
-                VolleySingleTon.getDomainUrl() + Constants.PROFILE_LOGIN, new Response.Listener<String>() {
+                VolleySingleTon.getDomainUrl() + PROFILE_LOGIN, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.d(TAG, "onResponse() called with: response = [" + response + "]");
                 try {
                     JSONObject jsonObject = new JSONObject(response);
                     getSharedPreferences(getPackageName(), MODE_PRIVATE).edit()
-                            .putString(Constants.KEY_USER_ID, jsonObject.getString(Constants.KEY_JSON_USER_ID))
-                            .putString(Constants.KEY_USER_NAME, jsonObject.getString(Constants.KEY_JSON_NAME))
-                            .putString(Constants.KEY_USER_PHONE, jsonObject.getString(Constants.KEY_JSON_CONTACT))
-                            .putBoolean(Constants.KEY_IS_LOGGED_IN, true).apply();
+                            .putString(KEY_USER_ID, jsonObject.getString(KEY_JSON_USER_ID))
+                            .putString(KEY_USER_NAME, jsonObject.getString(KEY_JSON_NAME))
+                            .putString(KEY_USER_PHONE, jsonObject.getString(KEY_JSON_CONTACT))
+                            .putBoolean(KEY_IS_LOGGED_IN, true).apply();
                     startActivity(new Intent(LoginActivity.this, SplashScreen.class));
                     finish();
                 } catch (JSONException e) {
@@ -268,9 +289,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put(Constants.KEY_POST_USER_NAME, username);
-                params.put(Constants.KEY_POST_PASSWORD, password);
-                params.put(Constants.KEY_LOGIN_TYPE, loginType);
+                params.put(KEY_POST_USER_NAME, username);
+                params.put(KEY_POST_PASSWORD, password);
+                params.put(KEY_POST_USER_TYPE, loginType);
 
                 Log.d(TAG, "getParams() returned: " + getUrl() + "  " + params);
                 return params;

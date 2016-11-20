@@ -2,6 +2,7 @@ package rkr.binatestation.pathrakaran.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
@@ -16,8 +17,7 @@ import rkr.binatestation.pathrakaran.R;
 import rkr.binatestation.pathrakaran.fragments.SM_Home;
 
 
-public class HomeActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +33,7 @@ public class HomeActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+        drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -43,11 +43,11 @@ public class HomeActivity extends AppCompatActivity
 
     private void handleNavigationMenuItems(NavigationView navigationView, String type) {
         Menu menu = navigationView.getMenu();
-        if (type.equalsIgnoreCase("agent_module")) {
+        if ("agent_module".equalsIgnoreCase(type)) {
             navigationView.setCheckedItem(R.id.nav_AM_home);
             menu.setGroupVisible(R.id.nav_subscriberModule, false);
             menu.setGroupVisible(R.id.nav_suppliersModule, false);
-        } else if (type.equalsIgnoreCase("suppliers_module")) {
+        } else if ("suppliers_module".equalsIgnoreCase(type)) {
             navigationView.setCheckedItem(R.id.nav_SPM_home);
             menu.setGroupVisible(R.id.nav_subscriberModule, false);
             menu.setGroupVisible(R.id.nav_agentModule, false);
@@ -55,7 +55,8 @@ public class HomeActivity extends AppCompatActivity
             navigationView.setCheckedItem(R.id.nav_SM_home);
             menu.setGroupVisible(R.id.nav_agentModule, false);
             menu.setGroupVisible(R.id.nav_suppliersModule, false);
-            getSupportFragmentManager().beginTransaction()
+            getSupportFragmentManager()
+                    .beginTransaction()
                     .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
                     .replace(R.id.ABH_contentLayout, new SM_Home())
                     .commit();
@@ -103,7 +104,7 @@ public class HomeActivity extends AppCompatActivity
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         Fragment fragment = null;

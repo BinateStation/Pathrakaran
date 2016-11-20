@@ -25,7 +25,15 @@ public class Constants {
      */
     public static final String KEY_POST_USER_NAME = "username";
     public static final String KEY_POST_PASSWORD = "password";
-    public static final String KEY_LOGIN_TYPE = "login_type";
+    public static final String KEY_POST_NAME = "name";
+    public static final String KEY_POST_CONTACT = "contact";
+    public static final String KEY_POST_USER_TYPE = "user_type";
+    public static final String KEY_POST_IMAGE = "image";
+    public static final String KEY_POST_ADDRESS = "address";
+    public static final String KEY_POST_POSTAL_CODE = "postalcode";
+    public static final String KEY_POST_EMAIL = "email";
+    public static final String KEY_POST_LATITUDE = "latitude";
+    public static final String KEY_POST_LONGITUDE = "longitude";
     /**
      * Id to identity READ_CONTACTS permission request.
      */
@@ -35,5 +43,6 @@ public class Constants {
      * API URL
      */
     public static final String PROFILE_LOGIN = "profile/login";
+    public static final String USER_REGISTER = "user/register";
 
 }

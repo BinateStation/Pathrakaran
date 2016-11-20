@@ -15,9 +15,9 @@ import com.android.volley.toolbox.Volley;
  * VolleySingleTon.
  */
 public class VolleySingleTon {
-    private static final String domainUrl = "http://newsdairy.itzlarc.in/";
+    private static final String domainUrl = "http://itzlarc.in/pathrakkaran/";
     private static final String localDomainUrl = "";
-    private static final String domainUrlForImage = "http://newsdairy.itzlarc.in/images/profile/";
+    private static final String domainUrlForImage = "http://itzlarc.in/images/profile/";
 
     private static VolleySingleTon mInstance;
     private RequestQueue mRequestQueue;
@@ -64,7 +64,7 @@ public class VolleySingleTon {
         }
     }
 
-    public RequestQueue getRequestQueue(Context context) {
+    private RequestQueue getRequestQueue(Context context) {
         if (mRequestQueue == null) {
             // getApplicationContext() is key, it keeps you from leaking the
             // Activity or BroadcastReceiver if someone passes one in.

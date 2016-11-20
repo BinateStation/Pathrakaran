@@ -34,7 +34,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.LoginActivity"
+            android:name=".modules.login.LoginActivity"
             android:label="@string/title_activity_login"
             android:theme="@style/AppTheme.WithActionBar" />
         <activity
@@ -42,7 +42,7 @@
             android:label="@string/title_activity_home"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".activities.Register"
+            android:name=".activities.RegisterActivity"
             android:label="@string/title_activity_register"
             android:theme="@style/AppTheme" />
         <activity

@@ -1,6 +1,5 @@
 package rkr.binatestation.pathrakaran.activities;
 
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,7 +16,6 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
@@ -29,13 +27,30 @@ import java.util.HashMap;
 import java.util.Map;
 
 import rkr.binatestation.pathrakaran.R;
+import rkr.binatestation.pathrakaran.modules.login.LoginActivity;
 import rkr.binatestation.pathrakaran.network.VolleySingleTon;
 
-public class Register extends AppCompatActivity {
+import static com.android.volley.Request.Method.POST;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_IS_LOGGED_IN;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_CONTACT;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_NAME;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_USER_ID;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_CONTACT;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_NAME;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_PASSWORD;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_USER_NAME;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_USER_TYPE;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_USER_ID;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_USER_NAME;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_USER_PHONE;
+import static rkr.binatestation.pathrakaran.utils.Constants.USER_REGISTER;
+
+public class RegisterActivity extends AppCompatActivity {
+
+    private static final String TAG = "RegisterActivity";
 
     TextInputLayout nameLayout, phoneLayout, usernameLayout, passwordLayout, confirmPasswordLayout;
     EditText name, phone, username, password, confirmPassword;
-    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +63,6 @@ public class Register extends AppCompatActivity {
             getSupportActionBar().setTitle("Welcome");
             getSupportActionBar().setSubtitle("You're going to simplify your life");
         }
-        mProgressDialog = new ProgressDialog(Register.this);
 
         nameLayout = (TextInputLayout) findViewById(R.id.R_nameLayout);
         phoneLayout = (TextInputLayout) findViewById(R.id.R_phoneLayout);
@@ -140,23 +154,17 @@ public class Register extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
             }
         });
-        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.R_toolbarLogin);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                validateInputs();
-            }
-        });
         FloatingActionButton login = (FloatingActionButton) findViewById(R.id.R_login);
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fab.performClick();
+                validateInputs();
             }
         });
     }
 
     private void validateInputs() {
+        Log.d(TAG, "validateInputs() called");
         if (TextUtils.isEmpty(name.getText().toString().trim())) {
             nameLayout.setError("Name is Mandatory.!");
         } else if (TextUtils.isEmpty(phone.getText().toString().trim())) {
@@ -182,22 +190,8 @@ public class Register extends AppCompatActivity {
         }
     }
 
-    public void showProgressDialog(Boolean aBoolean) {
-        if (mProgressDialog != null) {
-            if (aBoolean) {
-                mProgressDialog.setMessage("Please wait ...");
-                mProgressDialog.setCancelable(false);
-                mProgressDialog.show();
-            } else {
-                if (mProgressDialog.isShowing()) {
-                    mProgressDialog.dismiss();
-                }
-            }
-        }
-    }
-
     private void alert(String title, String message) {
-        new AlertDialog.Builder(Register.this)
+        new AlertDialog.Builder(RegisterActivity.this)
                 .setTitle(title)
                 .setMessage(message)
                 .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
@@ -210,42 +204,45 @@ public class Register extends AppCompatActivity {
     }
 
     private void register(final String name, final String phone, final String username, final String password, final String loginType) {
-        StringRequest stringRequest = new StringRequest(Request.Method.POST,
-                VolleySingleTon.getDomainUrl() + "profile/register", new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Log.d(getLocalClassName(), "Response :- " + response);
-                try {
-                    JSONObject jsonObject = new JSONObject(response);
-                    getSharedPreferences(getPackageName(), MODE_PRIVATE).edit()
-                            .putString("KEY_USER_ID", jsonObject.getString("userid"))
-                            .putString("KEY_USER_NAME", jsonObject.getString("name"))
-                            .putString("KEY_USER_PHONE", jsonObject.getString("contact"))
-                            .putBoolean("KEY_IS_LOGGED_IN", true).apply();
-                    startActivity(new Intent(Register.this, SplashScreen.class));
-                    finish();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    alert("Error", "Username not available, try another one");
-                }
-                showProgressDialog(false);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d(getLocalClassName(), "Error :- " + error.toString());
-                showProgressDialog(false);
-            }
-        }) {
+        Log.d(TAG, "register() called with: name = [" + name + "], phone = [" + phone + "], username = [" + username + "], password = [" + password + "], loginType = [" + loginType + "]");
+        StringRequest stringRequest = new StringRequest(
+                POST,
+                VolleySingleTon.getDomainUrl() + USER_REGISTER,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d(getLocalClassName(), "Response :- " + response);
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            getSharedPreferences(getPackageName(), MODE_PRIVATE).edit()
+                                    .putString(KEY_USER_ID, jsonObject.getString(KEY_JSON_USER_ID))
+                                    .putString(KEY_USER_NAME, jsonObject.getString(KEY_JSON_NAME))
+                                    .putString(KEY_USER_PHONE, jsonObject.getString(KEY_JSON_CONTACT))
+                                    .putBoolean(KEY_IS_LOGGED_IN, true).apply();
+                            startActivity(new Intent(RegisterActivity.this, SplashScreen.class));
+                            finish();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            alert("Error", "Username not available, try another one");
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d(getLocalClassName(), "Error :- " + error.toString());
+                    }
+                }) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put("name", name);
-                params.put("contact", phone);
-                params.put("username", username);
-                params.put("password", password);
-                params.put("login_type", loginType);
-                Log.i(getLocalClassName(), "Request :- " + params.toString());
+                params.put(KEY_POST_NAME, name);
+                params.put(KEY_POST_CONTACT, phone);
+                params.put(KEY_POST_USER_NAME, username);
+                params.put(KEY_POST_PASSWORD, password);
+                params.put(KEY_POST_USER_TYPE, loginType);
+
+                Log.d(TAG, "getParams() returned: " + params);
                 return params;
             }
 
@@ -256,18 +253,17 @@ public class Register extends AppCompatActivity {
                 return params;
             }
         };
-        VolleySingleTon.getInstance(Register.this).addToRequestQueue(Register.this, stringRequest);
-        showProgressDialog(true);
+        VolleySingleTon.getInstance(RegisterActivity.this).addToRequestQueue(RegisterActivity.this, stringRequest);
     }
 
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(Register.this, LoginActivity.class));
+        startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
         finish();
     }
 
     private void checkUsernameAvailability(final String username, final String loginType) {
-        StringRequest stringRequest = new StringRequest(Request.Method.POST,
+        StringRequest stringRequest = new StringRequest(POST,
                 VolleySingleTon.getDomainUrl() + "profile/check_username_available", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -298,7 +294,7 @@ public class Register extends AppCompatActivity {
                 return params;
             }
         };
-        VolleySingleTon.getInstance(Register.this).addToRequestQueue(Register.this, stringRequest);
+        VolleySingleTon.getInstance(RegisterActivity.this).addToRequestQueue(RegisterActivity.this, stringRequest);
     }
 
 }
