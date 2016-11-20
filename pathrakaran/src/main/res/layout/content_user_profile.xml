@@ -5,17 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".activities.UserProfile"
+    tools:context=".modules.profile.UserProfile"
     tools:showIn="@layout/user_profile">
 
-    <LinearLayout
+    <android.support.v7.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="10dp">
 
         <android.support.design.widget.TextInputLayout
-            android:id="@+id/UP_nameLayout"
+            android:id="@+id/UP_name_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp">
@@ -30,13 +30,13 @@
 
 
         <android.support.design.widget.TextInputLayout
-            android:id="@+id/UP_phoneLayout"
+            android:id="@+id/UP_phone_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp">
 
             <EditText
-                android:id="@+id/UP_phoneNumber"
+                android:id="@+id/UP_phone_number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/phone_number"
@@ -44,7 +44,7 @@
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
-            android:id="@+id/UP_emailLayout"
+            android:id="@+id/UP_email_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp">
@@ -58,7 +58,7 @@
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
-            android:id="@+id/UP_addressLayout"
+            android:id="@+id/UP_address_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp">
@@ -72,13 +72,13 @@
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
-            android:id="@+id/UP_postalCodeLayout"
+            android:id="@+id/UP_postal_code_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp">
 
             <EditText
-                android:id="@+id/UP_postalCode"
+                android:id="@+id/UP_postal_code"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/postal_code"
@@ -86,10 +86,10 @@
         </android.support.design.widget.TextInputLayout>
 
         <com.google.android.gms.maps.MapView
-            android:id="@+id/UP_mapView"
+            android:id="@+id/UP_map_view"
             android:layout_width="match_parent"
             android:layout_height="300dp" />
 
-    </LinearLayout>
+    </android.support.v7.widget.LinearLayoutCompat>
 
 </android.support.v4.widget.NestedScrollView>

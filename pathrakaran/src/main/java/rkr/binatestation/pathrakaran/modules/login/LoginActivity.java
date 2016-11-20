@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -27,6 +28,7 @@ import java.util.List;
 import rkr.binatestation.pathrakaran.R;
 import rkr.binatestation.pathrakaran.activities.RegisterActivity;
 import rkr.binatestation.pathrakaran.activities.SplashScreen;
+import rkr.binatestation.pathrakaran.utils.Util;
 
 import static android.Manifest.permission.READ_CONTACTS;
 import static rkr.binatestation.pathrakaran.utils.Constants.REQUEST_READ_CONTACTS;
@@ -41,6 +43,7 @@ public class LoginActivity extends AppCompatActivity implements LoginListeners.V
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
+    private ContentLoadingProgressBar progressBar;
 
     private boolean isPresenterLive() {
         return presenterListener != null;
@@ -53,6 +56,8 @@ public class LoginActivity extends AppCompatActivity implements LoginListeners.V
 
         presenterListener = new LoginPresenter(this);
         // Set up the login form.
+        progressBar = (ContentLoadingProgressBar) findViewById(R.id.L_progress_bar);
+        progressBar.hide();
         mEmailView = (AutoCompleteTextView) findViewById(R.id.L_username);
         populateAutoComplete();
 
@@ -160,6 +165,8 @@ public class LoginActivity extends AppCompatActivity implements LoginListeners.V
     @Override
     public void resetErrors() {
         // Reset errors.
+        Log.d(TAG, "resetErrors() called");
+        progressBar.show();
         if (mEmailView != null && mPasswordView != null) {
             mEmailView.setError(null);
             mPasswordView.setError(null);
@@ -168,6 +175,7 @@ public class LoginActivity extends AppCompatActivity implements LoginListeners.V
 
     @Override
     public void passwordError() {
+        progressBar.hide();
         if (mPasswordView != null) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             mPasswordView.requestFocus();
@@ -176,6 +184,7 @@ public class LoginActivity extends AppCompatActivity implements LoginListeners.V
 
     @Override
     public void usernameError() {
+        progressBar.hide();
         if (mEmailView != null) {
             mEmailView.setError(getString(R.string.error_field_required));
             mEmailView.requestFocus();
@@ -184,8 +193,15 @@ public class LoginActivity extends AppCompatActivity implements LoginListeners.V
 
     @Override
     public void onSuccessfulLogin() {
+        progressBar.hide();
         startActivity(new Intent(LoginActivity.this, SplashScreen.class));
         finish();
+    }
+
+    @Override
+    public void onErrorLogin(String message) {
+        progressBar.hide();
+        Util.alert(getContext(), "Error", message);
     }
 
     @Override

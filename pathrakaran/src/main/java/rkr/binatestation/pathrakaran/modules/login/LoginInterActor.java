@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 
 import rkr.binatestation.pathrakaran.network.VolleySingleTon;
-import rkr.binatestation.pathrakaran.utils.Util;
 
 import static android.content.Context.MODE_PRIVATE;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_IS_LOGGED_IN;
@@ -137,7 +136,7 @@ class LoginInterActor implements LoginListeners.InterActorListener, LoaderManage
                             presenterListener.onSuccessfulLogin();
                         } catch (JSONException e) {
                             e.printStackTrace();
-                            Util.alert(context, "Error", "Username not available, try another one");
+                            presenterListener.onErrorLogin("Something went wrong, please try again later.");
                         }
                     }
                 }
@@ -147,10 +146,7 @@ class LoginInterActor implements LoginListeners.InterActorListener, LoaderManage
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, "onErrorResponse: ", error);
                 if (isPresenterLive()) {
-                    Context context = presenterListener.getContext();
-                    if (context != null) {
-                        Util.alert(context, "Error", "Something went wrong please try again later.");
-                    }
+                    presenterListener.onErrorLogin("Something went wrong please try again later.");
                 }
             }
         }) {

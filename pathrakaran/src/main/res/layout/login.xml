@@ -82,17 +82,18 @@
                 android:layout_marginTop="50dp"
                 android:background="@color/colorPrimaryDark" />
 
-            <RelativeLayout
+            <android.support.v7.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="50dp">
 
                 <TextView
                     android:id="@+id/L_forgetPassword"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
+                    android:layout_weight="1"
                     android:text="@string/forgot_password" />
 
                 <TextView
@@ -102,9 +103,16 @@
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
                     android:text="@string/register" />
-            </RelativeLayout>
+            </android.support.v7.widget.LinearLayoutCompat>
 
         </LinearLayout>
+
+        <android.support.v4.widget.ContentLoadingProgressBar
+            android:id="@+id/L_progress_bar"
+            style="@style/Widget.AppCompat.ProgressBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/L_login"

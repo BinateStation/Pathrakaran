@@ -15,6 +15,7 @@ import android.view.MenuItem;
 
 import rkr.binatestation.pathrakaran.R;
 import rkr.binatestation.pathrakaran.fragments.SM_Home;
+import rkr.binatestation.pathrakaran.modules.profile.UserProfile;
 
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {

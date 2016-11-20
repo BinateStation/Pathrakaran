@@ -22,6 +22,8 @@ interface LoginListeners {
 
         void onSuccessfulLogin();
 
+        void onErrorLogin(String message);
+
         Context getContext();
     }
 
@@ -33,6 +35,8 @@ interface LoginListeners {
         void attemptLogin(String s, String toString);
 
         void onSuccessfulLogin();
+
+        void onErrorLogin(String message);
 
         Context getContext();
     }

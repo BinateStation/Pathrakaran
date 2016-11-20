@@ -1,4 +1,4 @@
-package rkr.binatestation.pathrakaran.activities;
+package rkr.binatestation.pathrakaran.modules.profile;
 
 import android.Manifest;
 import android.app.Activity;
@@ -50,6 +50,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import rkr.binatestation.pathrakaran.R;
+import rkr.binatestation.pathrakaran.activities.MapPicker;
 import rkr.binatestation.pathrakaran.network.VolleySingleTon;
 import rkr.binatestation.pathrakaran.utils.Util;
 
@@ -82,14 +83,14 @@ public class UserProfile extends AppCompatActivity implements OnMapReadyCallback
         name = (EditText) findViewById(R.id.UP_name);
         email = (EditText) findViewById(R.id.UP_email);
         address = (EditText) findViewById(R.id.UP_address);
-        phoneNumber = (EditText) findViewById(R.id.UP_phoneNumber);
-        postalCode = (EditText) findViewById(R.id.UP_postalCode);
+        phoneNumber = (EditText) findViewById(R.id.UP_phone_number);
+        postalCode = (EditText) findViewById(R.id.UP_postal_code);
 
-        nameLayout = (TextInputLayout) findViewById(R.id.UP_nameLayout);
-        phoneNumberLayout = (TextInputLayout) findViewById(R.id.UP_phoneLayout);
-        emailLayout = (TextInputLayout) findViewById(R.id.UP_emailLayout);
-        addressLayout = (TextInputLayout) findViewById(R.id.UP_addressLayout);
-        postalCodeLayout = (TextInputLayout) findViewById(R.id.UP_postalCodeLayout);
+        nameLayout = (TextInputLayout) findViewById(R.id.UP_name_layout);
+        phoneNumberLayout = (TextInputLayout) findViewById(R.id.UP_phone_layout);
+        emailLayout = (TextInputLayout) findViewById(R.id.UP_email_layout);
+        addressLayout = (TextInputLayout) findViewById(R.id.UP_address_layout);
+        postalCodeLayout = (TextInputLayout) findViewById(R.id.UP_postal_code_layout);
 
         name.addTextChangedListener(new TextWatcher() {
             @Override
@@ -155,7 +156,7 @@ public class UserProfile extends AppCompatActivity implements OnMapReadyCallback
 
             }
         });
-        mapView = (MapView) findViewById(R.id.UP_mapView);
+        mapView = (MapView) findViewById(R.id.UP_map_view);
         mapView.onCreate(savedInstanceState);
         // Needs to call MapsInitializer before doing any CameraUpdateFactory calls
         try {

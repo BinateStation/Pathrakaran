@@ -88,6 +88,13 @@ class LoginPresenter implements LoginListeners.PresenterListener {
     }
 
     @Override
+    public void onErrorLogin(String message) {
+        if (isViewLive()) {
+            viewListener.onErrorLogin(message);
+        }
+    }
+
+    @Override
     public Context getContext() {
         if (isViewLive()) {
             return viewListener.getContext();
