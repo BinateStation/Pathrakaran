@@ -1,8 +1,7 @@
 package rkr.binatestation.pathrakaran.modules.profile;
 
-import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,9 +9,11 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
@@ -54,7 +55,11 @@ import rkr.binatestation.pathrakaran.activities.MapPicker;
 import rkr.binatestation.pathrakaran.network.VolleySingleTon;
 import rkr.binatestation.pathrakaran.utils.Util;
 
-public class UserProfile extends AppCompatActivity implements OnMapReadyCallback {
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static rkr.binatestation.pathrakaran.utils.Constants.REQUEST_LOCATION_PERMISSION;
+
+public class UserProfile extends AppCompatActivity implements OnMapReadyCallback, TextWatcher {
     private static final String TAG = "UserProfile";
 
     MapView mapView;
@@ -70,7 +75,6 @@ public class UserProfile extends AppCompatActivity implements OnMapReadyCallback
     String selectedImagePath = "";
     Integer REQUEST_CAMERA = 1;
     Integer SELECT_FILE = 2;
-    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +82,6 @@ public class UserProfile extends AppCompatActivity implements OnMapReadyCallback
         setContentView(R.layout.user_profile);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        mProgressDialog = new ProgressDialog(UserProfile.this);
 
         name = (EditText) findViewById(R.id.UP_name);
         email = (EditText) findViewById(R.id.UP_email);
@@ -92,70 +95,11 @@ public class UserProfile extends AppCompatActivity implements OnMapReadyCallback
         addressLayout = (TextInputLayout) findViewById(R.id.UP_address_layout);
         postalCodeLayout = (TextInputLayout) findViewById(R.id.UP_postal_code_layout);
 
-        name.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                nameLayout.setErrorEnabled(false);
-            }
+        name.addTextChangedListener(this);
+        phoneNumber.addTextChangedListener(this);
+        address.addTextChangedListener(this);
+        postalCode.addTextChangedListener(this);
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-        phoneNumber.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                phoneNumberLayout.setErrorEnabled(false);
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-        address.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                addressLayout.setErrorEnabled(false);
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-        postalCode.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                postalCodeLayout.setErrorEnabled(false);
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
         mapView = (MapView) findViewById(R.id.UP_map_view);
         mapView.onCreate(savedInstanceState);
         // Needs to call MapsInitializer before doing any CameraUpdateFactory calls
@@ -304,32 +248,38 @@ public class UserProfile extends AppCompatActivity implements OnMapReadyCallback
                             .putExtra("UP_LONGITUDE", UserProfile.this.latLng.longitude));
                 }
             });
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                    == PackageManager.PERMISSION_GRANTED ||
-                    ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) ==
-                            PackageManager.PERMISSION_GRANTED) {
+            if (mayRequestLocation()) {
+                //noinspection MissingPermission
                 googleMap.setMyLocationEnabled(true);
             }
 
         }
     }
 
-    public void showProgressDialog(Boolean aBoolean) {
-        try {
-            if (mProgressDialog != null) {
-                if (aBoolean) {
-                    mProgressDialog.setMessage("Please wait ...");
-                    mProgressDialog.setCancelable(false);
-                    mProgressDialog.show();
-                } else {
-                    if (mProgressDialog.isShowing()) {
-                        mProgressDialog.dismiss();
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+    private boolean mayRequestLocation() {
+        Log.d(TAG, "mayRequestLocation() called");
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return true;
         }
+        if (ActivityCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION) ==
+                        PackageManager.PERMISSION_GRANTED) {
+            return true;
+        }
+        if (shouldShowRequestPermissionRationale(ACCESS_FINE_LOCATION)) {
+            Snackbar.make(name, R.string.location_permission_rationale, Snackbar.LENGTH_INDEFINITE)
+                    .setAction(android.R.string.ok, new View.OnClickListener() {
+                        @Override
+                        @TargetApi(Build.VERSION_CODES.M)
+                        public void onClick(View v) {
+                            requestPermissions(new String[]{ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, REQUEST_LOCATION_PERMISSION);
+                        }
+                    }).show();
+        } else {
+            requestPermissions(new String[]{ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, REQUEST_LOCATION_PERMISSION);
+        }
+        return false;
     }
 
     private void alert(String title, String message) {
@@ -393,13 +343,11 @@ public class UserProfile extends AppCompatActivity implements OnMapReadyCallback
                     e.printStackTrace();
                     alert("Error", "Username not available, try another one");
                 }
-                showProgressDialog(false);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d(getLocalClassName(), "Error :- " + error.toString());
-                showProgressDialog(false);
             }
         }) {
             @Override
@@ -418,7 +366,6 @@ public class UserProfile extends AppCompatActivity implements OnMapReadyCallback
             }
         };
         VolleySingleTon.getInstance(UserProfile.this).addToRequestQueue(UserProfile.this, stringRequest);
-        showProgressDialog(true);
     }
 
     private void updateUserDetailsWithOutImage(final View view) {
@@ -434,13 +381,11 @@ public class UserProfile extends AppCompatActivity implements OnMapReadyCallback
                 } else {
                     alert("Alert", "Something went wrong, please try again later.!");
                 }
-                showProgressDialog(false);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d(getLocalClassName(), "Error :- " + error.toString());
-                showProgressDialog(false);
             }
         }) {
             @Override
@@ -466,6 +411,23 @@ public class UserProfile extends AppCompatActivity implements OnMapReadyCallback
             }
         };
         VolleySingleTon.getInstance(UserProfile.this).addToRequestQueue(UserProfile.this, stringRequest);
-        showProgressDialog(true);
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        nameLayout.setErrorEnabled(false);
+        phoneNumberLayout.setErrorEnabled(false);
+        addressLayout.setErrorEnabled(false);
+        postalCodeLayout.setErrorEnabled(false);
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+
     }
 }

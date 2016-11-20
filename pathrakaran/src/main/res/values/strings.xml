@@ -14,8 +14,10 @@
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
+    <string name="contacts_permission_rationale">"Contacts permissions are needed for providing email
         completions."
+    </string>
+    <string name="location_permission_rationale">"Location permissions are needed for providing Google Map."
     </string>
     <string name="forgot_password">Forgot Password?</string>
     <string name="happy_to_see_you_again_">Happy To See You Again!</string>

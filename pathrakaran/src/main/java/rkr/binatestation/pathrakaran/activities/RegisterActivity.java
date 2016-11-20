@@ -45,7 +45,7 @@ import static rkr.binatestation.pathrakaran.utils.Constants.KEY_USER_NAME;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_USER_PHONE;
 import static rkr.binatestation.pathrakaran.utils.Constants.USER_REGISTER;
 
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity implements TextWatcher {
 
     private static final String TAG = "RegisterActivity";
 
@@ -76,84 +76,12 @@ public class RegisterActivity extends AppCompatActivity {
         password = (EditText) findViewById(R.id.R_password);
         confirmPassword = (EditText) findViewById(R.id.R_confirmPassword);
 
-        name.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                nameLayout.setErrorEnabled(false);
-            }
+        name.addTextChangedListener(this);
+        phone.addTextChangedListener(this);
+        username.addTextChangedListener(this);
+        password.addTextChangedListener(this);
+        confirmPassword.addTextChangedListener(this);
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-        phone.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                phoneLayout.setErrorEnabled(false);
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-        username.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                usernameLayout.setError(null);
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                checkUsernameAvailability(s.toString(), "N");
-            }
-        });
-        password.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                passwordLayout.setErrorEnabled(false);
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-        confirmPassword.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                confirmPasswordLayout.setErrorEnabled(false);
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
         FloatingActionButton login = (FloatingActionButton) findViewById(R.id.R_login);
         login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -297,4 +225,23 @@ public class RegisterActivity extends AppCompatActivity {
         VolleySingleTon.getInstance(RegisterActivity.this).addToRequestQueue(RegisterActivity.this, stringRequest);
     }
 
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        nameLayout.setErrorEnabled(false);
+        phoneLayout.setErrorEnabled(false);
+        usernameLayout.setErrorEnabled(false);
+        passwordLayout.setErrorEnabled(false);
+        confirmPasswordLayout.setErrorEnabled(false);
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+
+    }
 }

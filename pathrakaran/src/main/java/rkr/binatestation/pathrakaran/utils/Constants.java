@@ -37,7 +37,8 @@ public class Constants {
     /**
      * Id to identity READ_CONTACTS permission request.
      */
-    public static final int REQUEST_READ_CONTACTS = 0;
+    public static final int REQUEST_READ_CONTACTS = 100;
+    public static final int REQUEST_LOCATION_PERMISSION = 101;
 
     /**
      * API URL
