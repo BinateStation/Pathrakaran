@@ -37,7 +37,7 @@ public class MapPicker extends FragmentActivity implements OnMapReadyCallback {
         mapSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-//                LatLng latLng = Util.getLocationFromAddress(MapPicker.this, query);
+//                LatLng latLng = GeneralUtils.getLocationFromAddress(MapPicker.this, query);
 
                 if (latLng != null) {
                     MapPicker.this.latLng = latLng;
@@ -48,7 +48,7 @@ public class MapPicker extends FragmentActivity implements OnMapReadyCallback {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-//                LatLng latLng = Util.getLocationFromAddress(MapPicker.this, newText);
+//                LatLng latLng = GeneralUtils.getLocationFromAddress(MapPicker.this, newText);
                 if (latLng != null) {
                     MapPicker.this.latLng = latLng;
                     mapFragment.getMapAsync(MapPicker.this);
@@ -76,7 +76,7 @@ public class MapPicker extends FragmentActivity implements OnMapReadyCallback {
         // Add a marker in Sydney and move the camera
 
         if (latLng != null) {
-//           marker= googleMap.addMarker(new MarkerOptions().position(latLng).title(Util.getCompleteAddressString(MapPicker.this,latLng)));
+//           marker= googleMap.addMarker(new MarkerOptions().position(latLng).title(GeneralUtils.getCompleteAddressString(MapPicker.this,latLng)));
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
 
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -95,7 +95,7 @@ public class MapPicker extends FragmentActivity implements OnMapReadyCallback {
 
                     MapPicker.this.latLng = latLng;
                     marker.setPosition(latLng);
-//                    marker.setTitle(Util.getCompleteAddressString(MapPicker.this, latLng));
+//                    marker.setTitle(GeneralUtils.getCompleteAddressString(MapPicker.this, latLng));
 
 
                 }

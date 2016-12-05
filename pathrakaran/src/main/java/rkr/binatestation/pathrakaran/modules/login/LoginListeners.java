@@ -20,7 +20,7 @@ interface LoginListeners {
 
         void usernameError();
 
-        void onSuccessfulLogin();
+        void onSuccessfulLogin(String message);
 
         void onErrorLogin(String message);
 
@@ -34,7 +34,7 @@ interface LoginListeners {
 
         void attemptLogin(String s, String toString);
 
-        void onSuccessfulLogin();
+        void onSuccessfulLogin(String message);
 
         void onErrorLogin(String message);
 

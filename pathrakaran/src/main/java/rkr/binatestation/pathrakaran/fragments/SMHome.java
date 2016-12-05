@@ -15,18 +15,26 @@ import rkr.binatestation.pathrakaran.adapters.HomeAdapter;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SM_Home extends Fragment {
+public class SMHome extends Fragment {
 
 
-    public SM_Home() {
+    public SMHome() {
         // Required empty public constructor
     }
 
 
+    public static SMHome newInstance() {
+
+        Bundle args = new Bundle();
+
+        SMHome fragment = new SMHome();
+        fragment.setArguments(args);
+        return fragment;
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.sm_home, container, false);
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.SMH_recyclerView);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.SMH_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(new HomeAdapter());
         return view;

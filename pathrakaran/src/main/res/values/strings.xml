@@ -138,4 +138,7 @@
     <string name="postal_code">Postal Code</string>
     <string name="title_activity_map_picker">Map</string>
     <string name="okay">Okay</string>
+    <string name="successfully_logged_in">Successfully logged in...</string>
+    <string name="some_thing_went_wrong">Something went wrong, please try again later.</string>
+    <string name="icon">Icon</string>
 </resources>

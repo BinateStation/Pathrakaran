@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="horizontal">
 
     <ImageView
@@ -9,41 +10,37 @@
         android:layout_height="60dp"
         android:layout_gravity="center_vertical"
         android:layout_margin="5dp"
+        android:contentDescription="@string/icon"
         android:src="@drawable/ic_face_24dp" />
 
-    <TwoLineListItem xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.v7.widget.LinearLayoutCompat
         android:layout_width="0dp"
         android:layout_height="?android:attr/listPreferredItemHeight"
         android:layout_weight="2"
-        android:mode="twoLine"
-        android:paddingBottom="2dip"
-        android:paddingTop="2dip">
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingBottom="2dp"
+        android:paddingTop="2dp">
 
         <TextView
             android:id="@android:id/text1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:layout_marginTop="6dip"
-            android:singleLine="true"
-            android:text="Subscription List"
-            android:textAlignment="viewStart"
-            android:textAppearance="?android:attr/textAppearanceListItem" />
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textAppearance="?android:attr/textAppearanceListItem"
+            tools:text="Subscription List" />
 
         <TextView
             android:id="@android:id/text2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@android:id/text1"
-            android:layout_alignStart="@android:id/text1"
-            android:layout_below="@android:id/text1"
-            android:layout_gravity="start"
-            android:singleLine="true"
-            android:text="You are subscribed to, item1,item2,item3..."
-            android:textAlignment="viewStart"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            tools:text="You are subscribed to, item1,item2,item3..." />
 
-    </TwoLineListItem>
+    </android.support.v7.widget.LinearLayoutCompat>
 
     <View
         android:layout_width="1dp"
@@ -51,37 +48,33 @@
         android:layout_margin="10dp"
         android:background="@color/colorAccent" />
 
-    <TwoLineListItem xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.v7.widget.LinearLayoutCompat
         android:layout_width="0dp"
         android:layout_height="?android:attr/listPreferredItemHeight"
         android:layout_weight="1"
-        android:mode="twoLine"
-        android:paddingBottom="2dip"
-        android:paddingTop="2dip">
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingBottom="2dp"
+        android:paddingTop="2dp">
 
         <TextView
             android:id="@android:id/text1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:layout_marginTop="6dip"
-            android:singleLine="true"
-            android:text="Total Subscriptions"
-            android:textAlignment="viewStart"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            tools:text="Total Subscriptions" />
 
         <TextView
             android:id="@android:id/text2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@android:id/text1"
-            android:layout_alignStart="@android:id/text1"
-            android:layout_below="@android:id/text1"
-            android:layout_gravity="start"
+            android:ellipsize="end"
             android:gravity="center_horizontal"
-            android:singleLine="true"
-            android:text="24"
-            android:textAppearance="?android:attr/textAppearanceListItem" />
+            android:maxLines="1"
+            android:textAppearance="?android:attr/textAppearanceListItem"
+            tools:text="24" />
 
-    </TwoLineListItem>
-</LinearLayout>
+    </android.support.v7.widget.LinearLayoutCompat>
+</android.support.v7.widget.LinearLayoutCompat>

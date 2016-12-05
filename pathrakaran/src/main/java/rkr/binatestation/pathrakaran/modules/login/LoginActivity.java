@@ -28,7 +28,7 @@ import java.util.List;
 import rkr.binatestation.pathrakaran.R;
 import rkr.binatestation.pathrakaran.activities.RegisterActivity;
 import rkr.binatestation.pathrakaran.activities.SplashScreen;
-import rkr.binatestation.pathrakaran.utils.Util;
+import rkr.binatestation.pathrakaran.utils.GeneralUtils;
 
 import static android.Manifest.permission.READ_CONTACTS;
 import static rkr.binatestation.pathrakaran.utils.Constants.REQUEST_READ_CONTACTS;
@@ -192,7 +192,7 @@ public class LoginActivity extends AppCompatActivity implements LoginListeners.V
     }
 
     @Override
-    public void onSuccessfulLogin() {
+    public void onSuccessfulLogin(String message) {
         progressBar.hide();
         startActivity(new Intent(LoginActivity.this, SplashScreen.class));
         finish();
@@ -201,7 +201,7 @@ public class LoginActivity extends AppCompatActivity implements LoginListeners.V
     @Override
     public void onErrorLogin(String message) {
         progressBar.hide();
-        Util.alert(getContext(), "Error", message);
+        GeneralUtils.alert(getContext(), "Error", message);
     }
 
     @Override

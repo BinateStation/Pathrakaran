@@ -14,8 +14,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import rkr.binatestation.pathrakaran.R;
-import rkr.binatestation.pathrakaran.fragments.SM_Home;
+import rkr.binatestation.pathrakaran.fragments.SMHome;
 import rkr.binatestation.pathrakaran.modules.profile.UserProfile;
+
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_USER_NAME;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_USER_PHONE;
 
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -27,9 +30,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Aashique Cr");
-            getSupportActionBar().setSubtitle("Something write here");
+            getSupportActionBar().setTitle(getSharedPreferences(getPackageName(), MODE_PRIVATE).getString(KEY_SP_USER_NAME, getString(R.string.app_name)));
+            getSupportActionBar().setSubtitle(getSharedPreferences(getPackageName(), MODE_PRIVATE).getString(KEY_SP_USER_PHONE, getString(R.string.app_name)));
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -59,7 +63,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             getSupportFragmentManager()
                     .beginTransaction()
                     .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
-                    .replace(R.id.ABH_contentLayout, new SM_Home())
+                    .replace(R.id.ABH_contentLayout, SMHome.newInstance())
                     .commit();
         }
     }
@@ -111,7 +115,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         Fragment fragment = null;
         switch (item.getItemId()) {
             case R.id.nav_SM_home:
-                fragment = new SM_Home();
+                fragment = new SMHome();
                 break;
             case R.id.nav_SM_profile:
                 startActivity(new Intent(HomeActivity.this, UserProfile.class));

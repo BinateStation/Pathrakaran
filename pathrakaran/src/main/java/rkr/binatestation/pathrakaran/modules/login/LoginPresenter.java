@@ -81,9 +81,9 @@ class LoginPresenter implements LoginListeners.PresenterListener {
     }
 
     @Override
-    public void onSuccessfulLogin() {
+    public void onSuccessfulLogin(String message) {
         if (isViewLive()) {
-            viewListener.onSuccessfulLogin();
+            viewListener.onSuccessfulLogin(message);
         }
     }
 

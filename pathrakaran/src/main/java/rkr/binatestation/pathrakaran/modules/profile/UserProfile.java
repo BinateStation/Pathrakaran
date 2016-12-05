@@ -53,7 +53,7 @@ import java.util.Map;
 import rkr.binatestation.pathrakaran.R;
 import rkr.binatestation.pathrakaran.activities.MapPicker;
 import rkr.binatestation.pathrakaran.network.VolleySingleTon;
-import rkr.binatestation.pathrakaran.utils.Util;
+import rkr.binatestation.pathrakaran.utils.GeneralUtils;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -174,7 +174,7 @@ public class UserProfile extends AppCompatActivity implements OnMapReadyCallback
                     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
                     assert thumbnail != null;
                     thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
-                    File destination = new File(Util.getCaptureImagePath(),
+                    File destination = new File(GeneralUtils.getCaptureImagePath(),
                             "IMG_" + System.currentTimeMillis() + ".jpg");
                     FileOutputStream fo;
                     try {
@@ -353,7 +353,7 @@ public class UserProfile extends AppCompatActivity implements OnMapReadyCallback
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put("u_id", getSharedPreferences(getPackageName(), MODE_PRIVATE).getString("KEY_USER_ID", "0"));
+                params.put("u_id", getSharedPreferences(getPackageName(), MODE_PRIVATE).getString("KEY_SP_USER_ID", "0"));
                 Log.i(getLocalClassName(), "Request :- " + params.toString());
                 return params;
             }
@@ -391,7 +391,7 @@ public class UserProfile extends AppCompatActivity implements OnMapReadyCallback
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put("u_id", getSharedPreferences(getPackageName(), MODE_PRIVATE).getString("KEY_USER_ID", "0"));
+                params.put("u_id", getSharedPreferences(getPackageName(), MODE_PRIVATE).getString("KEY_SP_USER_ID", "0"));
                 params.put("name", name.getText().toString().trim());
                 params.put("address", address.getText().toString().trim());
                 params.put("image", "");

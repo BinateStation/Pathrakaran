@@ -31,18 +31,18 @@ import rkr.binatestation.pathrakaran.modules.login.LoginActivity;
 import rkr.binatestation.pathrakaran.network.VolleySingleTon;
 
 import static com.android.volley.Request.Method.POST;
-import static rkr.binatestation.pathrakaran.utils.Constants.KEY_IS_LOGGED_IN;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_CONTACT;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_NAME;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_USER_ID;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_CONTACT;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_LOGIN_TYPE;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_NAME;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_PASSWORD;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_USER_NAME;
-import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_USER_TYPE;
-import static rkr.binatestation.pathrakaran.utils.Constants.KEY_USER_ID;
-import static rkr.binatestation.pathrakaran.utils.Constants.KEY_USER_NAME;
-import static rkr.binatestation.pathrakaran.utils.Constants.KEY_USER_PHONE;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_IS_LOGGED_IN;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_USER_ID;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_USER_NAME;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_USER_PHONE;
 import static rkr.binatestation.pathrakaran.utils.Constants.USER_REGISTER;
 
 public class RegisterActivity extends AppCompatActivity implements TextWatcher {
@@ -143,10 +143,10 @@ public class RegisterActivity extends AppCompatActivity implements TextWatcher {
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             getSharedPreferences(getPackageName(), MODE_PRIVATE).edit()
-                                    .putString(KEY_USER_ID, jsonObject.getString(KEY_JSON_USER_ID))
-                                    .putString(KEY_USER_NAME, jsonObject.getString(KEY_JSON_NAME))
-                                    .putString(KEY_USER_PHONE, jsonObject.getString(KEY_JSON_CONTACT))
-                                    .putBoolean(KEY_IS_LOGGED_IN, true).apply();
+                                    .putString(KEY_SP_USER_ID, jsonObject.getString(KEY_JSON_USER_ID))
+                                    .putString(KEY_SP_USER_NAME, jsonObject.getString(KEY_JSON_NAME))
+                                    .putString(KEY_SP_USER_PHONE, jsonObject.getString(KEY_JSON_CONTACT))
+                                    .putBoolean(KEY_SP_IS_LOGGED_IN, true).apply();
                             startActivity(new Intent(RegisterActivity.this, SplashScreen.class));
                             finish();
                         } catch (JSONException e) {
@@ -168,7 +168,7 @@ public class RegisterActivity extends AppCompatActivity implements TextWatcher {
                 params.put(KEY_POST_CONTACT, phone);
                 params.put(KEY_POST_USER_NAME, username);
                 params.put(KEY_POST_PASSWORD, password);
-                params.put(KEY_POST_USER_TYPE, loginType);
+                params.put(KEY_POST_LOGIN_TYPE, loginType);
 
                 Log.d(TAG, "getParams() returned: " + params);
                 return params;

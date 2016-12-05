@@ -9,10 +9,10 @@ public class Constants {
     /**
      * Shared Preference Key Constants
      */
-    public static final String KEY_IS_LOGGED_IN = "is_logged_in";
-    public static final String KEY_USER_ID = "user_id";
-    public static final String KEY_USER_NAME = "user_name";
-    public static final String KEY_USER_PHONE = "user_phone";
+    public static final String KEY_SP_IS_LOGGED_IN = "is_logged_in";
+    public static final String KEY_SP_USER_ID = "user_id";
+    public static final String KEY_SP_USER_NAME = "user_name";
+    public static final String KEY_SP_USER_PHONE = "user_phone";
 
     /**
      * JSON Keys
@@ -20,6 +20,9 @@ public class Constants {
     public static final String KEY_JSON_USER_ID = "userid";
     public static final String KEY_JSON_NAME = "name";
     public static final String KEY_JSON_CONTACT = "contact";
+    public static final String KEY_JSON_STATUS = "status";
+    public static final String KEY_JSON_DATA = "data";
+    public static final String KEY_JSON_MESSAGE = "message";
     /**
      * POST Param Key
      */
@@ -28,6 +31,7 @@ public class Constants {
     public static final String KEY_POST_NAME = "name";
     public static final String KEY_POST_CONTACT = "contact";
     public static final String KEY_POST_USER_TYPE = "user_type";
+    public static final String KEY_POST_LOGIN_TYPE = "login_type";
     public static final String KEY_POST_IMAGE = "image";
     public static final String KEY_POST_ADDRESS = "address";
     public static final String KEY_POST_POSTAL_CODE = "postalcode";

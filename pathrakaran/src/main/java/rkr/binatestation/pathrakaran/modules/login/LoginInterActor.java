@@ -24,19 +24,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import rkr.binatestation.pathrakaran.R;
 import rkr.binatestation.pathrakaran.network.VolleySingleTon;
 
 import static android.content.Context.MODE_PRIVATE;
-import static rkr.binatestation.pathrakaran.utils.Constants.KEY_IS_LOGGED_IN;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_CONTACT;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_DATA;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_MESSAGE;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_NAME;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_STATUS;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_USER_ID;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_LOGIN_TYPE;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_PASSWORD;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_USER_NAME;
-import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_USER_TYPE;
-import static rkr.binatestation.pathrakaran.utils.Constants.KEY_USER_ID;
-import static rkr.binatestation.pathrakaran.utils.Constants.KEY_USER_NAME;
-import static rkr.binatestation.pathrakaran.utils.Constants.KEY_USER_PHONE;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_IS_LOGGED_IN;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_USER_ID;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_USER_NAME;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_USER_PHONE;
 import static rkr.binatestation.pathrakaran.utils.Constants.PROFILE_LOGIN;
 import static rkr.binatestation.pathrakaran.utils.Constants.REQUEST_READ_CONTACTS;
 
@@ -128,15 +132,29 @@ class LoginInterActor implements LoginListeners.InterActorListener, LoaderManage
                     if (context != null) {
                         try {
                             JSONObject jsonObject = new JSONObject(response);
-                            context.getSharedPreferences(context.getPackageName(), MODE_PRIVATE).edit()
-                                    .putString(KEY_USER_ID, jsonObject.getString(KEY_JSON_USER_ID))
-                                    .putString(KEY_USER_NAME, jsonObject.getString(KEY_JSON_NAME))
-                                    .putString(KEY_USER_PHONE, jsonObject.getString(KEY_JSON_CONTACT))
-                                    .putBoolean(KEY_IS_LOGGED_IN, true).apply();
-                            presenterListener.onSuccessfulLogin();
+                            String message = jsonObject.optString(KEY_JSON_MESSAGE);
+                            if (jsonObject.has(KEY_JSON_STATUS) && 200 == jsonObject.optInt(KEY_JSON_STATUS)) {
+                                if (jsonObject.has(KEY_JSON_DATA)) {
+                                    JSONObject dataJsonObject = jsonObject.optJSONObject(KEY_JSON_DATA);
+                                    if (dataJsonObject != null) {
+                                        context.getSharedPreferences(context.getPackageName(), MODE_PRIVATE).edit()
+                                                .putString(KEY_SP_USER_ID, dataJsonObject.optString(KEY_JSON_USER_ID))
+                                                .putString(KEY_SP_USER_NAME, dataJsonObject.optString(KEY_JSON_NAME))
+                                                .putString(KEY_SP_USER_PHONE, dataJsonObject.optString(KEY_JSON_CONTACT))
+                                                .putBoolean(KEY_SP_IS_LOGGED_IN, true).apply();
+                                        presenterListener.onSuccessfulLogin(message != null ? message : context.getString(R.string.successfully_logged_in));
+                                    } else {
+                                        presenterListener.onErrorLogin(message != null ? message : context.getString(R.string.some_thing_went_wrong));
+                                    }
+                                } else {
+                                    presenterListener.onErrorLogin(message != null ? message : context.getString(R.string.some_thing_went_wrong));
+                                }
+                            } else {
+                                presenterListener.onErrorLogin(message != null ? message : context.getString(R.string.some_thing_went_wrong));
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
-                            presenterListener.onErrorLogin("Something went wrong, please try again later.");
+                            presenterListener.onErrorLogin(context.getString(R.string.some_thing_went_wrong));
                         }
                     }
                 }
@@ -146,7 +164,7 @@ class LoginInterActor implements LoginListeners.InterActorListener, LoaderManage
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, "onErrorResponse: ", error);
                 if (isPresenterLive()) {
-                    presenterListener.onErrorLogin("Something went wrong please try again later.");
+                    presenterListener.onErrorLogin(presenterListener.getContext().getString(R.string.some_thing_went_wrong));
                 }
             }
         }) {
@@ -155,7 +173,7 @@ class LoginInterActor implements LoginListeners.InterActorListener, LoaderManage
                 Map<String, String> params = new HashMap<>();
                 params.put(KEY_POST_USER_NAME, username);
                 params.put(KEY_POST_PASSWORD, password);
-                params.put(KEY_POST_USER_TYPE, loginType);
+                params.put(KEY_POST_LOGIN_TYPE, loginType);
 
                 Log.d(TAG, "getParams() returned: " + getUrl() + "  " + params);
                 return params;

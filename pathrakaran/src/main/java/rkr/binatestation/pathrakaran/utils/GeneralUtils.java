@@ -13,11 +13,11 @@ import rkr.binatestation.pathrakaran.R;
 
 /**
  * Created by RKR on 27-01-2016.
- * Util.
+ * GeneralUtils.
  */
-public class Util {
+public class GeneralUtils {
 
-    private static final String TAG = "Util";
+    private static final String TAG = "GeneralUtils";
     private static final String captureImagePath = Environment.getExternalStorageDirectory().toString() +
             File.separator + "Pathrakaran" + File.separator + "Images" + File.separator;
 
