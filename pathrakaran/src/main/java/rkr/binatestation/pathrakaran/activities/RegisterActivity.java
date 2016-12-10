@@ -38,7 +38,7 @@ import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_CONTACT;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_LOGIN_TYPE;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_NAME;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_PASSWORD;
-import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_USER_NAME;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_USER;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_IS_LOGGED_IN;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_USER_ID;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_USER_NAME;
@@ -166,7 +166,7 @@ public class RegisterActivity extends AppCompatActivity implements TextWatcher {
                 Map<String, String> params = new HashMap<>();
                 params.put(KEY_POST_NAME, name);
                 params.put(KEY_POST_CONTACT, phone);
-                params.put(KEY_POST_USER_NAME, username);
+                params.put(KEY_POST_USER, username);
                 params.put(KEY_POST_PASSWORD, password);
                 params.put(KEY_POST_LOGIN_TYPE, loginType);
 

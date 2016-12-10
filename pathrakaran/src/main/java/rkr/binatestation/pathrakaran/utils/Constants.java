@@ -26,7 +26,7 @@ public class Constants {
     /**
      * POST Param Key
      */
-    public static final String KEY_POST_USER_NAME = "username";
+    public static final String KEY_POST_USER = "user";
     public static final String KEY_POST_PASSWORD = "password";
     public static final String KEY_POST_NAME = "name";
     public static final String KEY_POST_CONTACT = "contact";
