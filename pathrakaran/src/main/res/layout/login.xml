@@ -14,14 +14,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:id="@+id/email_login_form"
+        <android.support.v7.widget.LinearLayoutCompat
+            android:id="@+id/L_email_login_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/fullscreen_content"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -75,7 +74,7 @@
             </android.support.design.widget.TextInputLayout>
 
             <View
-                android:id="@+id/L_loginButtonLine"
+                android:id="@+id/L_login_line_view"
                 android:layout_width="200dp"
                 android:layout_height="1dp"
                 android:layout_gravity="center_horizontal"
@@ -88,7 +87,7 @@
                 android:layout_margin="50dp">
 
                 <TextView
-                    android:id="@+id/L_forgetPassword"
+                    android:id="@+id/L_action_forget_password"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
@@ -97,15 +96,16 @@
                     android:text="@string/forgot_password" />
 
                 <TextView
-                    android:id="@+id/L_register"
+                    android:id="@+id/L_action_register"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
+                    android:onClick="onClick"
                     android:text="@string/register" />
             </android.support.v7.widget.LinearLayoutCompat>
 
-        </LinearLayout>
+        </android.support.v7.widget.LinearLayoutCompat>
 
         <android.support.v4.widget.ContentLoadingProgressBar
             android:id="@+id/L_progress_bar"
@@ -115,11 +115,12 @@
             android:layout_gravity="center" />
 
         <android.support.design.widget.FloatingActionButton
-            android:id="@+id/L_login"
+            android:id="@+id/L_action_login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="onClick"
             android:src="@drawable/ic_done_24dp"
-            app:layout_anchor="@id/L_loginButtonLine"
+            app:layout_anchor="@id/L_login_line_view"
             app:layout_anchorGravity="center" />
 
     </android.support.design.widget.CoordinatorLayout>

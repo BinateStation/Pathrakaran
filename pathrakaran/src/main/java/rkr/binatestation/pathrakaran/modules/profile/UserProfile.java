@@ -51,7 +51,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import rkr.binatestation.pathrakaran.R;
-import rkr.binatestation.pathrakaran.activities.MapPicker;
 import rkr.binatestation.pathrakaran.network.VolleySingleTon;
 import rkr.binatestation.pathrakaran.utils.GeneralUtils;
 
@@ -111,7 +110,7 @@ public class UserProfile extends AppCompatActivity implements OnMapReadyCallback
 
         profilePic = (NetworkImageView) findViewById(R.id.UP_profilePic);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.UP_action_edit_save);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -243,9 +242,6 @@ public class UserProfile extends AppCompatActivity implements OnMapReadyCallback
             googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                 @Override
                 public void onMapClick(LatLng latLng) {
-                    startActivity(new Intent(UserProfile.this, MapPicker.class)
-                            .putExtra("UP_LATITUDE", UserProfile.this.latLng.latitude)
-                            .putExtra("UP_LONGITUDE", UserProfile.this.latLng.longitude));
                 }
             });
             if (mayRequestLocation()) {

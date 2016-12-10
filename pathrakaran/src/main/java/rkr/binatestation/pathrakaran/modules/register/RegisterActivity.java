@@ -1,4 +1,4 @@
-package rkr.binatestation.pathrakaran.activities;
+package rkr.binatestation.pathrakaran.modules.register;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import rkr.binatestation.pathrakaran.R;
+import rkr.binatestation.pathrakaran.activities.SplashScreen;
 import rkr.binatestation.pathrakaran.modules.login.LoginActivity;
 import rkr.binatestation.pathrakaran.network.VolleySingleTon;
 

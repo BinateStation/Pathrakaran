@@ -7,7 +7,6 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.AppCompatActivity;
@@ -26,27 +25,27 @@ import java.util.Arrays;
 import java.util.List;
 
 import rkr.binatestation.pathrakaran.R;
-import rkr.binatestation.pathrakaran.activities.RegisterActivity;
 import rkr.binatestation.pathrakaran.activities.SplashScreen;
-import rkr.binatestation.pathrakaran.utils.GeneralUtils;
+import rkr.binatestation.pathrakaran.modules.register.RegisterActivity;
 
 import static android.Manifest.permission.READ_CONTACTS;
 import static rkr.binatestation.pathrakaran.utils.Constants.REQUEST_READ_CONTACTS;
+import static rkr.binatestation.pathrakaran.utils.GeneralUtils.alert;
 
 /**
- * A login screen that offers login via email/password.
+ * A login screen that offers login via email/phone number and password.
  */
-public class LoginActivity extends AppCompatActivity implements LoginListeners.ViewListener {
+public class LoginActivity extends AppCompatActivity implements LoginListeners.ViewListener, OnClickListener {
 
     private static final String TAG = "LoginActivity";
-    LoginListeners.PresenterListener presenterListener;
+    LoginListeners.PresenterListener mPresenterListener;
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
-    private ContentLoadingProgressBar progressBar;
+    private ContentLoadingProgressBar mProgressBar;
 
     private boolean isPresenterLive() {
-        return presenterListener != null;
+        return mPresenterListener != null;
     }
 
     @Override
@@ -54,53 +53,37 @@ public class LoginActivity extends AppCompatActivity implements LoginListeners.V
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
 
-        presenterListener = new LoginPresenter(this);
+        mPresenterListener = new LoginPresenter(this);
         // Set up the login form.
-        progressBar = (ContentLoadingProgressBar) findViewById(R.id.L_progress_bar);
-        progressBar.hide();
+        mProgressBar = (ContentLoadingProgressBar) findViewById(R.id.L_progress_bar);
         mEmailView = (AutoCompleteTextView) findViewById(R.id.L_username);
+        mPasswordView = (EditText) findViewById(R.id.L_password);
+
+        mProgressBar.hide();
         populateAutoComplete();
 
-        mPasswordView = (EditText) findViewById(R.id.L_password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == R.id.login || id == EditorInfo.IME_NULL) {
                     Log.d(TAG, "onEditorAction() called with: textView = [" + textView + "], id = [" + id + "], keyEvent = [" + keyEvent + "]");
                     if (isPresenterLive()) {
-                        presenterListener.attemptLogin(mEmailView.getText().toString(), mPasswordView.getText().toString());
+                        mPresenterListener.attemptLogin(
+                                mEmailView.getText().toString().trim(),
+                                mPasswordView.getText().toString().trim()
+                        );
                     }
                     return true;
                 }
                 return false;
             }
         });
-
-        TextView register = (TextView) findViewById(R.id.L_register);
-        register.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "onClick() called with: v = [" + v + "]");
-                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
-                finish();
-            }
-        });
-        FloatingActionButton login = (FloatingActionButton) findViewById(R.id.L_login);
-        login.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (isPresenterLive()) {
-                    presenterListener.attemptLogin(mEmailView.getText().toString(), mPasswordView.getText().toString());
-                }
-            }
-        });
-
     }
 
     private void populateAutoComplete() {
         Log.d(TAG, "populateAutoComplete() called");
         if (mayRequestContacts() && isPresenterLive()) {
-            presenterListener.populateAutoComplete(getSupportLoaderManager());
+            mPresenterListener.populateAutoComplete(getSupportLoaderManager());
         }
     }
 
@@ -134,7 +117,7 @@ public class LoginActivity extends AppCompatActivity implements LoginListeners.V
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         Log.d(TAG, "onRequestPermissionsResult() called with: requestCode = [" + requestCode + "], permissions = [" + Arrays.toString(permissions) + "], grantResults = [" + Arrays.toString(grantResults) + "]");
         if (requestCode == REQUEST_READ_CONTACTS) {
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (grantResults.length >= 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 populateAutoComplete();
             }
         }
@@ -159,14 +142,16 @@ public class LoginActivity extends AppCompatActivity implements LoginListeners.V
                 android.R.layout.simple_dropdown_item_1line,
                 emailAddressCollection
         );
-        mEmailView.setAdapter(adapter);
+        if (mEmailView != null) {
+            mEmailView.setAdapter(adapter);
+        }
     }
 
     @Override
     public void resetErrors() {
         // Reset errors.
         Log.d(TAG, "resetErrors() called");
-        progressBar.show();
+        mProgressBar.show();
         if (mEmailView != null && mPasswordView != null) {
             mEmailView.setError(null);
             mPasswordView.setError(null);
@@ -175,7 +160,7 @@ public class LoginActivity extends AppCompatActivity implements LoginListeners.V
 
     @Override
     public void passwordError() {
-        progressBar.hide();
+        mProgressBar.hide();
         if (mPasswordView != null) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             mPasswordView.requestFocus();
@@ -184,7 +169,7 @@ public class LoginActivity extends AppCompatActivity implements LoginListeners.V
 
     @Override
     public void usernameError() {
-        progressBar.hide();
+        mProgressBar.hide();
         if (mEmailView != null) {
             mEmailView.setError(getString(R.string.error_field_required));
             mEmailView.requestFocus();
@@ -193,20 +178,40 @@ public class LoginActivity extends AppCompatActivity implements LoginListeners.V
 
     @Override
     public void onSuccessfulLogin(String message) {
-        progressBar.hide();
+        mProgressBar.hide();
         startActivity(new Intent(LoginActivity.this, SplashScreen.class));
         finish();
     }
 
     @Override
     public void onErrorLogin(String message) {
-        progressBar.hide();
-        GeneralUtils.alert(getContext(), "Error", message);
+        mProgressBar.hide();
+        alert(getContext(), "Error", message);
     }
 
     @Override
     public Context getContext() {
         return LoginActivity.this;
+    }
+
+    @Override
+    public void onClick(View v) {
+        Log.d(TAG, "onClick() called with: v = [" + v + "]");
+        switch (v.getId()) {
+            case R.id.L_action_register:
+                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+                finish();
+                break;
+            case R.id.L_action_login:
+                if (isPresenterLive()) {
+                    mPresenterListener.attemptLogin(
+                            mEmailView.getText().toString().trim(),
+                            mPasswordView.getText().toString().trim()
+                    );
+                }
+                break;
+
+        }
     }
 }
 

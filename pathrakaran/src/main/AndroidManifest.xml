@@ -42,7 +42,7 @@
             android:label="@string/title_activity_home"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".activities.RegisterActivity"
+            android:name=".modules.register.RegisterActivity"
             android:label="@string/title_activity_register"
             android:theme="@style/AppTheme" />
         <activity
@@ -61,9 +61,6 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity
-            android:name=".activities.MapPicker"
-            android:label="@string/title_activity_map_picker" />
     </application>
 
 </manifest>
