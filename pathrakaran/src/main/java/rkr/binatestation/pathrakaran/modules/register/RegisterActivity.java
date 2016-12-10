@@ -1,188 +1,93 @@
 package rkr.binatestation.pathrakaran.modules.register;
 
-import android.content.DialogInterface;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
-import android.support.v7.app.AlertDialog;
+import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-
-import com.android.volley.AuthFailureError;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
+import android.widget.Spinner;
 
 import rkr.binatestation.pathrakaran.R;
 import rkr.binatestation.pathrakaran.activities.SplashScreen;
 import rkr.binatestation.pathrakaran.modules.login.LoginActivity;
-import rkr.binatestation.pathrakaran.network.VolleySingleTon;
+import rkr.binatestation.pathrakaran.utils.GeneralUtils;
 
-import static com.android.volley.Request.Method.POST;
-import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_CONTACT;
-import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_NAME;
-import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_USER_ID;
-import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_CONTACT;
-import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_LOGIN_TYPE;
-import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_NAME;
-import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_PASSWORD;
-import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_USER;
-import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_IS_LOGGED_IN;
-import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_USER_ID;
-import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_USER_NAME;
-import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_USER_PHONE;
-import static rkr.binatestation.pathrakaran.utils.Constants.USER_REGISTER;
-
-public class RegisterActivity extends AppCompatActivity implements TextWatcher {
+public class RegisterActivity extends AppCompatActivity implements TextWatcher, View.OnClickListener, RegisterListeners.ViewListener {
 
     private static final String TAG = "RegisterActivity";
 
-    TextInputLayout nameLayout, phoneLayout, usernameLayout, passwordLayout, confirmPasswordLayout;
-    EditText name, phone, username, password, confirmPassword;
+    TextInputLayout mFieldNameTextInputLayout;
+    TextInputLayout mFiledPhoneTextInputLayout;
+    TextInputLayout mFieldEmailTextInputLayout;
+    TextInputLayout mFieldPasswordTextInputLayout;
+    TextInputLayout mFieldConfirmPasswordTextInputLayout;
+    EditText mFieldNameEditText;
+    EditText mFieldPhoneNumberEditText;
+    EditText mFieldEmailEditText;
+    EditText mFieldPasswordEditText;
+    EditText mFieldConfirmPasswordEditText;
+    Spinner mFieldUserTypeSpinner;
+    ContentLoadingProgressBar mContentLoadingProgressBar;
+
+    RegisterListeners.PresenterListener mPresenterListener;
+
+    private boolean isPresenterLive() {
+        return mPresenterListener != null;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.register);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setContentView(R.layout.activity_register);
+        mPresenterListener = new RegisterPresenter(this);
 
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Welcome");
-            getSupportActionBar().setSubtitle("You're going to simplify your life");
+            getSupportActionBar().setTitle(R.string.welcome);
+            getSupportActionBar().setSubtitle(getString(R.string.you_are_going_to_simplify_your_life));
         }
 
-        nameLayout = (TextInputLayout) findViewById(R.id.R_nameLayout);
-        phoneLayout = (TextInputLayout) findViewById(R.id.R_phoneLayout);
-        usernameLayout = (TextInputLayout) findViewById(R.id.R_usernameLayout);
-        passwordLayout = (TextInputLayout) findViewById(R.id.R_passwordLayout);
-        confirmPasswordLayout = (TextInputLayout) findViewById(R.id.R_confirmPasswordLayout);
+        mFieldNameTextInputLayout = (TextInputLayout) findViewById(R.id.AR_field_name_layout);
+        mFiledPhoneTextInputLayout = (TextInputLayout) findViewById(R.id.AR_field_phone_layout);
+        mFieldEmailTextInputLayout = (TextInputLayout) findViewById(R.id.AR_field_email_layout);
+        mFieldPasswordTextInputLayout = (TextInputLayout) findViewById(R.id.AR_field_password_layout);
+        mFieldConfirmPasswordTextInputLayout = (TextInputLayout) findViewById(R.id.AR_field_confirm_password_layout);
 
-        name = (EditText) findViewById(R.id.R_name);
-        phone = (EditText) findViewById(R.id.R_phone);
-        username = (EditText) findViewById(R.id.R_username);
-        password = (EditText) findViewById(R.id.R_password);
-        confirmPassword = (EditText) findViewById(R.id.R_confirmPassword);
+        mFieldNameEditText = (EditText) findViewById(R.id.AR_field_name);
+        mFieldPhoneNumberEditText = (EditText) findViewById(R.id.AR_field_phone_number);
+        mFieldEmailEditText = (EditText) findViewById(R.id.AR_field_email);
+        mFieldPasswordEditText = (EditText) findViewById(R.id.AR_field_password);
+        mFieldConfirmPasswordEditText = (EditText) findViewById(R.id.AR_field_confirm_password);
+        mFieldUserTypeSpinner = (Spinner) findViewById(R.id.AR_field_user_type);
+        mContentLoadingProgressBar = (ContentLoadingProgressBar) findViewById(R.id.AR_progress_bar);
+        mContentLoadingProgressBar.hide();
 
-        name.addTextChangedListener(this);
-        phone.addTextChangedListener(this);
-        username.addTextChangedListener(this);
-        password.addTextChangedListener(this);
-        confirmPassword.addTextChangedListener(this);
+        mFieldNameEditText.addTextChangedListener(this);
+        mFieldPhoneNumberEditText.addTextChangedListener(this);
+        mFieldEmailEditText.addTextChangedListener(this);
+        mFieldPasswordEditText.addTextChangedListener(this);
+        mFieldConfirmPasswordEditText.addTextChangedListener(this);
 
-        FloatingActionButton login = (FloatingActionButton) findViewById(R.id.R_login);
-        login.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                validateInputs();
-            }
-        });
     }
 
-    private void validateInputs() {
-        Log.d(TAG, "validateInputs() called");
-        if (TextUtils.isEmpty(name.getText().toString().trim())) {
-            nameLayout.setError("Name is Mandatory.!");
-        } else if (TextUtils.isEmpty(phone.getText().toString().trim())) {
-            phoneLayout.setError("Phone number is mandatory.!");
-        } else if ((!TextUtils.isDigitsOnly(phone.getText().toString().trim()) || (TextUtils.getTrimmedLength(phone.getText().toString()) < 10))) {
-            phoneLayout.setError("Invalid phone number.!");
-        } else if (TextUtils.isEmpty(username.getText().toString()) || usernameLayout.getError() != null) {
-            usernameLayout.setError("Please use a valid username.!");
-        } else if (TextUtils.isEmpty(password.getText().toString().trim())) {
-            passwordLayout.setError("Please type your password here.!");
-        } else if (TextUtils.isEmpty(confirmPassword.getText().toString().trim())) {
-            confirmPasswordLayout.setError("Please confirm your password.!");
-        } else if (!password.getText().toString().equalsIgnoreCase(confirmPassword.getText().toString())) {
-            confirmPasswordLayout.setError("Password mismatch.!");
-        } else {
-            register(
-                    name.getText().toString().trim(),
-                    phone.getText().toString().trim(),
-                    username.getText().toString().trim(),
-                    password.getText().toString().trim(),
-                    "N"
+    private void getInputs(Context context) {
+        Log.d(TAG, "getInputs() called");
+        if (isPresenterLive()) {
+            mPresenterListener.validateInputs(
+                    context,
+                    mFieldNameEditText.getText().toString().trim(),
+                    mFieldPhoneNumberEditText.getText().toString().trim(),
+                    mFieldEmailEditText.getText().toString().trim(),
+                    mFieldPasswordEditText.getText().toString().trim(),
+                    mFieldConfirmPasswordEditText.getText().toString().trim(),
+                    mFieldUserTypeSpinner.getSelectedItemPosition()
             );
         }
-    }
-
-    private void alert(String title, String message) {
-        new AlertDialog.Builder(RegisterActivity.this)
-                .setTitle(title)
-                .setMessage(message)
-                .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
-                .show();
-    }
-
-    private void register(final String name, final String phone, final String username, final String password, final String loginType) {
-        Log.d(TAG, "register() called with: name = [" + name + "], phone = [" + phone + "], username = [" + username + "], password = [" + password + "], loginType = [" + loginType + "]");
-        StringRequest stringRequest = new StringRequest(
-                POST,
-                VolleySingleTon.getDomainUrl() + USER_REGISTER,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.d(getLocalClassName(), "Response :- " + response);
-                        try {
-                            JSONObject jsonObject = new JSONObject(response);
-                            getSharedPreferences(getPackageName(), MODE_PRIVATE).edit()
-                                    .putString(KEY_SP_USER_ID, jsonObject.getString(KEY_JSON_USER_ID))
-                                    .putString(KEY_SP_USER_NAME, jsonObject.getString(KEY_JSON_NAME))
-                                    .putString(KEY_SP_USER_PHONE, jsonObject.getString(KEY_JSON_CONTACT))
-                                    .putBoolean(KEY_SP_IS_LOGGED_IN, true).apply();
-                            startActivity(new Intent(RegisterActivity.this, SplashScreen.class));
-                            finish();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            alert("Error", "Username not available, try another one");
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d(getLocalClassName(), "Error :- " + error.toString());
-                    }
-                }) {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put(KEY_POST_NAME, name);
-                params.put(KEY_POST_CONTACT, phone);
-                params.put(KEY_POST_USER, username);
-                params.put(KEY_POST_PASSWORD, password);
-                params.put(KEY_POST_LOGIN_TYPE, loginType);
-
-                Log.d(TAG, "getParams() returned: " + params);
-                return params;
-            }
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                params.put("Content-Type", "application/x-www-form-urlencoded");
-                return params;
-            }
-        };
-        VolleySingleTon.getInstance(RegisterActivity.this).addToRequestQueue(RegisterActivity.this, stringRequest);
     }
 
     @Override
@@ -191,48 +96,13 @@ public class RegisterActivity extends AppCompatActivity implements TextWatcher {
         finish();
     }
 
-    private void checkUsernameAvailability(final String username, final String loginType) {
-        StringRequest stringRequest = new StringRequest(POST,
-                VolleySingleTon.getDomainUrl() + "profile/check_username_available", new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Log.d(getLocalClassName(), "Response :- " + response);
-                if (response.equals("0")) {
-                    usernameLayout.setError("Username already exists.!");
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d(getLocalClassName(), "Error :- " + error.toString());
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put("username", username);
-                params.put("login_type", loginType);
-                Log.i(getLocalClassName(), "Request :- " + params.toString());
-                return params;
-            }
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                params.put("Content-Type", "application/x-www-form-urlencoded");
-                return params;
-            }
-        };
-        VolleySingleTon.getInstance(RegisterActivity.this).addToRequestQueue(RegisterActivity.this, stringRequest);
-    }
-
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        nameLayout.setErrorEnabled(false);
-        phoneLayout.setErrorEnabled(false);
-        usernameLayout.setErrorEnabled(false);
-        passwordLayout.setErrorEnabled(false);
-        confirmPasswordLayout.setErrorEnabled(false);
+        mFieldNameTextInputLayout.setErrorEnabled(false);
+        mFiledPhoneTextInputLayout.setErrorEnabled(false);
+        mFieldEmailTextInputLayout.setErrorEnabled(false);
+        mFieldPasswordTextInputLayout.setErrorEnabled(false);
+        mFieldConfirmPasswordTextInputLayout.setErrorEnabled(false);
 
     }
 
@@ -244,5 +114,90 @@ public class RegisterActivity extends AppCompatActivity implements TextWatcher {
     @Override
     public void afterTextChanged(Editable s) {
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.AR_action_login:
+            case R.id.AR_action_login_button_line:
+                getInputs(v.getContext());
+                break;
+        }
+    }
+
+    @Override
+    public void nameFieldError(String errorMessage) {
+        if (mFieldNameTextInputLayout != null) {
+            mFieldNameTextInputLayout.setError(errorMessage);
+        }
+        if (mFieldNameEditText != null) {
+            mFieldNameEditText.requestFocus();
+        }
+    }
+
+    @Override
+    public void phoneFieldError(String errorMessage) {
+        if (mFiledPhoneTextInputLayout != null) {
+            mFiledPhoneTextInputLayout.setError(errorMessage);
+        }
+        if (mFieldPhoneNumberEditText != null) {
+            mFieldPhoneNumberEditText.requestFocus();
+        }
+    }
+
+    @Override
+    public void emailFieldError(String errorMessage) {
+        if (mFieldEmailTextInputLayout != null) {
+            mFieldEmailTextInputLayout.setError(errorMessage);
+        }
+        if (mFieldEmailEditText != null) {
+            mFieldEmailEditText.requestFocus();
+        }
+    }
+
+    @Override
+    public void passwordFieldError(String errorMessage) {
+        if (mFieldPasswordTextInputLayout != null) {
+            mFieldPasswordTextInputLayout.setError(errorMessage);
+        }
+        if (mFieldPasswordEditText != null) {
+            mFieldPasswordEditText.requestFocus();
+        }
+    }
+
+    @Override
+    public void confirmPassword(String errorMessage) {
+        if (mFieldConfirmPasswordTextInputLayout != null) {
+            mFieldConfirmPasswordTextInputLayout.setError(errorMessage);
+        }
+        if (mFieldConfirmPasswordEditText != null) {
+            mFieldConfirmPasswordEditText.requestFocus();
+        }
+    }
+
+    @Override
+    public void finishRegistering() {
+        startActivity(new Intent(RegisterActivity.this, SplashScreen.class));
+        finish();
+    }
+
+    @Override
+    public void showProgress() {
+        if (mContentLoadingProgressBar != null) {
+            mContentLoadingProgressBar.show();
+        }
+    }
+
+    @Override
+    public void hideProgress() {
+        if (mContentLoadingProgressBar != null) {
+            mContentLoadingProgressBar.hide();
+        }
+    }
+
+    @Override
+    public void showAlertDialog(String errorMessage) {
+        GeneralUtils.alert(RegisterActivity.this, "Error", errorMessage);
     }
 }

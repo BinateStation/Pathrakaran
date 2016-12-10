@@ -8,9 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".modules.register.RegisterActivity"
-    tools:showIn="@layout/register">
+    tools:context=".modules.register.RegisterActivity">
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -22,13 +20,13 @@
             android:orientation="vertical">
 
             <android.support.design.widget.TextInputLayout
-                android:id="@+id/R_nameLayout"
+                android:id="@+id/AR_field_name_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/activity_vertical_margin">
 
                 <EditText
-                    android:id="@+id/R_name"
+                    android:id="@+id/AR_field_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/name"
@@ -36,12 +34,12 @@
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
-                android:id="@+id/R_phoneLayout"
+                android:id="@+id/AR_field_phone_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/R_phone"
+                    android:id="@+id/AR_field_phone_number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/phone"
@@ -49,25 +47,46 @@
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
-                android:id="@+id/R_usernameLayout"
+                android:id="@+id/AR_field_email_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/R_username"
+                    android:id="@+id/AR_field_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/username"
-                    android:inputType="text" />
+                    android:hint="@string/email"
+                    android:inputType="textEmailAddress" />
             </android.support.design.widget.TextInputLayout>
 
+            <android.support.v7.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_padding"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/default_padding"
+                    android:paddingRight="@dimen/default_padding"
+                    android:text="@string/i_am"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+                <Spinner
+                    android:id="@+id/AR_field_user_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:entries="@array/user_type_array_list" />
+            </android.support.v7.widget.LinearLayoutCompat>
+
             <android.support.design.widget.TextInputLayout
-                android:id="@+id/R_passwordLayout"
+                android:id="@+id/AR_field_password_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/R_password"
+                    android:id="@+id/AR_field_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/password"
@@ -75,12 +94,12 @@
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
-                android:id="@+id/R_confirmPasswordLayout"
+                android:id="@+id/AR_field_confirm_password_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/R_confirmPassword"
+                    android:id="@+id/AR_field_confirm_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/confirm_password"
@@ -88,7 +107,7 @@
             </android.support.design.widget.TextInputLayout>
 
             <View
-                android:id="@+id/R_loginButtonLine"
+                android:id="@+id/AR_action_login_button_line"
                 android:layout_width="200dp"
                 android:layout_height="1dp"
                 android:layout_gravity="center_horizontal"
@@ -98,12 +117,20 @@
 
         </android.support.v7.widget.LinearLayoutCompat>
 
+        <android.support.v4.widget.ContentLoadingProgressBar
+            android:id="@+id/AR_progress_bar"
+            style="@style/Widget.AppCompat.ProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+
         <android.support.design.widget.FloatingActionButton
-            android:id="@+id/R_login"
+            android:id="@+id/AR_action_login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_done_24dp"
-            app:layout_anchor="@id/R_loginButtonLine"
+            app:layout_anchor="@id/AR_action_login_button_line"
             app:layout_anchorGravity="center" />
     </android.support.design.widget.CoordinatorLayout>
 </android.support.v4.widget.NestedScrollView>
+

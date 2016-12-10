@@ -13,23 +13,29 @@ public class Constants {
     public static final String KEY_SP_USER_ID = "user_id";
     public static final String KEY_SP_USER_NAME = "user_name";
     public static final String KEY_SP_USER_PHONE = "user_phone";
+    public static final String KEY_SP_USER_EMAIL = "user_email";
+    public static final String KEY_SP_USER_IMAGE = "user_image";
+    public static final String KEY_SP_USER_TYPE = "user_type";
 
     /**
      * JSON Keys
      */
     public static final String KEY_JSON_USER_ID = "userid";
     public static final String KEY_JSON_NAME = "name";
-    public static final String KEY_JSON_CONTACT = "contact";
+    public static final String KEY_JSON_MOBILE = "mobile";
+    public static final String KEY_JSON_EMAIL = "email";
     public static final String KEY_JSON_STATUS = "status";
     public static final String KEY_JSON_DATA = "data";
     public static final String KEY_JSON_MESSAGE = "message";
+    public static final String KEY_JSON_IMAGE = "image";
+    public static final String KEY_JSON_USER_TYPE = "user_type";
     /**
      * POST Param Key
      */
     public static final String KEY_POST_USER = "user";
     public static final String KEY_POST_PASSWORD = "password";
     public static final String KEY_POST_NAME = "name";
-    public static final String KEY_POST_CONTACT = "contact";
+    public static final String KEY_POST_MOBILE = "mobile";
     public static final String KEY_POST_USER_TYPE = "user_type";
     public static final String KEY_POST_LOGIN_TYPE = "login_type";
     public static final String KEY_POST_IMAGE = "image";
@@ -47,7 +53,7 @@ public class Constants {
     /**
      * API URL
      */
-    public static final String PROFILE_LOGIN = "profile/login";
+    public static final String USER_LOGIN = "user/login";
     public static final String USER_REGISTER = "user/register";
 
 }

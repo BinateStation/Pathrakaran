@@ -1,4 +1,4 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,13 +9,12 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".modules.login.LoginActivity">
 
-
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <android.support.v7.widget.LinearLayoutCompat
-            android:id="@+id/L_email_login_form"
+            android:id="@+id/AL_email_login_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -44,7 +43,7 @@
                 android:layout_margin="@dimen/activity_vertical_margin">
 
                 <AutoCompleteTextView
-                    android:id="@+id/L_username"
+                    android:id="@+id/AL_username"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/username"
@@ -61,7 +60,7 @@
                 android:layout_marginStart="@dimen/activity_horizontal_margin">
 
                 <EditText
-                    android:id="@+id/L_password"
+                    android:id="@+id/AL_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/password"
@@ -74,7 +73,7 @@
             </android.support.design.widget.TextInputLayout>
 
             <View
-                android:id="@+id/L_login_line_view"
+                android:id="@+id/AL_login_line_view"
                 android:layout_width="200dp"
                 android:layout_height="1dp"
                 android:layout_gravity="center_horizontal"
@@ -87,7 +86,7 @@
                 android:layout_margin="50dp">
 
                 <TextView
-                    android:id="@+id/L_action_forget_password"
+                    android:id="@+id/AL_action_forget_password"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
@@ -96,7 +95,7 @@
                     android:text="@string/forgot_password" />
 
                 <TextView
-                    android:id="@+id/L_action_register"
+                    android:id="@+id/AL_action_register"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
@@ -108,20 +107,20 @@
         </android.support.v7.widget.LinearLayoutCompat>
 
         <android.support.v4.widget.ContentLoadingProgressBar
-            android:id="@+id/L_progress_bar"
+            android:id="@+id/AL_progress_bar"
             style="@style/Widget.AppCompat.ProgressBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center" />
 
         <android.support.design.widget.FloatingActionButton
-            android:id="@+id/L_action_login"
+            android:id="@+id/AL_action_login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="onClick"
             android:src="@drawable/ic_done_24dp"
-            app:layout_anchor="@id/L_login_line_view"
+            app:layout_anchor="@id/AL_login_line_view"
             app:layout_anchorGravity="center" />
 
     </android.support.design.widget.CoordinatorLayout>
-</ScrollView>
+</android.support.v4.widget.NestedScrollView>

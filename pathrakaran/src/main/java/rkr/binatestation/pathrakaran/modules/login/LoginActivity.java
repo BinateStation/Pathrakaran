@@ -33,16 +33,16 @@ import static rkr.binatestation.pathrakaran.utils.Constants.REQUEST_READ_CONTACT
 import static rkr.binatestation.pathrakaran.utils.GeneralUtils.alert;
 
 /**
- * A login screen that offers login via email/phone number and password.
+ * A activity_login screen that offers activity_login via email/phone number and password.
  */
 public class LoginActivity extends AppCompatActivity implements LoginListeners.ViewListener, OnClickListener {
 
     private static final String TAG = "LoginActivity";
     LoginListeners.PresenterListener mPresenterListener;
     // UI references.
-    private AutoCompleteTextView mEmailView;
-    private EditText mPasswordView;
-    private ContentLoadingProgressBar mProgressBar;
+    private AutoCompleteTextView mEmailAutoCompleteTextView;
+    private EditText mPasswordEditText;
+    private ContentLoadingProgressBar mContentLoadingProgressBar;
 
     private boolean isPresenterLive() {
         return mPresenterListener != null;
@@ -51,26 +51,26 @@ public class LoginActivity extends AppCompatActivity implements LoginListeners.V
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.login);
+        setContentView(R.layout.activity_login);
 
         mPresenterListener = new LoginPresenter(this);
-        // Set up the login form.
-        mProgressBar = (ContentLoadingProgressBar) findViewById(R.id.L_progress_bar);
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.L_username);
-        mPasswordView = (EditText) findViewById(R.id.L_password);
+        // Set up the activity_login form.
+        mContentLoadingProgressBar = (ContentLoadingProgressBar) findViewById(R.id.AL_progress_bar);
+        mEmailAutoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.AL_username);
+        mPasswordEditText = (EditText) findViewById(R.id.AL_password);
 
-        mProgressBar.hide();
+        mContentLoadingProgressBar.hide();
         populateAutoComplete();
 
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        mPasswordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == R.id.login || id == EditorInfo.IME_NULL) {
                     Log.d(TAG, "onEditorAction() called with: textView = [" + textView + "], id = [" + id + "], keyEvent = [" + keyEvent + "]");
                     if (isPresenterLive()) {
                         mPresenterListener.attemptLogin(
-                                mEmailView.getText().toString().trim(),
-                                mPasswordView.getText().toString().trim()
+                                mEmailAutoCompleteTextView.getText().toString().trim(),
+                                mPasswordEditText.getText().toString().trim()
                         );
                     }
                     return true;
@@ -96,7 +96,7 @@ public class LoginActivity extends AppCompatActivity implements LoginListeners.V
             return true;
         }
         if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
-            Snackbar.make(mEmailView, R.string.contacts_permission_rationale, Snackbar.LENGTH_INDEFINITE)
+            Snackbar.make(mEmailAutoCompleteTextView, R.string.contacts_permission_rationale, Snackbar.LENGTH_INDEFINITE)
                     .setAction(android.R.string.ok, new View.OnClickListener() {
                         @Override
                         @TargetApi(Build.VERSION_CODES.M)
@@ -142,8 +142,8 @@ public class LoginActivity extends AppCompatActivity implements LoginListeners.V
                 android.R.layout.simple_dropdown_item_1line,
                 emailAddressCollection
         );
-        if (mEmailView != null) {
-            mEmailView.setAdapter(adapter);
+        if (mEmailAutoCompleteTextView != null) {
+            mEmailAutoCompleteTextView.setAdapter(adapter);
         }
     }
 
@@ -151,41 +151,41 @@ public class LoginActivity extends AppCompatActivity implements LoginListeners.V
     public void resetErrors() {
         // Reset errors.
         Log.d(TAG, "resetErrors() called");
-        mProgressBar.show();
-        if (mEmailView != null && mPasswordView != null) {
-            mEmailView.setError(null);
-            mPasswordView.setError(null);
+        mContentLoadingProgressBar.show();
+        if (mEmailAutoCompleteTextView != null && mPasswordEditText != null) {
+            mEmailAutoCompleteTextView.setError(null);
+            mPasswordEditText.setError(null);
         }
     }
 
     @Override
     public void passwordError() {
-        mProgressBar.hide();
-        if (mPasswordView != null) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
-            mPasswordView.requestFocus();
+        mContentLoadingProgressBar.hide();
+        if (mPasswordEditText != null) {
+            mPasswordEditText.setError(getString(R.string.error_invalid_password));
+            mPasswordEditText.requestFocus();
         }
     }
 
     @Override
     public void usernameError() {
-        mProgressBar.hide();
-        if (mEmailView != null) {
-            mEmailView.setError(getString(R.string.error_field_required));
-            mEmailView.requestFocus();
+        mContentLoadingProgressBar.hide();
+        if (mEmailAutoCompleteTextView != null) {
+            mEmailAutoCompleteTextView.setError(getString(R.string.error_field_required));
+            mEmailAutoCompleteTextView.requestFocus();
         }
     }
 
     @Override
     public void onSuccessfulLogin(String message) {
-        mProgressBar.hide();
+        mContentLoadingProgressBar.hide();
         startActivity(new Intent(LoginActivity.this, SplashScreen.class));
         finish();
     }
 
     @Override
     public void onErrorLogin(String message) {
-        mProgressBar.hide();
+        mContentLoadingProgressBar.hide();
         alert(getContext(), "Error", message);
     }
 
@@ -198,15 +198,15 @@ public class LoginActivity extends AppCompatActivity implements LoginListeners.V
     public void onClick(View v) {
         Log.d(TAG, "onClick() called with: v = [" + v + "]");
         switch (v.getId()) {
-            case R.id.L_action_register:
+            case R.id.AL_action_register:
                 startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
                 finish();
                 break;
-            case R.id.L_action_login:
+            case R.id.AL_action_login:
                 if (isPresenterLive()) {
                     mPresenterListener.attemptLogin(
-                            mEmailView.getText().toString().trim(),
-                            mPasswordView.getText().toString().trim()
+                            mEmailAutoCompleteTextView.getText().toString().trim(),
+                            mPasswordEditText.getText().toString().trim()
                     );
                 }
                 break;

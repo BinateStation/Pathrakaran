@@ -28,9 +28,9 @@ import rkr.binatestation.pathrakaran.R;
 import rkr.binatestation.pathrakaran.network.VolleySingleTon;
 
 import static android.content.Context.MODE_PRIVATE;
-import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_CONTACT;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_DATA;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_MESSAGE;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_MOBILE;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_NAME;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_STATUS;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_USER_ID;
@@ -41,8 +41,8 @@ import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_IS_LOGGED_IN;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_USER_ID;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_USER_NAME;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_USER_PHONE;
-import static rkr.binatestation.pathrakaran.utils.Constants.PROFILE_LOGIN;
 import static rkr.binatestation.pathrakaran.utils.Constants.REQUEST_READ_CONTACTS;
+import static rkr.binatestation.pathrakaran.utils.Constants.USER_LOGIN;
 
 /**
  * Created by RKR on 20/11/2016.
@@ -112,18 +112,18 @@ class LoginInterActor implements LoginListeners.InterActorListener, LoaderManage
     }
 
     /**
-     * Method which calls the network for login with following post parameters
+     * Method which calls the network for activity_login with following post parameters
      *
-     * @param username  the username for login
-     * @param password  the password for login
-     * @param loginType the type of login like N- Normal , F- facebook, G - google etc...
+     * @param username  the username for activity_login
+     * @param password  the password for activity_login
+     * @param loginType the type of activity_login like N- Normal , F- facebook, G - google etc...
      */
     @Override
     public void login(final String username, final String password, final String loginType) {
-        Log.d(TAG, "login() called with: username = [" + username + "], password = [" +
+        Log.d(TAG, "activity_login() called with: username = [" + username + "], password = [" +
                 password + "], loginType = [" + loginType + "]");
         final StringRequest stringRequest = new StringRequest(Request.Method.POST,
-                VolleySingleTon.getDomainUrl() + PROFILE_LOGIN, new Response.Listener<String>() {
+                VolleySingleTon.getDomainUrl() + USER_LOGIN, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.d(TAG, "onResponse() called with: response = [" + response + "]");
@@ -140,7 +140,7 @@ class LoginInterActor implements LoginListeners.InterActorListener, LoaderManage
                                         context.getSharedPreferences(context.getPackageName(), MODE_PRIVATE).edit()
                                                 .putString(KEY_SP_USER_ID, dataJsonObject.optString(KEY_JSON_USER_ID))
                                                 .putString(KEY_SP_USER_NAME, dataJsonObject.optString(KEY_JSON_NAME))
-                                                .putString(KEY_SP_USER_PHONE, dataJsonObject.optString(KEY_JSON_CONTACT))
+                                                .putString(KEY_SP_USER_PHONE, dataJsonObject.optString(KEY_JSON_MOBILE))
                                                 .putBoolean(KEY_SP_IS_LOGGED_IN, true).apply();
                                         presenterListener.onSuccessfulLogin(message != null ? message : context.getString(R.string.successfully_logged_in));
                                     } else {

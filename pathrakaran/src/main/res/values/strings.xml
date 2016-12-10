@@ -125,7 +125,7 @@
         "whether on a per component basis or using the entire app layout.\n"
         "On a component level, components can move or be removed before they cause interference. "
         "For example, a floating action button (FAB) can disappear or move off screen before a "
-        "user picks up a card, or it can move if a snackbar appears.\n"
+        "user picks up a card, or it can move if a snack bar appears.\n"
         "On the layout level, design your app layout to minimize opportunities for interference. "
         "For example, position the FAB to one side of stream of a cards so the FAB won’t interfere "
         "when a user tries to pick up one of cards.\n\n"
@@ -138,7 +138,10 @@
     <string name="postal_code">Postal Code</string>
     <string name="title_activity_map_picker">Map</string>
     <string name="okay">Okay</string>
-    <string name="successfully_logged_in">Successfully logged in...</string>
+    <string name="successfully_logged_in">Successfully logged in…</string>
     <string name="some_thing_went_wrong">Something went wrong, please try again later.</string>
     <string name="icon">Icon</string>
+    <string name="welcome">Welcome</string>
+    <string name="you_are_going_to_simplify_your_life">You\'re going to simplify your life</string>
+    <string name="i_am">I am</string>
 </resources>

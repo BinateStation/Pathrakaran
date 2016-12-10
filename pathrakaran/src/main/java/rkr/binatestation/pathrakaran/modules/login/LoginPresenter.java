@@ -47,9 +47,9 @@ class LoginPresenter implements LoginListeners.PresenterListener {
     }
 
     /**
-     * Attempts to sign in or register the account specified by the login form.
+     * Attempts to sign in or register the account specified by the activity_login form.
      * If there are form errors (invalid email, missing fields, etc.), the
-     * errors are presented and no actual login attempt is made.
+     * errors are presented and no actual activity_login attempt is made.
      *
      * @param email    the username
      * @param password password entered
