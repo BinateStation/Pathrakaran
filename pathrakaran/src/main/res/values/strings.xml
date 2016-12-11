@@ -144,4 +144,8 @@
     <string name="welcome">Welcome</string>
     <string name="you_are_going_to_simplify_your_life">You\'re going to simplify your life</string>
     <string name="i_am">I am</string>
+    <string name="subscribers_list">Subscribers List</string>
+    <string name="products_list">Products List</string>
+    <string name="suppliers_list">Suppliers List</string>
+    <string name="route_map">Route Map</string>
 </resources>

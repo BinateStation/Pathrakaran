@@ -16,7 +16,8 @@ import android.widget.Spinner;
 import rkr.binatestation.pathrakaran.R;
 import rkr.binatestation.pathrakaran.activities.SplashScreen;
 import rkr.binatestation.pathrakaran.modules.login.LoginActivity;
-import rkr.binatestation.pathrakaran.utils.GeneralUtils;
+
+import static rkr.binatestation.pathrakaran.utils.GeneralUtils.alert;
 
 public class RegisterActivity extends AppCompatActivity implements TextWatcher, View.OnClickListener, RegisterListeners.ViewListener {
 
@@ -198,6 +199,6 @@ public class RegisterActivity extends AppCompatActivity implements TextWatcher, 
 
     @Override
     public void showAlertDialog(String errorMessage) {
-        GeneralUtils.alert(RegisterActivity.this, "Error", errorMessage);
+        alert(RegisterActivity.this, "Error", errorMessage);
     }
 }

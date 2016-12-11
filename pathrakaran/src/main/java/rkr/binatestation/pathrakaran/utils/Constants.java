@@ -56,4 +56,6 @@ public class Constants {
     public static final String USER_LOGIN = "user/login";
     public static final String USER_REGISTER = "user/register";
 
+    public static final String USER_TYPE_AGENT = "AG";
+    public static final String USER_TYPE_SUPPLIER = "SP";
 }

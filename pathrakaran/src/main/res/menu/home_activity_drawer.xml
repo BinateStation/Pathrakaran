@@ -33,7 +33,7 @@
         <item
             android:id="@+id/nav_AM_subscribersList"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="@string/subscription_list" />
+            android:title="@string/subscribers_list" />
         <item
             android:id="@+id/nav_AM_transactions"
             android:icon="@drawable/ic_menu_slideshow"
@@ -41,15 +41,15 @@
         <item
             android:id="@+id/nav_AM_productList"
             android:icon="@drawable/ic_menu_manage"
-            android:title="@string/profile" />
+            android:title="@string/products_list" />
         <item
             android:id="@+id/nav_AM_suppliersList"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="@string/subscription_list" />
+            android:title="@string/suppliers_list" />
         <item
             android:id="@+id/nav_AM_routeMap"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="@string/transactions" />
+            android:title="@string/route_map" />
         <item
             android:id="@+id/nav_AM_profile"
             android:icon="@drawable/ic_menu_manage"
@@ -66,7 +66,7 @@
         <item
             android:id="@+id/nav_SPM_subscribersList"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="@string/subscription_list" />
+            android:title="@string/subscribers_list" />
         <item
             android:id="@+id/nav_SPM_transactions"
             android:icon="@drawable/ic_menu_slideshow"
@@ -74,14 +74,14 @@
         <item
             android:id="@+id/nav_SPM_productList"
             android:icon="@drawable/ic_menu_manage"
-            android:title="@string/profile" />
+            android:title="@string/products_list" />
         <item
             android:id="@+id/nav_SPM_routeMap"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="@string/subscription_list" />
+            android:title="@string/route_map" />
         <item
             android:id="@+id/nav_SPM_profile"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="@string/transactions" />
+            android:title="@string/profile" />
     </group>
 </menu>

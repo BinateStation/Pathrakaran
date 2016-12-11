@@ -8,8 +8,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -35,13 +38,14 @@ import static rkr.binatestation.pathrakaran.utils.GeneralUtils.alert;
 /**
  * A activity_login screen that offers activity_login via email/phone number and password.
  */
-public class LoginActivity extends AppCompatActivity implements LoginListeners.ViewListener, OnClickListener {
+public class LoginActivity extends AppCompatActivity implements LoginListeners.ViewListener, OnClickListener, TextWatcher {
 
     private static final String TAG = "LoginActivity";
     LoginListeners.PresenterListener mPresenterListener;
     // UI references.
     private AutoCompleteTextView mEmailAutoCompleteTextView;
     private EditText mPasswordEditText;
+    private TextInputLayout mUsernameTextInputLayout, mPasswordTextInputLayout;
     private ContentLoadingProgressBar mContentLoadingProgressBar;
 
     private boolean isPresenterLive() {
@@ -56,16 +60,20 @@ public class LoginActivity extends AppCompatActivity implements LoginListeners.V
         mPresenterListener = new LoginPresenter(this);
         // Set up the activity_login form.
         mContentLoadingProgressBar = (ContentLoadingProgressBar) findViewById(R.id.AL_progress_bar);
-        mEmailAutoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.AL_username);
-        mPasswordEditText = (EditText) findViewById(R.id.AL_password);
+        mEmailAutoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.AL_field_username);
+        mPasswordEditText = (EditText) findViewById(R.id.AL_filed_password);
+        mUsernameTextInputLayout = (TextInputLayout) findViewById(R.id.AL_field_username_layout);
+        mPasswordTextInputLayout = (TextInputLayout) findViewById(R.id.AL_field_password_layout);
 
         mContentLoadingProgressBar.hide();
         populateAutoComplete();
+        mEmailAutoCompleteTextView.addTextChangedListener(this);
+        mPasswordEditText.addTextChangedListener(this);
 
         mPasswordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.login || id == EditorInfo.IME_NULL) {
+                if (id == R.id.AL_action_login || id == EditorInfo.IME_NULL) {
                     Log.d(TAG, "onEditorAction() called with: textView = [" + textView + "], id = [" + id + "], keyEvent = [" + keyEvent + "]");
                     if (isPresenterLive()) {
                         mPresenterListener.attemptLogin(
@@ -161,8 +169,10 @@ public class LoginActivity extends AppCompatActivity implements LoginListeners.V
     @Override
     public void passwordError() {
         mContentLoadingProgressBar.hide();
+        if (mPasswordTextInputLayout != null) {
+            mPasswordTextInputLayout.setError(getString(R.string.error_invalid_password));
+        }
         if (mPasswordEditText != null) {
-            mPasswordEditText.setError(getString(R.string.error_invalid_password));
             mPasswordEditText.requestFocus();
         }
     }
@@ -170,8 +180,10 @@ public class LoginActivity extends AppCompatActivity implements LoginListeners.V
     @Override
     public void usernameError() {
         mContentLoadingProgressBar.hide();
+        if (mUsernameTextInputLayout != null) {
+            mUsernameTextInputLayout.setError(getString(R.string.error_field_required));
+        }
         if (mEmailAutoCompleteTextView != null) {
-            mEmailAutoCompleteTextView.setError(getString(R.string.error_field_required));
             mEmailAutoCompleteTextView.requestFocus();
         }
     }
@@ -212,6 +224,22 @@ public class LoginActivity extends AppCompatActivity implements LoginListeners.V
                 break;
 
         }
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        mUsernameTextInputLayout.setErrorEnabled(false);
+        mPasswordTextInputLayout.setErrorEnabled(false);
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+
     }
 }
 

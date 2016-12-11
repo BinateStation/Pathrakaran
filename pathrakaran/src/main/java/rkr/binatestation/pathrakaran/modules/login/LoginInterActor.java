@@ -29,18 +29,24 @@ import rkr.binatestation.pathrakaran.network.VolleySingleTon;
 
 import static android.content.Context.MODE_PRIVATE;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_DATA;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_EMAIL;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_IMAGE;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_MESSAGE;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_MOBILE;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_NAME;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_STATUS;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_USER_ID;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_USER_TYPE;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_LOGIN_TYPE;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_PASSWORD;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_USER;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_IS_LOGGED_IN;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_USER_EMAIL;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_USER_ID;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_USER_IMAGE;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_USER_NAME;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_USER_PHONE;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_USER_TYPE;
 import static rkr.binatestation.pathrakaran.utils.Constants.REQUEST_READ_CONTACTS;
 import static rkr.binatestation.pathrakaran.utils.Constants.USER_LOGIN;
 
@@ -140,7 +146,10 @@ class LoginInterActor implements LoginListeners.InterActorListener, LoaderManage
                                         context.getSharedPreferences(context.getPackageName(), MODE_PRIVATE).edit()
                                                 .putString(KEY_SP_USER_ID, dataJsonObject.optString(KEY_JSON_USER_ID))
                                                 .putString(KEY_SP_USER_NAME, dataJsonObject.optString(KEY_JSON_NAME))
+                                                .putString(KEY_SP_USER_EMAIL, dataJsonObject.optString(KEY_JSON_EMAIL))
                                                 .putString(KEY_SP_USER_PHONE, dataJsonObject.optString(KEY_JSON_MOBILE))
+                                                .putString(KEY_SP_USER_IMAGE, dataJsonObject.optString(KEY_JSON_IMAGE))
+                                                .putString(KEY_SP_USER_TYPE, dataJsonObject.optString(KEY_JSON_USER_TYPE))
                                                 .putBoolean(KEY_SP_IS_LOGGED_IN, true).apply();
                                         presenterListener.onSuccessfulLogin(message != null ? message : context.getString(R.string.successfully_logged_in));
                                     } else {
