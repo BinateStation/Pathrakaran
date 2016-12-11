@@ -15,6 +15,12 @@ interface UserProfileListeners {
         void setView(UserDetailsModel userDetailsModel);
 
         void showAlert(String errorMessage);
+
+        void nameFieldError(String errorMessage);
+
+        void showProgressView();
+
+        void hideProgressView();
     }
 
     interface PresenterListener {
@@ -24,10 +30,14 @@ interface UserProfileListeners {
         void setUserData(UserDetailsModel userDetailsModel);
 
         void errorGettingUserDetails(String errorMessage);
+
+        void validateInputs(Context context, String userId, String name, String address, String postcode, String latitude, String longitude);
     }
 
     interface InterActorListener {
 
         void getUserDetails(Context context, String userId);
+
+        void updateUserDetails(Context context, String userId, String name, String address, String postcode, String latitude, String longitude);
     }
 }

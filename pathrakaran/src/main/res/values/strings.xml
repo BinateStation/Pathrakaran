@@ -135,7 +135,7 @@
     <string name="phone_number">Phone Number</string>
     <string name="email">Email</string>
     <string name="address">Address</string>
-    <string name="postal_code">Postal Code</string>
+    <string name="postcode">Postcode</string>
     <string name="title_activity_map_picker">Map</string>
     <string name="okay">Okay</string>
     <string name="successfully_logged_in">Successfully logged in…</string>
@@ -148,4 +148,5 @@
     <string name="products_list">Products List</string>
     <string name="suppliers_list">Suppliers List</string>
     <string name="route_map">Route Map</string>
+    <string name="i_am_here">I am here</string>
 </resources>

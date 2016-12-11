@@ -29,10 +29,19 @@ class UserProfilePresenter implements UserProfileListeners.PresenterListener {
 
     @Override
     public void getUserDetails(Context context, String userId) {
+        if (isViewLive()) {
+            mViewListener.showProgressView();
+        }
         if (TextUtils.isEmpty(userId)) {
+            if (isViewLive()) {
+                mViewListener.hideProgressView();
+            }
             return;
         }
         if ("0".equalsIgnoreCase(userId)) {
+            if (isViewLive()) {
+                mViewListener.hideProgressView();
+            }
             return;
         }
         if (isInterActorLive()) {
@@ -44,6 +53,7 @@ class UserProfilePresenter implements UserProfileListeners.PresenterListener {
     public void setUserData(UserDetailsModel userDetailsModel) {
         if (isViewLive()) {
             mViewListener.setView(userDetailsModel);
+            mViewListener.hideProgressView();
         }
     }
 
@@ -51,6 +61,36 @@ class UserProfilePresenter implements UserProfileListeners.PresenterListener {
     public void errorGettingUserDetails(String errorMessage) {
         if (isViewLive()) {
             mViewListener.showAlert(errorMessage);
+            mViewListener.hideProgressView();
+        }
+    }
+
+    @Override
+    public void validateInputs(Context context, String userId, String name, String address, String postcode, String latitude, String longitude) {
+        if (isViewLive()) {
+            mViewListener.showProgressView();
+        }
+        if (TextUtils.isEmpty(userId)) {
+            if (isViewLive()) {
+                mViewListener.hideProgressView();
+            }
+            return;
+        }
+        if ("0".equalsIgnoreCase(userId)) {
+            if (isViewLive()) {
+                mViewListener.hideProgressView();
+            }
+            return;
+        }
+        if (TextUtils.isEmpty(name)) {
+            if (isViewLive()) {
+                mViewListener.nameFieldError("Please type your name here.");
+                mViewListener.hideProgressView();
+            }
+        } else {
+            if (isInterActorLive()) {
+                mInterActorListener.updateUserDetails(context, userId, name, address, postcode, latitude, longitude);
+            }
         }
     }
 }

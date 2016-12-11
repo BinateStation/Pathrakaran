@@ -60,6 +60,7 @@ public class Constants {
     public static final String USER_LOGIN = "user/login";
     public static final String USER_REGISTER = "user/register";
     public static final String USER_PROFILE = "user/profile";
+    public static final String USER_PROFILE_UPDATE = "user/profile/update";
 
     /**
      * Static Constants

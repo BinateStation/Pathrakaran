@@ -78,10 +78,10 @@
             android:layout_marginTop="5dp">
 
             <EditText
-                android:id="@+id/AUP_field_poscode"
+                android:id="@+id/AUP_field_postcode"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/postal_code"
+                android:hint="@string/postcode"
                 android:inputType="number" />
         </android.support.design.widget.TextInputLayout>
 
