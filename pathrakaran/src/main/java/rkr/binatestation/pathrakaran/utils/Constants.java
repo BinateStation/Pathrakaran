@@ -29,9 +29,12 @@ public class Constants {
     public static final String KEY_JSON_MESSAGE = "message";
     public static final String KEY_JSON_IMAGE = "image";
     public static final String KEY_JSON_USER_TYPE = "user_type";
+    public static final String KEY_JSON_LATITUDE = "latitude";
+    public static final String KEY_JSON_LONGITUDE = "longitude";
     /**
      * POST Param Key
      */
+    public static final String KEY_POST_USER_ID = "userid";
     public static final String KEY_POST_USER = "user";
     public static final String KEY_POST_PASSWORD = "password";
     public static final String KEY_POST_NAME = "name";
@@ -49,13 +52,18 @@ public class Constants {
      */
     public static final int REQUEST_READ_CONTACTS = 100;
     public static final int REQUEST_LOCATION_PERMISSION = 101;
+    public static final int REQUEST_EXTERNAL_STORAGE = 102;
 
     /**
      * API URL
      */
     public static final String USER_LOGIN = "user/login";
     public static final String USER_REGISTER = "user/register";
+    public static final String USER_PROFILE = "user/profile";
 
+    /**
+     * Static Constants
+     */
     public static final String USER_TYPE_AGENT = "AG";
     public static final String USER_TYPE_SUPPLIER = "SP";
 }

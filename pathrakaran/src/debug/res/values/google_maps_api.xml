@@ -1,7 +1,5 @@
 <resources>
     <!--
-    TODO: Before you run your application, you need a Google Maps API key.
-
     To get one, follow this link, follow the directions and press "Create" at the end:
 
     https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=A6:39:80:17:62:1F:56:E1:33:2C:B7:5C:30:90:F5:A1:AE:03:D5:C9%3Brkr.larc.mynewspaperagent.activities

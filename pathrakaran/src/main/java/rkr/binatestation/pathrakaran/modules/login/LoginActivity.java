@@ -1,13 +1,10 @@
 package rkr.binatestation.pathrakaran.modules.login;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.AppCompatActivity;
@@ -31,9 +28,9 @@ import rkr.binatestation.pathrakaran.R;
 import rkr.binatestation.pathrakaran.activities.SplashScreen;
 import rkr.binatestation.pathrakaran.modules.register.RegisterActivity;
 
-import static android.Manifest.permission.READ_CONTACTS;
 import static rkr.binatestation.pathrakaran.utils.Constants.REQUEST_READ_CONTACTS;
 import static rkr.binatestation.pathrakaran.utils.GeneralUtils.alert;
+import static rkr.binatestation.pathrakaran.utils.GeneralUtils.mayRequestContacts;
 
 /**
  * A activity_login screen that offers activity_login via email/phone number and password.
@@ -90,32 +87,9 @@ public class LoginActivity extends AppCompatActivity implements LoginListeners.V
 
     private void populateAutoComplete() {
         Log.d(TAG, "populateAutoComplete() called");
-        if (mayRequestContacts() && isPresenterLive()) {
+        if (mayRequestContacts(this, mEmailAutoCompleteTextView) && isPresenterLive()) {
             mPresenterListener.populateAutoComplete(getSupportLoaderManager());
         }
-    }
-
-    private boolean mayRequestContacts() {
-        Log.d(TAG, "mayRequestContacts() called");
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return true;
-        }
-        if (checkSelfPermission(READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        }
-        if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
-            Snackbar.make(mEmailAutoCompleteTextView, R.string.contacts_permission_rationale, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(android.R.string.ok, new View.OnClickListener() {
-                        @Override
-                        @TargetApi(Build.VERSION_CODES.M)
-                        public void onClick(View v) {
-                            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-                        }
-                    }).show();
-        } else {
-            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-        }
-        return false;
     }
 
     /**

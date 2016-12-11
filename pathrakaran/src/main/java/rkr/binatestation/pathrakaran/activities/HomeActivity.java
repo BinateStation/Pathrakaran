@@ -16,7 +16,7 @@ import android.view.MenuItem;
 
 import rkr.binatestation.pathrakaran.R;
 import rkr.binatestation.pathrakaran.fragments.SMHome;
-import rkr.binatestation.pathrakaran.modules.profile.UserProfile;
+import rkr.binatestation.pathrakaran.modules.profile.UserProfileActivity;
 import rkr.binatestation.pathrakaran.utils.Constants;
 
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_USER_NAME;
@@ -126,7 +126,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_SM_profile:
             case R.id.nav_AM_profile:
             case R.id.nav_SPM_profile:
-                startActivity(new Intent(HomeActivity.this, UserProfile.class));
+                startActivity(new Intent(HomeActivity.this, UserProfileActivity.class));
                 overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         }
 
