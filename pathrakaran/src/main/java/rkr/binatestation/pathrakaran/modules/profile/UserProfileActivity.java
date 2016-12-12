@@ -23,18 +23,26 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.android.volley.toolbox.NetworkImageView;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
 import rkr.binatestation.pathrakaran.R;
 import rkr.binatestation.pathrakaran.models.UserDetailsModel;
@@ -47,15 +55,15 @@ import static rkr.binatestation.pathrakaran.utils.Constants.REQUEST_LOCATION_PER
 import static rkr.binatestation.pathrakaran.utils.GeneralUtils.alert;
 import static rkr.binatestation.pathrakaran.utils.GeneralUtils.mayRequestExternalMemory;
 
-public class UserProfileActivity extends AppCompatActivity implements OnMapReadyCallback, TextWatcher, View.OnClickListener, UserProfileListeners.ViewListener {
+public class UserProfileActivity extends AppCompatActivity implements OnMapReadyCallback, TextWatcher, View.OnClickListener, UserProfileListeners.ViewListener, GoogleApiClient.OnConnectionFailedListener {
 
     private static final String TAG = "UserProfileActivity";
 
     private static final int REQUEST_CAMERA = 1;
     private static final int SELECT_FILE = 2;
-
+    private static final int PLACE_PICKER_REQUEST = 3;
+    PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
     private UserProfileListeners.PresenterListener mPresenterListener;
-
     private NetworkImageView mProfilePictureNetworkImageView;
     private TextInputLayout mNameTextInputLayout;
     private EditText mNameEditText;
@@ -65,9 +73,10 @@ public class UserProfileActivity extends AppCompatActivity implements OnMapReady
     private EditText mPostcodeEditText;
     private MapView mUserLocationMapView;
     private ContentLoadingProgressBar mProgressBar;
-
     private LatLng mLatLng;
+    private String mPlaceName = "I am here";
     private String mSelectedImagePath = "";
+    private Marker mMarker;
 
     private boolean isPresenterLive() {
         return mPresenterListener != null;
@@ -78,6 +87,7 @@ public class UserProfileActivity extends AppCompatActivity implements OnMapReady
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
 
+        buildGoogleApiClient();
         mPresenterListener = new UserProfilePresenter(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.AUP_toolbar);
@@ -97,6 +107,7 @@ public class UserProfileActivity extends AppCompatActivity implements OnMapReady
 
         mUserLocationMapView = (MapView) findViewById(R.id.AUP_field_map_view);
         mUserLocationMapView.onCreate(savedInstanceState);
+        mUserLocationMapView.setOnClickListener(this);
         // Needs to call MapsInitializer before doing any CameraUpdateFactory calls
         try {
             MapsInitializer.initialize(this);
@@ -110,6 +121,9 @@ public class UserProfileActivity extends AppCompatActivity implements OnMapReady
         if (isPresenterLive()) {
             mPresenterListener.getUserDetails(this, getSharedPreferences(getPackageName(), MODE_PRIVATE).getString(KEY_SP_USER_ID, "0"));
         }
+    }
+
+    private void buildGoogleApiClient() {
     }
 
     private void selectImage() {
@@ -172,6 +186,12 @@ public class UserProfileActivity extends AppCompatActivity implements OnMapReady
                         mProfilePictureNetworkImageView.setImageURI(selectedImageUri);
                     }
                 }
+                if (requestCode == PLACE_PICKER_REQUEST) {
+                    Place place = PlacePicker.getPlace(this, data);
+                    mLatLng = place.getLatLng();
+                    mPlaceName = place.getName().toString();
+                    mUserLocationMapView.getMapAsync(this);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -196,20 +216,32 @@ public class UserProfileActivity extends AppCompatActivity implements OnMapReady
     public void onMapReady(GoogleMap googleMap) {
         Log.d(TAG, "onMapReady() called with: googleMap = [" + googleMap + "]");
         if (mLatLng != null) {
-            googleMap.addMarker(new MarkerOptions().position(mLatLng).title(getString(R.string.i_am_here)));
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mLatLng, 10));
+            if (mMarker == null) {
+                mMarker = googleMap.addMarker(new MarkerOptions().position(mLatLng).title(mPlaceName));
+            } else {
+                mMarker.setTitle(mPlaceName);
+                mMarker.setPosition(mLatLng);
+            }
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mLatLng, 20));
             googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                 @Override
                 public void onMapClick(LatLng latLng) {
+                    startPlacePicker();
                 }
             });
-            if (GeneralUtils.mayRequestLocation(UserProfileActivity.this, mNameEditText)) {
-                //noinspection MissingPermission
-                googleMap.setMyLocationEnabled(true);
-            }
-
         }
     }
+
+    private void startPlacePicker() {
+        try {
+            if (builder != null) {
+                startActivityForResult(builder.build(this), PLACE_PICKER_REQUEST);
+            }
+        } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     @Override
     public void onResume() {
@@ -326,18 +358,26 @@ public class UserProfileActivity extends AppCompatActivity implements OnMapReady
                     selectImage();
                 }
                 break;
+            case R.id.AUP_field_map_view:
+                startPlacePicker();
+                break;
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        Log.d(TAG, "onRequestPermissionsResult() called with: requestCode = [" + requestCode + "], permissions = [" + permissions + "], grantResults = [" + grantResults + "]");
+        Log.d(TAG, "onRequestPermissionsResult() called with: requestCode = [" + requestCode + "], permissions = [" + Arrays.toString(permissions) + "], grantResults = [" + Arrays.toString(grantResults) + "]");
         if (requestCode == REQUEST_LOCATION_PERMISSION && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && mUserLocationMapView != null) {
             mUserLocationMapView.getMapAsync(this);
         }
         if (requestCode == REQUEST_EXTERNAL_STORAGE && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && mProfilePictureNetworkImageView != null) {
             selectImage();
         }
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 }
