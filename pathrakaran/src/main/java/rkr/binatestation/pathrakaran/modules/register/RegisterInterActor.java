@@ -19,12 +19,16 @@ import rkr.binatestation.pathrakaran.utils.Constants;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.android.volley.Request.Method.POST;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_ADDRESS;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_DATA;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_EMAIL;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_IMAGE;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_LATITUDE;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_LONGITUDE;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_MESSAGE;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_MOBILE;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_NAME;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_POSTCODE;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_USER_ID;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_USER_TYPE;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_ADDRESS;
@@ -35,14 +39,18 @@ import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_LONGITUDE;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_MOBILE;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_NAME;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_PASSWORD;
-import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_POSTAL_CODE;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_POSTCODE;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_USER_TYPE;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_IS_LOGGED_IN;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_USER_ADDRESS;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_USER_EMAIL;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_USER_ID;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_USER_IMAGE;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_USER_LATITUDE;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_USER_LONGITUDE;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_USER_NAME;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_USER_PHONE;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_USER_POSTCODE;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_USER_TYPE;
 import static rkr.binatestation.pathrakaran.utils.Constants.USER_REGISTER;
 
@@ -81,12 +89,16 @@ class RegisterInterActor implements RegisterListeners.InterActorListener {
                                 JSONObject dataJsonObject = jsonObject.optJSONObject(KEY_JSON_DATA);
                                 if (dataJsonObject != null) {
                                     context.getSharedPreferences(context.getPackageName(), MODE_PRIVATE).edit()
-                                            .putString(KEY_SP_USER_ID, dataJsonObject.getString(KEY_JSON_USER_ID))
-                                            .putString(KEY_SP_USER_NAME, dataJsonObject.getString(KEY_JSON_NAME))
-                                            .putString(KEY_SP_USER_EMAIL, dataJsonObject.getString(KEY_JSON_EMAIL))
-                                            .putString(KEY_SP_USER_PHONE, dataJsonObject.getString(KEY_JSON_MOBILE))
-                                            .putString(KEY_SP_USER_IMAGE, dataJsonObject.getString(KEY_JSON_IMAGE))
-                                            .putString(KEY_SP_USER_TYPE, dataJsonObject.getString(KEY_JSON_USER_TYPE))
+                                            .putString(KEY_SP_USER_ID, dataJsonObject.optString(KEY_JSON_USER_ID))
+                                            .putString(KEY_SP_USER_NAME, dataJsonObject.optString(KEY_JSON_NAME))
+                                            .putString(KEY_SP_USER_ADDRESS, dataJsonObject.optString(KEY_JSON_ADDRESS))
+                                            .putString(KEY_SP_USER_POSTCODE, dataJsonObject.optString(KEY_JSON_POSTCODE))
+                                            .putString(KEY_SP_USER_EMAIL, dataJsonObject.optString(KEY_JSON_EMAIL))
+                                            .putString(KEY_SP_USER_PHONE, dataJsonObject.optString(KEY_JSON_MOBILE))
+                                            .putString(KEY_SP_USER_IMAGE, dataJsonObject.optString(KEY_JSON_IMAGE))
+                                            .putString(KEY_SP_USER_TYPE, dataJsonObject.optString(KEY_JSON_USER_TYPE))
+                                            .putString(KEY_JSON_LATITUDE, dataJsonObject.optString(KEY_SP_USER_LATITUDE))
+                                            .putString(KEY_JSON_LONGITUDE, dataJsonObject.optString(KEY_SP_USER_LONGITUDE))
                                             .putBoolean(KEY_SP_IS_LOGGED_IN, true).apply();
                                     if (isPresenterLive()) {
                                         mPresenterListener.registerSuccessfully();
@@ -134,7 +146,7 @@ class RegisterInterActor implements RegisterListeners.InterActorListener {
                 params.put(KEY_POST_PASSWORD, password);
                 params.put(KEY_POST_USER_TYPE, userType);
                 params.put(KEY_POST_ADDRESS, "");
-                params.put(KEY_POST_POSTAL_CODE, "");
+                params.put(KEY_POST_POSTCODE, "");
                 params.put(KEY_POST_EMAIL, email);
                 params.put(KEY_POST_LATITUDE, "");
                 params.put(KEY_POST_LONGITUDE, "");

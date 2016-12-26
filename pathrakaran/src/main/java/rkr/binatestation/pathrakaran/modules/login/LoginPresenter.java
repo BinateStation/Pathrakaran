@@ -1,11 +1,8 @@
 package rkr.binatestation.pathrakaran.modules.login;
 
 import android.content.Context;
-import android.support.v4.app.LoaderManager;
 import android.text.TextUtils;
 import android.util.Log;
-
-import java.util.List;
 
 /**
  * Created by RKR on 20/11/2016.
@@ -32,38 +29,24 @@ class LoginPresenter implements LoginListeners.PresenterListener {
         return viewListener != null;
     }
 
-    @Override
-    public void populateAutoComplete(LoaderManager loaderManager) {
-        if (isInterActorLive()) {
-            interActorListener.populateAutoComplete(loaderManager);
-        }
-    }
-
-    @Override
-    public void addEmailsToAutoComplete(List<String> emailAddressCollection) {
-        if (isViewLive()) {
-            viewListener.addEmailsToAutoComplete(emailAddressCollection);
-        }
-    }
-
     /**
      * Attempts to sign in or register the account specified by the activity_login form.
-     * If there are form errors (invalid email, missing fields, etc.), the
+     * If there are form errors (invalid phone, missing fields, etc.), the
      * errors are presented and no actual activity_login attempt is made.
      *
-     * @param email    the username
+     * @param phone    the username
      * @param password password entered
      */
     @Override
-    public void attemptLogin(String email, String password) {
+    public void attemptLogin(String phone, String password) {
         Log.d(TAG, "attemptLogin() called");
 
         if (isViewLive()) {
             viewListener.resetErrors();
         }
 
-        // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
+        // Check for a valid phone address.
+        if (TextUtils.isEmpty(phone)) {
             if (isViewLive()) {
                 viewListener.usernameError();
             }
@@ -75,7 +58,7 @@ class LoginPresenter implements LoginListeners.PresenterListener {
             }
         } else {
             if (isInterActorLive()) {
-                interActorListener.login(email, password, "N");
+                interActorListener.login(phone, password, "N");
             }
         }
     }

@@ -1,13 +1,6 @@
 package rkr.binatestation.pathrakaran.modules.login;
 
 import android.content.Context;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.util.Log;
 
 import com.android.volley.AuthFailureError;
@@ -19,35 +12,40 @@ import com.android.volley.toolbox.StringRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import rkr.binatestation.pathrakaran.R;
 import rkr.binatestation.pathrakaran.network.VolleySingleTon;
 
 import static android.content.Context.MODE_PRIVATE;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_ADDRESS;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_DATA;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_EMAIL;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_IMAGE;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_LATITUDE;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_LONGITUDE;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_MESSAGE;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_MOBILE;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_NAME;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_POSTCODE;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_STATUS;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_USER_ID;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_USER_TYPE;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_LOGIN_TYPE;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_MOBILE;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_PASSWORD;
-import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_USER;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_IS_LOGGED_IN;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_USER_ADDRESS;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_USER_EMAIL;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_USER_ID;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_USER_IMAGE;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_USER_LATITUDE;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_USER_LONGITUDE;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_USER_NAME;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_USER_PHONE;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_USER_POSTCODE;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_USER_TYPE;
-import static rkr.binatestation.pathrakaran.utils.Constants.REQUEST_READ_CONTACTS;
 import static rkr.binatestation.pathrakaran.utils.Constants.USER_LOGIN;
 
 /**
@@ -55,7 +53,7 @@ import static rkr.binatestation.pathrakaran.utils.Constants.USER_LOGIN;
  * LoginInterActor.
  */
 
-class LoginInterActor implements LoginListeners.InterActorListener, LoaderManager.LoaderCallbacks<Cursor> {
+class LoginInterActor implements LoginListeners.InterActorListener {
 
     private static final String TAG = "LoginInterActor";
 
@@ -67,54 +65,6 @@ class LoginInterActor implements LoginListeners.InterActorListener, LoaderManage
 
     private boolean isPresenterLive() {
         return presenterListener != null;
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        if (isPresenterLive()) {
-            Context context = presenterListener.getContext();
-            if (context != null) {
-                return new CursorLoader(context,
-                        // Retrieve data rows for the device user's 'profile' contact.
-                        Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI,
-                                ContactsContract.Contacts.Data.CONTENT_DIRECTORY), ProfileQuery.PROJECTION,
-
-                        // Select only email addresses.
-                        ContactsContract.Contacts.Data.MIMETYPE +
-                                " = ?", new String[]{ContactsContract.CommonDataKinds.Email
-                        .CONTENT_ITEM_TYPE},
-
-                        // Show primary email addresses first. Note that there won't be
-                        // a primary email address if the user hasn't specified one.
-                        ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        Log.d(TAG, "onLoadFinished() called with: loader = [" + loader + "], data = [" + data + "]");
-        List<String> emails = new ArrayList<>();
-        data.moveToFirst();
-        while (!data.isAfterLast()) {
-            emails.add(data.getString(ProfileQuery.ADDRESS));
-            data.moveToNext();
-        }
-
-        if (isPresenterLive()) {
-            presenterListener.addEmailsToAutoComplete(emails);
-        }
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-
-    }
-
-    @Override
-    public void populateAutoComplete(LoaderManager loaderManager) {
-        loaderManager.initLoader(REQUEST_READ_CONTACTS, null, this);
     }
 
     /**
@@ -146,10 +96,14 @@ class LoginInterActor implements LoginListeners.InterActorListener, LoaderManage
                                         context.getSharedPreferences(context.getPackageName(), MODE_PRIVATE).edit()
                                                 .putString(KEY_SP_USER_ID, dataJsonObject.optString(KEY_JSON_USER_ID))
                                                 .putString(KEY_SP_USER_NAME, dataJsonObject.optString(KEY_JSON_NAME))
+                                                .putString(KEY_SP_USER_ADDRESS, dataJsonObject.optString(KEY_JSON_ADDRESS))
+                                                .putString(KEY_SP_USER_POSTCODE, dataJsonObject.optString(KEY_JSON_POSTCODE))
                                                 .putString(KEY_SP_USER_EMAIL, dataJsonObject.optString(KEY_JSON_EMAIL))
                                                 .putString(KEY_SP_USER_PHONE, dataJsonObject.optString(KEY_JSON_MOBILE))
                                                 .putString(KEY_SP_USER_IMAGE, dataJsonObject.optString(KEY_JSON_IMAGE))
                                                 .putString(KEY_SP_USER_TYPE, dataJsonObject.optString(KEY_JSON_USER_TYPE))
+                                                .putString(KEY_JSON_LATITUDE, dataJsonObject.optString(KEY_SP_USER_LATITUDE))
+                                                .putString(KEY_JSON_LONGITUDE, dataJsonObject.optString(KEY_SP_USER_LONGITUDE))
                                                 .putBoolean(KEY_SP_IS_LOGGED_IN, true).apply();
                                         presenterListener.onSuccessfulLogin(message != null ? message : context.getString(R.string.successfully_logged_in));
                                     } else {
@@ -180,7 +134,7 @@ class LoginInterActor implements LoginListeners.InterActorListener, LoaderManage
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put(KEY_POST_USER, username);
+                params.put(KEY_POST_MOBILE, username);
                 params.put(KEY_POST_PASSWORD, password);
                 params.put(KEY_POST_LOGIN_TYPE, loginType);
 
@@ -202,15 +156,4 @@ class LoginInterActor implements LoginListeners.InterActorListener, LoaderManage
             }
         }
     }
-
-
-    private interface ProfileQuery {
-        String[] PROJECTION = {
-                ContactsContract.CommonDataKinds.Email.ADDRESS,
-                ContactsContract.CommonDataKinds.Email.IS_PRIMARY,
-        };
-
-        int ADDRESS = 0;
-    }
-
 }

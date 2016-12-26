@@ -33,7 +33,7 @@ import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_ADDRESS;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_LATITUDE;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_LONGITUDE;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_NAME;
-import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_POSTAL_CODE;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_POSTCODE;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_USER_ID;
 import static rkr.binatestation.pathrakaran.utils.Constants.USER_PROFILE_UPDATE;
 
@@ -201,7 +201,7 @@ class UserProfileInterActor implements UserProfileListeners.InterActorListener {
                 params.put(KEY_POST_USER_ID, userId);
                 params.put(KEY_POST_NAME, name);
                 params.put(KEY_POST_ADDRESS, address);
-                params.put(KEY_POST_POSTAL_CODE, postcode);
+                params.put(KEY_POST_POSTCODE, postcode);
                 params.put(KEY_POST_LATITUDE, latitude);
                 params.put(KEY_POST_LONGITUDE, longitude);
 

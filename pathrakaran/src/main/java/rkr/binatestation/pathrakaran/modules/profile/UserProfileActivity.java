@@ -23,10 +23,8 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.android.volley.toolbox.NetworkImageView;
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -55,7 +53,7 @@ import static rkr.binatestation.pathrakaran.utils.Constants.REQUEST_LOCATION_PER
 import static rkr.binatestation.pathrakaran.utils.GeneralUtils.alert;
 import static rkr.binatestation.pathrakaran.utils.GeneralUtils.mayRequestExternalMemory;
 
-public class UserProfileActivity extends AppCompatActivity implements OnMapReadyCallback, TextWatcher, View.OnClickListener, UserProfileListeners.ViewListener, GoogleApiClient.OnConnectionFailedListener {
+public class UserProfileActivity extends AppCompatActivity implements OnMapReadyCallback, TextWatcher, View.OnClickListener, UserProfileListeners.ViewListener {
 
     private static final String TAG = "UserProfileActivity";
 
@@ -376,8 +374,4 @@ public class UserProfileActivity extends AppCompatActivity implements OnMapReady
         }
     }
 
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
 }

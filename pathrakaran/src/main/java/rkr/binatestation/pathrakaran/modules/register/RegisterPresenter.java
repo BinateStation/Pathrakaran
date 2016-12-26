@@ -3,6 +3,10 @@ package rkr.binatestation.pathrakaran.modules.register;
 import android.content.Context;
 import android.text.TextUtils;
 
+import static rkr.binatestation.pathrakaran.utils.Constants.USER_TYPE_AGENT;
+import static rkr.binatestation.pathrakaran.utils.Constants.USER_TYPE_SUBSCRIBER;
+import static rkr.binatestation.pathrakaran.utils.Constants.USER_TYPE_SUPPLIER;
+
 /**
  * Created by RKR on 10/12/2016.
  * RegisterPresenter.
@@ -66,16 +70,16 @@ class RegisterPresenter implements RegisterListeners.PresenterListener {
                 mViewListener.hideProgress();
             }
         } else {
-            String userTypeValue = "CU";
+            String userTypeValue = USER_TYPE_SUBSCRIBER;
             switch (userType) {
                 case 0:
-                    userTypeValue = "CU";
+                    userTypeValue = USER_TYPE_SUBSCRIBER;
                     break;
                 case 1:
-                    userTypeValue = "AG";
+                    userTypeValue = USER_TYPE_AGENT;
                     break;
                 case 2:
-                    userTypeValue = "SP";
+                    userTypeValue = USER_TYPE_SUPPLIER;
                     break;
             }
             if (isInterActorLive()) {

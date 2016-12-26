@@ -2,9 +2,8 @@ package rkr.binatestation.pathrakaran.modules.login;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.AppCompatActivity;
@@ -16,21 +15,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.EditText;
 import android.widget.TextView;
-
-import java.util.Arrays;
-import java.util.List;
 
 import rkr.binatestation.pathrakaran.R;
 import rkr.binatestation.pathrakaran.activities.SplashScreen;
 import rkr.binatestation.pathrakaran.modules.register.RegisterActivity;
 
-import static rkr.binatestation.pathrakaran.utils.Constants.REQUEST_READ_CONTACTS;
 import static rkr.binatestation.pathrakaran.utils.GeneralUtils.alert;
-import static rkr.binatestation.pathrakaran.utils.GeneralUtils.mayRequestContacts;
 
 /**
  * A activity_login screen that offers activity_login via email/phone number and password.
@@ -40,9 +31,9 @@ public class LoginActivity extends AppCompatActivity implements LoginListeners.V
     private static final String TAG = "LoginActivity";
     LoginListeners.PresenterListener mPresenterListener;
     // UI references.
-    private AutoCompleteTextView mEmailAutoCompleteTextView;
-    private EditText mPasswordEditText;
-    private TextInputLayout mUsernameTextInputLayout, mPasswordTextInputLayout;
+    private TextInputEditText mFieldPhoneTextInputEditText;
+    private TextInputEditText mFieldPasswordTextInputEditText;
+    private TextInputLayout mFieldPhoneTextInputLayout, mFieldPasswordTextInputLayout;
     private ContentLoadingProgressBar mContentLoadingProgressBar;
 
     private boolean isPresenterLive() {
@@ -57,25 +48,24 @@ public class LoginActivity extends AppCompatActivity implements LoginListeners.V
         mPresenterListener = new LoginPresenter(this);
         // Set up the activity_login form.
         mContentLoadingProgressBar = (ContentLoadingProgressBar) findViewById(R.id.AL_progress_bar);
-        mEmailAutoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.AL_field_username);
-        mPasswordEditText = (EditText) findViewById(R.id.AL_filed_password);
-        mUsernameTextInputLayout = (TextInputLayout) findViewById(R.id.AL_field_username_layout);
-        mPasswordTextInputLayout = (TextInputLayout) findViewById(R.id.AL_field_password_layout);
+        mFieldPhoneTextInputEditText = (TextInputEditText) findViewById(R.id.AL_field_phone);
+        mFieldPasswordTextInputEditText = (TextInputEditText) findViewById(R.id.AL_filed_password);
+        mFieldPhoneTextInputLayout = (TextInputLayout) findViewById(R.id.AL_field_username_layout);
+        mFieldPasswordTextInputLayout = (TextInputLayout) findViewById(R.id.AL_field_password_layout);
 
         mContentLoadingProgressBar.hide();
-        populateAutoComplete();
-        mEmailAutoCompleteTextView.addTextChangedListener(this);
-        mPasswordEditText.addTextChangedListener(this);
+        mFieldPhoneTextInputEditText.addTextChangedListener(this);
+        mFieldPasswordTextInputEditText.addTextChangedListener(this);
 
-        mPasswordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        mFieldPasswordTextInputEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == R.id.AL_action_login || id == EditorInfo.IME_NULL) {
                     Log.d(TAG, "onEditorAction() called with: textView = [" + textView + "], id = [" + id + "], keyEvent = [" + keyEvent + "]");
                     if (isPresenterLive()) {
                         mPresenterListener.attemptLogin(
-                                mEmailAutoCompleteTextView.getText().toString().trim(),
-                                mPasswordEditText.getText().toString().trim()
+                                mFieldPhoneTextInputEditText.getText().toString().trim(),
+                                mFieldPasswordTextInputEditText.getText().toString().trim()
                         );
                     }
                     return true;
@@ -84,27 +74,6 @@ public class LoginActivity extends AppCompatActivity implements LoginListeners.V
             }
         });
     }
-
-    private void populateAutoComplete() {
-        Log.d(TAG, "populateAutoComplete() called");
-        if (mayRequestContacts(this, mEmailAutoCompleteTextView) && isPresenterLive()) {
-            mPresenterListener.populateAutoComplete(getSupportLoaderManager());
-        }
-    }
-
-    /**
-     * Callback received when a permissions request has been completed.
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        Log.d(TAG, "onRequestPermissionsResult() called with: requestCode = [" + requestCode + "], permissions = [" + Arrays.toString(permissions) + "], grantResults = [" + Arrays.toString(grantResults) + "]");
-        if (requestCode == REQUEST_READ_CONTACTS) {
-            if (grantResults.length >= 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                populateAutoComplete();
-            }
-        }
-    }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -116,49 +85,35 @@ public class LoginActivity extends AppCompatActivity implements LoginListeners.V
     }
 
     @Override
-    public void addEmailsToAutoComplete(List<String> emailAddressCollection) {
-        Log.d(TAG, "addEmailsToAutoComplete() called with: emailAddressCollection = [" + emailAddressCollection + "]");
-        //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                LoginActivity.this,
-                android.R.layout.simple_dropdown_item_1line,
-                emailAddressCollection
-        );
-        if (mEmailAutoCompleteTextView != null) {
-            mEmailAutoCompleteTextView.setAdapter(adapter);
-        }
-    }
-
-    @Override
     public void resetErrors() {
         // Reset errors.
         Log.d(TAG, "resetErrors() called");
         mContentLoadingProgressBar.show();
-        if (mEmailAutoCompleteTextView != null && mPasswordEditText != null) {
-            mEmailAutoCompleteTextView.setError(null);
-            mPasswordEditText.setError(null);
+        if (mFieldPhoneTextInputEditText != null && mFieldPasswordTextInputEditText != null) {
+            mFieldPhoneTextInputEditText.setError(null);
+            mFieldPasswordTextInputEditText.setError(null);
         }
     }
 
     @Override
     public void passwordError() {
         mContentLoadingProgressBar.hide();
-        if (mPasswordTextInputLayout != null) {
-            mPasswordTextInputLayout.setError(getString(R.string.error_invalid_password));
+        if (mFieldPasswordTextInputLayout != null) {
+            mFieldPasswordTextInputLayout.setError(getString(R.string.error_invalid_password));
         }
-        if (mPasswordEditText != null) {
-            mPasswordEditText.requestFocus();
+        if (mFieldPasswordTextInputEditText != null) {
+            mFieldPasswordTextInputEditText.requestFocus();
         }
     }
 
     @Override
     public void usernameError() {
         mContentLoadingProgressBar.hide();
-        if (mUsernameTextInputLayout != null) {
-            mUsernameTextInputLayout.setError(getString(R.string.error_field_required));
+        if (mFieldPhoneTextInputLayout != null) {
+            mFieldPhoneTextInputLayout.setError(getString(R.string.error_field_required));
         }
-        if (mEmailAutoCompleteTextView != null) {
-            mEmailAutoCompleteTextView.requestFocus();
+        if (mFieldPhoneTextInputEditText != null) {
+            mFieldPhoneTextInputEditText.requestFocus();
         }
     }
 
@@ -191,8 +146,8 @@ public class LoginActivity extends AppCompatActivity implements LoginListeners.V
             case R.id.AL_action_login:
                 if (isPresenterLive()) {
                     mPresenterListener.attemptLogin(
-                            mEmailAutoCompleteTextView.getText().toString().trim(),
-                            mPasswordEditText.getText().toString().trim()
+                            mFieldPhoneTextInputEditText.getText().toString().trim(),
+                            mFieldPasswordTextInputEditText.getText().toString().trim()
                     );
                 }
                 break;
@@ -202,8 +157,8 @@ public class LoginActivity extends AppCompatActivity implements LoginListeners.V
 
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        mUsernameTextInputLayout.setErrorEnabled(false);
-        mPasswordTextInputLayout.setErrorEnabled(false);
+        mFieldPhoneTextInputLayout.setErrorEnabled(false);
+        mFieldPasswordTextInputLayout.setErrorEnabled(false);
     }
 
     @Override

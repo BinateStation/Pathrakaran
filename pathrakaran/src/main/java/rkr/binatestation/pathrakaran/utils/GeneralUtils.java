@@ -72,23 +72,21 @@ public class GeneralUtils {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return true;
         }
-        if (ActivityCompat.checkSelfPermission(activity, ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED ||
-                ActivityCompat.checkSelfPermission(activity, ACCESS_COARSE_LOCATION) ==
-                        PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(activity, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(activity, ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             return true;
         }
-        if (activity.shouldShowRequestPermissionRationale(ACCESS_FINE_LOCATION)) {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(activity, ACCESS_FINE_LOCATION)) {
             Snackbar.make(view, R.string.location_permission_rationale, Snackbar.LENGTH_INDEFINITE)
                     .setAction(android.R.string.ok, new View.OnClickListener() {
                         @Override
                         @TargetApi(Build.VERSION_CODES.M)
                         public void onClick(View v) {
-                            activity.requestPermissions(new String[]{ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, REQUEST_LOCATION_PERMISSION);
+                            ActivityCompat.requestPermissions(activity, new String[]{ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, REQUEST_LOCATION_PERMISSION);
                         }
                     }).show();
         } else {
-            activity.requestPermissions(new String[]{ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, REQUEST_LOCATION_PERMISSION);
+            ActivityCompat.requestPermissions(activity, new String[]{ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, REQUEST_LOCATION_PERMISSION);
         }
         return false;
     }
@@ -101,17 +99,17 @@ public class GeneralUtils {
         if (ActivityCompat.checkSelfPermission(activity, WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             return true;
         }
-        if (activity.shouldShowRequestPermissionRationale(WRITE_EXTERNAL_STORAGE)) {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(activity, WRITE_EXTERNAL_STORAGE)) {
             Snackbar.make(view, R.string.external_storage_permission_rationale, Snackbar.LENGTH_INDEFINITE)
                     .setAction(android.R.string.ok, new View.OnClickListener() {
                         @Override
                         @TargetApi(Build.VERSION_CODES.M)
                         public void onClick(View v) {
-                            activity.requestPermissions(new String[]{WRITE_EXTERNAL_STORAGE}, REQUEST_EXTERNAL_STORAGE);
+                            ActivityCompat.requestPermissions(activity, new String[]{WRITE_EXTERNAL_STORAGE}, REQUEST_EXTERNAL_STORAGE);
                         }
                     }).show();
         } else {
-            activity.requestPermissions(new String[]{WRITE_EXTERNAL_STORAGE}, REQUEST_EXTERNAL_STORAGE);
+            ActivityCompat.requestPermissions(activity, new String[]{WRITE_EXTERNAL_STORAGE}, REQUEST_EXTERNAL_STORAGE);
         }
         return false;
     }
@@ -121,20 +119,20 @@ public class GeneralUtils {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return true;
         }
-        if (activity.checkSelfPermission(READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(activity, READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
             return true;
         }
-        if (activity.shouldShowRequestPermissionRationale(READ_CONTACTS)) {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(activity, READ_CONTACTS)) {
             Snackbar.make(view, R.string.contacts_permission_rationale, Snackbar.LENGTH_INDEFINITE)
                     .setAction(android.R.string.ok, new View.OnClickListener() {
                         @Override
                         @TargetApi(Build.VERSION_CODES.M)
                         public void onClick(View v) {
-                            activity.requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
+                            ActivityCompat.requestPermissions(activity, new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
                         }
                     }).show();
         } else {
-            activity.requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
+            ActivityCompat.requestPermissions(activity, new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
         }
         return false;
     }

@@ -16,6 +16,10 @@ public class Constants {
     public static final String KEY_SP_USER_EMAIL = "user_email";
     public static final String KEY_SP_USER_IMAGE = "user_image";
     public static final String KEY_SP_USER_TYPE = "user_type";
+    public static final String KEY_SP_USER_ADDRESS = "user_address";
+    public static final String KEY_SP_USER_POSTCODE = "user_postcode";
+    public static final String KEY_SP_USER_LATITUDE = "user_latitude";
+    public static final String KEY_SP_USER_LONGITUDE = "user_longitude";
 
     /**
      * JSON Keys
@@ -31,6 +35,8 @@ public class Constants {
     public static final String KEY_JSON_USER_TYPE = "user_type";
     public static final String KEY_JSON_LATITUDE = "latitude";
     public static final String KEY_JSON_LONGITUDE = "longitude";
+    public static final String KEY_JSON_ADDRESS = "address";
+    public static final String KEY_JSON_POSTCODE = "postcode";
     /**
      * POST Param Key
      */
@@ -43,7 +49,7 @@ public class Constants {
     public static final String KEY_POST_LOGIN_TYPE = "login_type";
     public static final String KEY_POST_IMAGE = "image";
     public static final String KEY_POST_ADDRESS = "address";
-    public static final String KEY_POST_POSTAL_CODE = "postalcode";
+    public static final String KEY_POST_POSTCODE = "postcode";
     public static final String KEY_POST_EMAIL = "email";
     public static final String KEY_POST_LATITUDE = "latitude";
     public static final String KEY_POST_LONGITUDE = "longitude";
@@ -67,4 +73,5 @@ public class Constants {
      */
     public static final String USER_TYPE_AGENT = "AG";
     public static final String USER_TYPE_SUPPLIER = "SP";
+    public static final String USER_TYPE_SUBSCRIBER = "SC";
 }
