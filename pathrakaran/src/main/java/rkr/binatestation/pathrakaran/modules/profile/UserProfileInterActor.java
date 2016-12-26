@@ -3,6 +3,8 @@ package rkr.binatestation.pathrakaran.modules.profile;
 import android.content.Context;
 import android.util.Log;
 
+import com.alexbbb.uploadservice.ContentType;
+import com.alexbbb.uploadservice.MultipartUploadRequest;
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -12,13 +14,16 @@ import com.android.volley.toolbox.StringRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import rkr.binatestation.pathrakaran.R;
 import rkr.binatestation.pathrakaran.models.UserDetailsModel;
 import rkr.binatestation.pathrakaran.network.VolleySingleTon;
 import rkr.binatestation.pathrakaran.utils.Constants;
 
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_ADDRESS;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_DATA;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_EMAIL;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_IMAGE;
@@ -27,9 +32,11 @@ import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_LONGITUDE;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_MESSAGE;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_MOBILE;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_NAME;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_POSTCODE;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_USER_ID;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_USER_TYPE;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_ADDRESS;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_IMAGE;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_LATITUDE;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_LONGITUDE;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_POST_NAME;
@@ -70,6 +77,8 @@ class UserProfileInterActor implements UserProfileListeners.InterActorListener {
                                 mPresenterListener.setUserData(new UserDetailsModel(
                                         dataJsonObject.optString(KEY_JSON_USER_ID),
                                         dataJsonObject.optString(KEY_JSON_NAME),
+                                        dataJsonObject.optString(KEY_JSON_ADDRESS),
+                                        dataJsonObject.optString(KEY_JSON_POSTCODE),
                                         dataJsonObject.optString(KEY_JSON_EMAIL),
                                         dataJsonObject.optString(KEY_JSON_MOBILE),
                                         dataJsonObject.optString(KEY_JSON_IMAGE),
@@ -131,7 +140,53 @@ class UserProfileInterActor implements UserProfileListeners.InterActorListener {
         VolleySingleTon.getInstance(context).addToRequestQueue(context, stringRequest);
     }
 
-    public void updateUserDetails(Context context, final String userId, final String name, final String address, final String postcode, final String latitude, final String longitude) {
+    public void updateUserDetails(Context context, final String userId, final String name, final String address, final String postcode, final String latitude, final String longitude, String imagePath) {
+        updateUserDetailsWithImage(context, userId, name, address, postcode, latitude, longitude, imagePath);
+    }
+
+    private void updateUserDetailsWithImage(final Context context, String userId, String name, String address, String postcode, String latitude, String longitude, String imagePath) {
+        if (imagePath != null) {
+            File file = new File(imagePath);
+            if (file.exists()) {
+                MultipartUploadRequest request = new MultipartUploadRequest(context, file.getName(), VolleySingleTon.getDomainUrl() + Constants.USER_PROFILE_UPDATE);
+                request.addFileToUpload(imagePath, KEY_POST_IMAGE, file.getName(), ContentType.IMAGE_JPEG);
+                request.addParameter(KEY_POST_USER_ID, userId);
+                request.addParameter(KEY_POST_NAME, name);
+                request.addParameter(KEY_POST_ADDRESS, address);
+                request.addParameter(KEY_POST_POSTCODE, postcode);
+                request.addParameter(KEY_POST_LATITUDE, latitude);
+                request.addParameter(KEY_POST_LONGITUDE, longitude);
+
+                //configure the notification
+                request.setNotificationConfig(R.drawable.ic_my_library_books_24dp,
+                        context.getString(R.string.app_name),
+                        " Profile update in progress ",
+                        " Profile update completed successfully",
+                        " Profile update Intercepted",
+                        true);
+
+                // if you comment the following line, the system default user-agent will be used
+                request.setCustomUserAgent("UploadServiceDemo/1.0");
+
+
+                // set the maximum number of automatic upload retries on error
+                request.setMaxRetries(2);
+
+                try {
+                    Log.i(TAG, "Request :- " + request.toString());
+                    request.startUpload();
+                } catch (Exception exc) {
+                    exc.printStackTrace();
+                }
+            } else {
+                updateUserDetailsWithoutImage(context, userId, name, address, postcode, latitude, longitude);
+            }
+        } else {
+            updateUserDetailsWithoutImage(context, userId, name, address, postcode, latitude, longitude);
+        }
+    }
+
+    private void updateUserDetailsWithoutImage(Context context, final String userId, final String name, final String address, final String postcode, final String latitude, final String longitude) {
         StringRequest stringRequest = new StringRequest(
                 Request.Method.POST,
                 VolleySingleTon.getDomainUrl() + USER_PROFILE_UPDATE,
@@ -149,6 +204,8 @@ class UserProfileInterActor implements UserProfileListeners.InterActorListener {
                                         mPresenterListener.setUserData(new UserDetailsModel(
                                                 dataJsonObject.optString(KEY_JSON_USER_ID),
                                                 dataJsonObject.optString(KEY_JSON_NAME),
+                                                dataJsonObject.optString(KEY_JSON_ADDRESS),
+                                                dataJsonObject.optString(KEY_JSON_POSTCODE),
                                                 dataJsonObject.optString(KEY_JSON_EMAIL),
                                                 dataJsonObject.optString(KEY_JSON_MOBILE),
                                                 dataJsonObject.optString(KEY_JSON_IMAGE),
@@ -218,6 +275,5 @@ class UserProfileInterActor implements UserProfileListeners.InterActorListener {
         };
         VolleySingleTon.getInstance(context).addToRequestQueue(context, stringRequest);
     }
-
 
 }

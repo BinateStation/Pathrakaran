@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
+import com.alexbbb.uploadservice.AbstractUploadServiceReceiver;
 import com.android.volley.toolbox.NetworkImageView;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -71,6 +72,43 @@ public class UserProfileActivity extends AppCompatActivity implements OnMapReady
     private EditText mPostcodeEditText;
     private MapView mUserLocationMapView;
     private ContentLoadingProgressBar mProgressBar;
+    private final AbstractUploadServiceReceiver uploadReceiver = new AbstractUploadServiceReceiver() {
+
+        @Override
+        public void onProgress(String uploadId, int progress) {
+            Log.i(TAG, "The progress of the upload with ID " + uploadId + " is: " + progress);
+            try {
+                showProgressView();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void onProgress(final String uploadId, final long uploadedBytes, final long totalBytes) {
+            Log.i(TAG, "Upload with ID " + uploadId + " uploaded bytes: " + uploadedBytes
+                    + ", total: " + totalBytes);
+        }
+
+        @Override
+        public void onError(String uploadId, Exception exception) {
+            try {
+                hideProgressView();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            Log.e(TAG, "Error in upload with ID: " + uploadId + ". "
+                    + exception.getLocalizedMessage(), exception);
+        }
+
+        @Override
+        public void onCompleted(String uploadId, int serverResponseCode, String serverResponseMessage) {
+            Log.i(TAG, "Upload with ID " + uploadId
+                    + " has been completed with HTTP " + serverResponseCode
+                    + ". Response from server: " + serverResponseMessage);
+            hideProgressView();
+        }
+    };
     private LatLng mLatLng;
     private String mPlaceName = "I am here";
     private String mSelectedImagePath = "";
@@ -122,6 +160,12 @@ public class UserProfileActivity extends AppCompatActivity implements OnMapReady
     }
 
     private void buildGoogleApiClient() {
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        uploadReceiver.register(this);
     }
 
     private void selectImage() {
@@ -251,6 +295,8 @@ public class UserProfileActivity extends AppCompatActivity implements OnMapReady
     public void onDestroy() {
         super.onDestroy();
         mUserLocationMapView.onDestroy();
+        uploadReceiver.unregister(this);
+
     }
 
     @Override
@@ -267,15 +313,16 @@ public class UserProfileActivity extends AppCompatActivity implements OnMapReady
             mNameEditText.setText(userDetailsModel.getName());
             mEmailEditText.setText(userDetailsModel.getEmail());
             mPhoneNumberEditText.setText(userDetailsModel.getMobile());
-            mAddressEditText.setText("");
-            mPostcodeEditText.setText("");
+            mAddressEditText.setText(userDetailsModel.getAddress());
+            mPostcodeEditText.setText(userDetailsModel.getPostcode());
 
             mLatLng = new LatLng(userDetailsModel.getLatitude(), userDetailsModel.getLongitude());
             mUserLocationMapView.getMapAsync(this);
             mProfilePictureNetworkImageView.setImageUrl(
-                    userDetailsModel.getImage(),
+                    VolleySingleTon.getDomainUrlForImage() + userDetailsModel.getImage(),
                     VolleySingleTon.getInstance(UserProfileActivity.this).getImageLoader()
             );
+            mSelectedImagePath = userDetailsModel.getImage();
         } else {
             alert(UserProfileActivity.this, "Alert", "Something Wrong Please Try Later..");
         }
@@ -342,9 +389,10 @@ public class UserProfileActivity extends AppCompatActivity implements OnMapReady
                             getSharedPreferences(getPackageName(), MODE_PRIVATE).getString(KEY_SP_USER_ID, "0"),
                             mNameEditText.getText().toString().trim(),
                             mAddressEditText.getText().toString().trim(),
-                            mPhoneNumberEditText.getText().toString().trim(),
+                            mPostcodeEditText.getText().toString().trim(),
                             (mLatLng != null) ? mLatLng.latitude + "" : "",
-                            (mLatLng != null) ? mLatLng.longitude + "" : ""
+                            (mLatLng != null) ? mLatLng.longitude + "" : "",
+                            mSelectedImagePath
                     );
                 } else {
                     setEditable(true);

@@ -22,6 +22,8 @@ public class UserDetailsModel implements Parcelable {
     };
     private String mUserId;
     private String mName;
+    private String mAddress;
+    private String mPostcode;
     private String mEmail;
     private String mMobile;
     private String mImage;
@@ -29,9 +31,11 @@ public class UserDetailsModel implements Parcelable {
     private double mLatitude;
     private double mLongitude;
 
-    public UserDetailsModel(String userId, String name, String email, String mobile, String image, String userType, double latitude, double longitude) {
+    public UserDetailsModel(String userId, String name, String address, String postcode, String email, String mobile, String image, String userType, double latitude, double longitude) {
         this.mUserId = userId;
         this.mName = name;
+        this.mAddress = address;
+        this.mPostcode = postcode;
         this.mEmail = email;
         this.mMobile = mobile;
         this.mImage = image;
@@ -43,6 +47,8 @@ public class UserDetailsModel implements Parcelable {
     private UserDetailsModel(Parcel in) {
         mUserId = in.readString();
         mName = in.readString();
+        mAddress = in.readString();
+        mPostcode = in.readString();
         mEmail = in.readString();
         mMobile = in.readString();
         mImage = in.readString();
@@ -65,6 +71,22 @@ public class UserDetailsModel implements Parcelable {
 
     public void setName(String name) {
         this.mName = name;
+    }
+
+    public String getAddress() {
+        return mAddress;
+    }
+
+    public void setAddress(String address) {
+        this.mAddress = address;
+    }
+
+    public String getPostcode() {
+        return mPostcode;
+    }
+
+    public void setPostcode(String postcode) {
+        this.mPostcode = postcode;
     }
 
     public String getEmail() {
@@ -124,6 +146,8 @@ public class UserDetailsModel implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(mUserId);
         dest.writeString(mName);
+        dest.writeString(mAddress);
+        dest.writeString(mPostcode);
         dest.writeString(mEmail);
         dest.writeString(mMobile);
         dest.writeString(mImage);

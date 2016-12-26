@@ -31,13 +31,13 @@ interface UserProfileListeners {
 
         void errorGettingUserDetails(String errorMessage);
 
-        void validateInputs(Context context, String userId, String name, String address, String postcode, String latitude, String longitude);
+        void validateInputs(Context context, String userId, String name, String address, String postcode, String latitude, String longitude, String imagePath);
     }
 
     interface InterActorListener {
 
         void getUserDetails(Context context, String userId);
 
-        void updateUserDetails(Context context, String userId, String name, String address, String postcode, String latitude, String longitude);
+        void updateUserDetails(Context context, String userId, String name, String address, String postcode, String latitude, String longitude, String imagePath);
     }
 }
