@@ -270,7 +270,7 @@ public class PathrakaranProvider extends ContentProvider {
             }
             case AGENT_PRODUCT_LIST: {
                 rowsUpdated = mOpenHelper.getWritableDatabase().updateWithOnConflict(
-                        ProductMasterTable.TABLE_NAME,
+                        AgentProductListTable.TABLE_NAME,
                         values,
                         selection,
                         selectionArgs,

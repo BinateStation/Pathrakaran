@@ -48,6 +48,7 @@ public class Constants {
     public static final String KEY_JSON_PRODUCT_IMAGE = "product_image";
     public static final String KEY_JSON_PRODUCT_TYPE = "product_type";
     public static final String KEY_JSON_PRODUCT_STATUS = "product_status";
+    public static final String KEY_JSON_AGENT_ID = "agent_id";
     /**
      * POST Param Key
      */
@@ -64,6 +65,8 @@ public class Constants {
     public static final String KEY_POST_EMAIL = "email";
     public static final String KEY_POST_LATITUDE = "latitude";
     public static final String KEY_POST_LONGITUDE = "longitude";
+    public static final String KEY_POST_AGENT_ID = "agent_id";
+    public static final String KEY_POST_PRODUCT_ID = "product_id";
     /**
      * Id to identity READ_CONTACTS permission request.
      */
@@ -79,6 +82,8 @@ public class Constants {
     public static final String USER_PROFILE = "user/profile";
     public static final String USER_PROFILE_UPDATE = "user/profile/update";
     public static final String MASTERS_JSON = "masters.json";
+    public static final String PRODUCTS_MY_PRODUCTS_JSON = "products/myProducts.json";
+    public static final String PRODUCTS_SUBSCRIBE_JSON = "products/subscribe.json";
 
     /**
      * Static Constants
@@ -91,4 +96,15 @@ public class Constants {
      * Cursor loaders
      */
     public static final int CURSOR_LOADER_LOAD_AGENT_PRODUCTS = 1;
+    public static final int CURSOR_LOADER_LOAD_COMPANIES = 2;
+    public static final int CURSOR_LOADER_LOAD_PRODUCTS = 3;
+    /**
+     * Result receiver constants
+     */
+    public static final int RECEIVER_ADD_PRODUCT_AGENT = 1;
+
+    /**
+     * KEY bundle
+     */
+    public static final String KEY_AGENT_PRODUCT_LIST = "agent_product_list";
 }

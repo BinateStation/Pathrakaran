@@ -1,16 +1,26 @@
 package rkr.binatestation.pathrakaran.models;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 import static android.provider.BaseColumns._ID;
 import static rkr.binatestation.pathrakaran.database.PathrakaranContract.AgentProductListTable.COLUMN_AGENT_ID;
 import static rkr.binatestation.pathrakaran.database.PathrakaranContract.AgentProductListTable.COLUMN_PRODUCT_ID;
+import static rkr.binatestation.pathrakaran.database.PathrakaranContract.AgentProductListTable.COLUMN_SAVE_STATUS;
+import static rkr.binatestation.pathrakaran.database.PathrakaranContract.AgentProductListTable.CONTENT_URI;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_AGENT_ID;
+import static rkr.binatestation.pathrakaran.utils.Constants.KEY_JSON_PRODUCT_ID;
 
 /**
  * Created by RKR on 08/01/2017.
@@ -33,25 +43,48 @@ public class AgentProductModel implements Parcelable {
     private long id;
     private long productId;
     private long agentId;
+    private int saveStatus;
     private ProductMasterModel productMasterModel;
     private CompanyMasterModel companyMasterModel;
 
-    public AgentProductModel(long productId, long agentId) {
+    public AgentProductModel(long productId, long agentId, int saveStatus) {
         this.productId = productId;
         this.agentId = agentId;
+        this.saveStatus = saveStatus;
     }
 
     private AgentProductModel(Parcel in) {
         id = in.readLong();
         productId = in.readLong();
         agentId = in.readLong();
+        saveStatus = in.readInt();
         productMasterModel = in.readParcelable(ProductMasterModel.class.getClassLoader());
         companyMasterModel = in.readParcelable(CompanyMasterModel.class.getClassLoader());
     }
 
-    public static List<AgentProductModel> getAgentProductModelList(Cursor cursor) {
+    public static Uri insert(ContentResolver contentResolver, AgentProductModel agentProductModel) {
+        Log.d(TAG, "insert() called with: contentResolver = [" + contentResolver + "], agentProductModel = [" + agentProductModel + "]");
+        Uri insertId = contentResolver.insert(
+                CONTENT_URI,
+                getContentValues(agentProductModel)
+        );
+        Log.d(TAG, "insert() returned: " + insertId);
+        return insertId;
+    }
+
+    private static ContentValues getContentValues(AgentProductModel agentProductModel) {
+        Log.d(TAG, "getContentValues() called with: agentProductModel = [" + agentProductModel + "]");
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_AGENT_ID, agentProductModel.getAgentId());
+        contentValues.put(COLUMN_PRODUCT_ID, agentProductModel.getProductId());
+        contentValues.put(COLUMN_SAVE_STATUS, agentProductModel.getSaveStatus());
+        Log.d(TAG, "getContentValues() returned: " + contentValues);
+        return contentValues;
+    }
+
+    public static ArrayList<AgentProductModel> getAgentProductModelList(Cursor cursor) {
         Log.d(TAG, "getAgentProductModelList() called with: cursor = [" + cursor + "]");
-        List<AgentProductModel> agentProductModelList = new ArrayList<>();
+        ArrayList<AgentProductModel> agentProductModelList = new ArrayList<>();
         if (cursor != null) {
             if (cursor.moveToFirst()) {
                 do {
@@ -68,13 +101,42 @@ public class AgentProductModel implements Parcelable {
         Log.d(TAG, "cursorToAgentProductModelJoinProductsMasterJoinCompanyMaster() called with: cursor = [" + cursor + "]");
         AgentProductModel agentProductModel = new AgentProductModel(
                 cursor.getLong(cursor.getColumnIndex(COLUMN_PRODUCT_ID)),
-                cursor.getLong(cursor.getColumnIndex(COLUMN_AGENT_ID))
+                cursor.getLong(cursor.getColumnIndex(COLUMN_AGENT_ID)),
+                cursor.getInt(cursor.getColumnIndex(COLUMN_SAVE_STATUS))
         );
-        agentProductModel.setId(cursor.getLong(cursor.getColumnIndex("APM." + _ID)));
-        agentProductModel.setProductMasterModel(ProductMasterModel.cursorToProductMasterModel(cursor, true));
-        agentProductModel.setCompanyMasterModel(CompanyMasterModel.cursorToCompanyMasterModel(cursor, true));
+        agentProductModel.setId(cursor.getLong(cursor.getColumnIndex(_ID)));
+        agentProductModel.setProductMasterModel(ProductMasterModel.cursorToProductMasterModel(cursor));
+        agentProductModel.setCompanyMasterModel(CompanyMasterModel.cursorToCompanyMasterModel(cursor));
         Log.d(TAG, "cursorToAgentProductModelJoinProductsMasterJoinCompanyMaster() returned: " + agentProductModel);
         return agentProductModel;
+    }
+
+    public static int bulkInsert(ContentResolver contentResolver, JSONArray jsonArray) {
+        Log.d(TAG, "bulkInsert() called with: contentResolver = [" + contentResolver + "], jsonArray = [" + jsonArray + "]");
+        int noOfRowsInserted = contentResolver.bulkInsert(CONTENT_URI, getContentValuesArray(jsonArray));
+        Log.d(TAG, "bulkInsert() returned: " + noOfRowsInserted);
+        return noOfRowsInserted;
+    }
+
+    private static ContentValues[] getContentValuesArray(JSONArray jsonArray) {
+        Log.d(TAG, "getContentValuesArray() called with: jsonArray = [" + jsonArray + "]");
+        ContentValues[] contentValues = new ContentValues[jsonArray.length()];
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject jsonObject = jsonArray.optJSONObject(i);
+            if (jsonObject != null) {
+                contentValues[i] = getContentValues(jsonObject);
+            }
+        }
+        Log.d(TAG, "getContentValuesArray() returned: " + Arrays.toString(contentValues));
+        return contentValues;
+    }
+
+    private static ContentValues getContentValues(JSONObject jsonObject) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_AGENT_ID, jsonObject.optLong(KEY_JSON_AGENT_ID));
+        contentValues.put(COLUMN_PRODUCT_ID, jsonObject.optLong(KEY_JSON_PRODUCT_ID));
+        contentValues.put(COLUMN_SAVE_STATUS, "1");
+        return contentValues;
     }
 
     public long getId() {
@@ -99,6 +161,14 @@ public class AgentProductModel implements Parcelable {
 
     public void setAgentId(long agentId) {
         this.agentId = agentId;
+    }
+
+    public int getSaveStatus() {
+        return saveStatus;
+    }
+
+    public void setSaveStatus(int saveStatus) {
+        this.saveStatus = saveStatus;
     }
 
     public ProductMasterModel getProductMasterModel() {
@@ -127,8 +197,8 @@ public class AgentProductModel implements Parcelable {
         dest.writeLong(id);
         dest.writeLong(productId);
         dest.writeLong(agentId);
+        dest.writeInt(saveStatus);
         dest.writeParcelable(productMasterModel, flags);
         dest.writeParcelable(companyMasterModel, flags);
     }
-
 }

@@ -386,7 +386,7 @@ public class UserProfileActivity extends AppCompatActivity implements OnMapReady
                 if (view.isSelected() && isPresenterLive()) {
                     mPresenterListener.validateInputs(
                             this,
-                            getSharedPreferences(getPackageName(), MODE_PRIVATE).getString(KEY_SP_USER_ID, "0"),
+                            getSharedPreferences(getPackageName(), MODE_PRIVATE).getLong(KEY_SP_USER_ID, 0),
                             mNameEditText.getText().toString().trim(),
                             mAddressEditText.getText().toString().trim(),
                             mPostcodeEditText.getText().toString().trim(),

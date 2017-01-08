@@ -140,17 +140,17 @@ class UserProfileInterActor implements UserProfileListeners.InterActorListener {
         VolleySingleTon.getInstance(context).addToRequestQueue(context, stringRequest);
     }
 
-    public void updateUserDetails(Context context, final String userId, final String name, final String address, final String postcode, final String latitude, final String longitude, String imagePath) {
+    public void updateUserDetails(Context context, final long userId, final String name, final String address, final String postcode, final String latitude, final String longitude, String imagePath) {
         updateUserDetailsWithImage(context, userId, name, address, postcode, latitude, longitude, imagePath);
     }
 
-    private void updateUserDetailsWithImage(final Context context, String userId, String name, String address, String postcode, String latitude, String longitude, String imagePath) {
+    private void updateUserDetailsWithImage(final Context context, long userId, String name, String address, String postcode, String latitude, String longitude, String imagePath) {
         if (imagePath != null) {
             File file = new File(imagePath);
             if (file.exists()) {
                 MultipartUploadRequest request = new MultipartUploadRequest(context, file.getName(), VolleySingleTon.getDomainUrl() + Constants.USER_PROFILE_UPDATE);
                 request.addFileToUpload(imagePath, KEY_POST_IMAGE, file.getName(), ContentType.IMAGE_JPEG);
-                request.addParameter(KEY_POST_USER_ID, userId);
+                request.addParameter(KEY_POST_USER_ID, "" + userId);
                 request.addParameter(KEY_POST_NAME, name);
                 request.addParameter(KEY_POST_ADDRESS, address);
                 request.addParameter(KEY_POST_POSTCODE, postcode);
@@ -186,7 +186,7 @@ class UserProfileInterActor implements UserProfileListeners.InterActorListener {
         }
     }
 
-    private void updateUserDetailsWithoutImage(Context context, final String userId, final String name, final String address, final String postcode, final String latitude, final String longitude) {
+    private void updateUserDetailsWithoutImage(Context context, final long userId, final String name, final String address, final String postcode, final String latitude, final String longitude) {
         StringRequest stringRequest = new StringRequest(
                 Request.Method.POST,
                 VolleySingleTon.getDomainUrl() + USER_PROFILE_UPDATE,
@@ -255,7 +255,7 @@ class UserProfileInterActor implements UserProfileListeners.InterActorListener {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put(KEY_POST_USER_ID, userId);
+                params.put(KEY_POST_USER_ID, "" + userId);
                 params.put(KEY_POST_NAME, name);
                 params.put(KEY_POST_ADDRESS, address);
                 params.put(KEY_POST_POSTCODE, postcode);

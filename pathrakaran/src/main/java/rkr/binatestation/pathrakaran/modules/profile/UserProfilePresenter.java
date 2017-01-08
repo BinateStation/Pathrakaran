@@ -66,17 +66,11 @@ class UserProfilePresenter implements UserProfileListeners.PresenterListener {
     }
 
     @Override
-    public void validateInputs(Context context, String userId, String name, String address, String postcode, String latitude, String longitude, String imagePath) {
+    public void validateInputs(Context context, long userId, String name, String address, String postcode, String latitude, String longitude, String imagePath) {
         if (isViewLive()) {
             mViewListener.showProgressView();
         }
-        if (TextUtils.isEmpty(userId)) {
-            if (isViewLive()) {
-                mViewListener.hideProgressView();
-            }
-            return;
-        }
-        if ("0".equalsIgnoreCase(userId)) {
+        if (0 == userId) {
             if (isViewLive()) {
                 mViewListener.hideProgressView();
             }

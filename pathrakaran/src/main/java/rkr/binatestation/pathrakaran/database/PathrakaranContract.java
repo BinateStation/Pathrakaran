@@ -110,14 +110,17 @@ public final class PathrakaranContract {
         public static final String COLUMN_AGENT_ID = "agent_id";
         // product id
         public static final String COLUMN_PRODUCT_ID = "product_id";
-        static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "." + PATH_AGENT_PRODUCT_LIST;
+        // save status 1- saved, 2 - For saving, 3 - temp
+        public static final String COLUMN_SAVE_STATUS = "save_status";
         // Name of the Agent Product list table.
-        static final String TABLE_NAME = PATH_AGENT_PRODUCT_LIST;
+        public static final String TABLE_NAME = PATH_AGENT_PRODUCT_LIST;
+        static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "." + PATH_AGENT_PRODUCT_LIST;
         // Create a table to hold Product master.
         static final String SQL_QUERY_CREATE_TABLE = CREATE_TABLE + TABLE_NAME + " (" +
                 _ID + INTEGER + PRIMARY_KEY + AUTOINCREMENT + COMMA +
                 COLUMN_AGENT_ID + INTEGER + COMMA +
-                COLUMN_PRODUCT_ID + INTEGER + UNIQUE + NOT_NULL +
+                COLUMN_PRODUCT_ID + INTEGER + UNIQUE + NOT_NULL + COMMA +
+                COLUMN_SAVE_STATUS + INTEGER +
                 " );";
 
         // Returns the Uri referencing a Picture with the specified id.

@@ -96,10 +96,11 @@ public class CompanyMasterModel implements Parcelable {
     public static List<CompanyMasterModel> getAll(Cursor cursor) {
         Log.d(TAG, "getAll() called with: cursor = [" + cursor + "]");
         List<CompanyMasterModel> companyMasterModelList = new ArrayList<>();
+        companyMasterModelList.add(new CompanyMasterModel(0, "Select a Company", "", 0));
         if (cursor != null) {
             if (cursor.moveToFirst()) {
                 do {
-                    companyMasterModelList.add(cursorToCompanyMasterModel(cursor, false));
+                    companyMasterModelList.add(cursorToCompanyMasterModel(cursor));
                 } while (cursor.moveToNext());
             }
             cursor.close();
@@ -108,19 +109,15 @@ public class CompanyMasterModel implements Parcelable {
         return companyMasterModelList;
     }
 
-    public static CompanyMasterModel cursorToCompanyMasterModel(Cursor cursor, boolean isJoin) {
-        Log.d(TAG, "cursorToCompanyMasterModel() called with: cursor = [" + cursor + "], isJoin = [" + isJoin + "]");
+    static CompanyMasterModel cursorToCompanyMasterModel(Cursor cursor) {
+        Log.d(TAG, "cursorToCompanyMasterModel() called with: cursor = [" + cursor + "]");
         CompanyMasterModel companyMasterModel = new CompanyMasterModel(
                 cursor.getLong(cursor.getColumnIndex(COLUMN_COMPANY_ID)),
                 cursor.getString(cursor.getColumnIndex(COLUMN_COMPANY_NAME)),
                 cursor.getString(cursor.getColumnIndex(COLUMN_COMPANY_LOGO)),
                 cursor.getInt(cursor.getColumnIndex(COLUMN_COMPANY_STATUS))
         );
-        if (isJoin) {
-            companyMasterModel.setId(cursor.getLong(cursor.getColumnIndex("CM." + _ID)));
-        } else {
-            companyMasterModel.setId(cursor.getLong(cursor.getColumnIndex(_ID)));
-        }
+        companyMasterModel.setId(cursor.getLong(cursor.getColumnIndex(_ID)));
         Log.d(TAG, "cursorToCompanyMasterModel() returned: " + companyMasterModel);
         return companyMasterModel;
     }

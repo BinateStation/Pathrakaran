@@ -89,7 +89,7 @@ class RegisterInterActor implements RegisterListeners.InterActorListener {
                                 JSONObject dataJsonObject = jsonObject.optJSONObject(KEY_JSON_DATA);
                                 if (dataJsonObject != null) {
                                     context.getSharedPreferences(context.getPackageName(), MODE_PRIVATE).edit()
-                                            .putString(KEY_SP_USER_ID, dataJsonObject.optString(KEY_JSON_USER_ID))
+                                            .putLong(KEY_SP_USER_ID, dataJsonObject.optLong(KEY_JSON_USER_ID))
                                             .putString(KEY_SP_USER_NAME, dataJsonObject.optString(KEY_JSON_NAME))
                                             .putString(KEY_SP_USER_ADDRESS, dataJsonObject.optString(KEY_JSON_ADDRESS))
                                             .putString(KEY_SP_USER_POSTCODE, dataJsonObject.optString(KEY_JSON_POSTCODE))

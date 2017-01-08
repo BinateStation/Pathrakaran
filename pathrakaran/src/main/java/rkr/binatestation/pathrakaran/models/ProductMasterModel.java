@@ -12,7 +12,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import rkr.binatestation.pathrakaran.database.PathrakaranContract;
 
@@ -118,22 +120,30 @@ public class ProductMasterModel implements Parcelable {
         return noOfRowsInserted;
     }
 
-    public static List<ProductMasterModel> getAll(Cursor cursor) {
+    public static Map<Long, List<ProductMasterModel>> getAll(Cursor cursor) {
         Log.d(TAG, "getAll() called with: cursor = [" + cursor + "]");
-        List<ProductMasterModel> productMasterModelList = new ArrayList<>();
+        Map<Long, List<ProductMasterModel>> productMasterModelMap = new LinkedHashMap<>();
         if (cursor != null) {
             if (cursor.moveToFirst()) {
                 do {
-                    productMasterModelList.add(cursorToProductMasterModel(cursor, false));
+                    ProductMasterModel productMasterModel = cursorToProductMasterModel(cursor);
+                    if (productMasterModelMap.containsKey(productMasterModel.getCompanyId())) {
+                        productMasterModelMap.get(productMasterModel.getCompanyId()).add(productMasterModel);
+                    } else {
+                        List<ProductMasterModel> productMasterModelList = new ArrayList<>();
+                        productMasterModelList.add(new ProductMasterModel(0, 0, "Select a Product", "", "", 0, 0));
+                        productMasterModelList.add(productMasterModel);
+                        productMasterModelMap.put(productMasterModel.getCompanyId(), productMasterModelList);
+                    }
                 } while (cursor.moveToNext());
             }
             cursor.close();
         }
-        Log.d(TAG, "getAll() returned: " + productMasterModelList);
-        return productMasterModelList;
+        Log.d(TAG, "getAll() returned: " + productMasterModelMap);
+        return productMasterModelMap;
     }
 
-    public static ProductMasterModel cursorToProductMasterModel(Cursor cursor, boolean isJoined) {
+    static ProductMasterModel cursorToProductMasterModel(Cursor cursor) {
         Log.d(TAG, "cursorToProductMasterModel() called with: cursor = [" + cursor + "]");
         ProductMasterModel productMasterModel = new ProductMasterModel(
                 cursor.getLong(cursor.getColumnIndex(PathrakaranContract.ProductMasterTable.COLUMN_PRODUCT_ID)),
@@ -144,11 +154,8 @@ public class ProductMasterModel implements Parcelable {
                 cursor.getDouble(cursor.getColumnIndex(PathrakaranContract.ProductMasterTable.COLUMN_PRODUCT_PRICE)),
                 cursor.getDouble(cursor.getColumnIndex(PathrakaranContract.ProductMasterTable.COLUMN_PRODUCT_COST))
         );
-        if (isJoined) {
-            productMasterModel.setId(cursor.getLong(cursor.getColumnIndex("PM." + _ID)));
-        } else {
-            productMasterModel.setId(cursor.getLong(cursor.getColumnIndex(_ID)));
-        }
+
+        productMasterModel.setId(cursor.getLong(cursor.getColumnIndex(_ID)));
         Log.d(TAG, "cursorToProductMasterModel() returned: " + productMasterModel);
         return productMasterModel;
     }
