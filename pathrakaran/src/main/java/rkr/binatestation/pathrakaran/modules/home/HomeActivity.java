@@ -1,4 +1,4 @@
-package rkr.binatestation.pathrakaran.activities;
+package rkr.binatestation.pathrakaran.modules.home;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,7 +15,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import rkr.binatestation.pathrakaran.R;
+import rkr.binatestation.pathrakaran.activities.SplashScreen;
 import rkr.binatestation.pathrakaran.fragments.SMHome;
+import rkr.binatestation.pathrakaran.modules.products.ProductListFragment;
 import rkr.binatestation.pathrakaran.modules.profile.UserProfileActivity;
 import rkr.binatestation.pathrakaran.utils.Constants;
 
@@ -24,9 +26,15 @@ import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_USER_PHONE;
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_USER_TYPE;
 
 
-public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, HomeListeners.ViewListener {
 
     private static final String TAG = "HomeActivity";
+
+    private HomeListeners.PresenterListener mPresenterListener;
+
+    private boolean isPresenterLive() {
+        return mPresenterListener != null;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +42,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.home_activity);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        mPresenterListener = new HomePresenter(this);
 
 
         if (getSupportActionBar() != null) {
@@ -49,6 +59,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         handleNavigationMenuItems(navigationView, getSharedPreferences(getPackageName(), MODE_PRIVATE).getString(KEY_SP_USER_TYPE, getString(R.string.app_name)));
+
+        //Get Masters
+        if (isPresenterLive()) {
+            mPresenterListener.getMasters(this);
+        }
     }
 
     private void handleNavigationMenuItems(NavigationView navigationView, String type) {
@@ -122,6 +137,15 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         switch (item.getItemId()) {
             case R.id.nav_SM_home:
                 fragment = SMHome.newInstance();
+                break;
+            case R.id.nav_AM_home:
+                fragment = SMHome.newInstance();
+                break;
+            case R.id.nav_SPM_home:
+                fragment = SMHome.newInstance();
+                break;
+            case R.id.nav_AM_productList:
+                fragment = ProductListFragment.newInstance();
                 break;
             case R.id.nav_SM_profile:
             case R.id.nav_AM_profile:

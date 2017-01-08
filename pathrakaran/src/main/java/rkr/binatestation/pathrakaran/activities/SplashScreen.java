@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import rkr.binatestation.pathrakaran.modules.home.HomeActivity;
 import rkr.binatestation.pathrakaran.modules.login.LoginActivity;
 
 import static rkr.binatestation.pathrakaran.utils.Constants.KEY_SP_IS_LOGGED_IN;

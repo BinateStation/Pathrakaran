@@ -3,6 +3,5 @@
     <string-array name="user_type_array_list">
         <item>a Customer</item>
         <item>an Agent</item>
-        <item>a Supplier</item>
     </string-array>
 </resources>

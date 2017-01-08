@@ -38,7 +38,7 @@
             android:name=".modules.login.LoginActivity"
             android:label="@string/title_activity_login" />
         <activity
-            android:name=".activities.HomeActivity"
+            android:name=".modules.home.HomeActivity"
             android:label="@string/title_activity_home"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -60,6 +60,14 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
+        <provider
+            android:name=".database.PathrakaranProvider"
+            android:authorities="${packageName}"
+            android:exported="false" />
+
+        <service
+            android:name=".database.DatabaseOperationService"
+            android:exported="false"></service>
     </application>
 
 </manifest>

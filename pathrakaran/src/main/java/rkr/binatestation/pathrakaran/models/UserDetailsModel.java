@@ -20,121 +20,121 @@ public class UserDetailsModel implements Parcelable {
             return new UserDetailsModel[size];
         }
     };
-    private String mUserId;
-    private String mName;
-    private String mAddress;
-    private String mPostcode;
-    private String mEmail;
-    private String mMobile;
-    private String mImage;
-    private String mUserType;
-    private double mLatitude;
-    private double mLongitude;
+    private long userId;
+    private String name;
+    private String address;
+    private String postcode;
+    private String email;
+    private String mobile;
+    private String image;
+    private String userType;
+    private double latitude;
+    private double longitude;
 
-    public UserDetailsModel(String userId, String name, String address, String postcode, String email, String mobile, String image, String userType, double latitude, double longitude) {
-        this.mUserId = userId;
-        this.mName = name;
-        this.mAddress = address;
-        this.mPostcode = postcode;
-        this.mEmail = email;
-        this.mMobile = mobile;
-        this.mImage = image;
-        this.mUserType = userType;
-        this.mLatitude = latitude;
-        this.mLongitude = longitude;
+    public UserDetailsModel(long userId, String name, String address, String postcode, String email, String mobile, String image, String userType, double latitude, double longitude) {
+        this.userId = userId;
+        this.name = name;
+        this.address = address;
+        this.postcode = postcode;
+        this.email = email;
+        this.mobile = mobile;
+        this.image = image;
+        this.userType = userType;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     private UserDetailsModel(Parcel in) {
-        mUserId = in.readString();
-        mName = in.readString();
-        mAddress = in.readString();
-        mPostcode = in.readString();
-        mEmail = in.readString();
-        mMobile = in.readString();
-        mImage = in.readString();
-        mUserType = in.readString();
-        mLatitude = in.readDouble();
-        mLongitude = in.readDouble();
+        userId = in.readLong();
+        name = in.readString();
+        address = in.readString();
+        postcode = in.readString();
+        email = in.readString();
+        mobile = in.readString();
+        image = in.readString();
+        userType = in.readString();
+        latitude = in.readDouble();
+        longitude = in.readDouble();
     }
 
-    public String getUserId() {
-        return mUserId;
+    public long getUserId() {
+        return userId;
     }
 
-    public void setUserId(String userId) {
-        this.mUserId = userId;
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
 
     public String getName() {
-        return mName;
+        return name;
     }
 
     public void setName(String name) {
-        this.mName = name;
+        this.name = name;
     }
 
     public String getAddress() {
-        return mAddress;
+        return address;
     }
 
     public void setAddress(String address) {
-        this.mAddress = address;
+        this.address = address;
     }
 
     public String getPostcode() {
-        return mPostcode;
+        return postcode;
     }
 
     public void setPostcode(String postcode) {
-        this.mPostcode = postcode;
+        this.postcode = postcode;
     }
 
     public String getEmail() {
-        return mEmail;
+        return email;
     }
 
     public void setEmail(String email) {
-        this.mEmail = email;
+        this.email = email;
     }
 
     public String getMobile() {
-        return mMobile;
+        return mobile;
     }
 
     public void setMobile(String mobile) {
-        this.mMobile = mobile;
+        this.mobile = mobile;
     }
 
     public String getImage() {
-        return mImage;
+        return image;
     }
 
     public void setImage(String image) {
-        this.mImage = image;
+        this.image = image;
     }
 
     public String getUserType() {
-        return mUserType;
+        return userType;
     }
 
     public void setUserType(String userType) {
-        this.mUserType = userType;
+        this.userType = userType;
     }
 
     public double getLatitude() {
-        return mLatitude;
+        return latitude;
     }
 
     public void setLatitude(double latitude) {
-        this.mLatitude = latitude;
+        this.latitude = latitude;
     }
 
     public double getLongitude() {
-        return mLongitude;
+        return longitude;
     }
 
     public void setLongitude(double longitude) {
-        this.mLongitude = longitude;
+        this.longitude = longitude;
     }
 
     @Override
@@ -144,15 +144,15 @@ public class UserDetailsModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(mUserId);
-        dest.writeString(mName);
-        dest.writeString(mAddress);
-        dest.writeString(mPostcode);
-        dest.writeString(mEmail);
-        dest.writeString(mMobile);
-        dest.writeString(mImage);
-        dest.writeString(mUserType);
-        dest.writeDouble(mLatitude);
-        dest.writeDouble(mLongitude);
+        dest.writeLong(userId);
+        dest.writeString(name);
+        dest.writeString(address);
+        dest.writeString(postcode);
+        dest.writeString(email);
+        dest.writeString(mobile);
+        dest.writeString(image);
+        dest.writeString(userType);
+        dest.writeDouble(latitude);
+        dest.writeDouble(longitude);
     }
 }

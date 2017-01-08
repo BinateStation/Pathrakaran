@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import rkr.binatestation.pathrakaran.R;
-import rkr.binatestation.pathrakaran.adapters.HomeAdapter;
+import rkr.binatestation.pathrakaran.adapters.ProductAdapter;
 
 
 /**
@@ -36,7 +36,7 @@ public class SMHome extends Fragment {
         View view = inflater.inflate(R.layout.sm_home, container, false);
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.SMH_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        recyclerView.setAdapter(new HomeAdapter());
+        recyclerView.setAdapter(new ProductAdapter());
         return view;
     }
 

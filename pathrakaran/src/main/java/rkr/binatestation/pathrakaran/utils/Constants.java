@@ -37,6 +37,17 @@ public class Constants {
     public static final String KEY_JSON_LONGITUDE = "longitude";
     public static final String KEY_JSON_ADDRESS = "address";
     public static final String KEY_JSON_POSTCODE = "postcode";
+    public static final String KEY_JSON_COMPANIES = "companies";
+    public static final String KEY_JSON_PRODUCTS = "products";
+    public static final String KEY_JSON_COMPANY_ID = "company_id";
+    public static final String KEY_JSON_COMPANY_NAME = "company_name";
+    public static final String KEY_JSON_COMPANY_STATUS = "company_status";
+    public static final String KEY_JSON_PRODUCT_ID = "product_id";
+    public static final String KEY_JSON_PRODUCT_NAME = "product_name";
+    public static final String KEY_JSON_PRODUCT_PRICE = "product_price";
+    public static final String KEY_JSON_PRODUCT_IMAGE = "product_image";
+    public static final String KEY_JSON_PRODUCT_TYPE = "product_type";
+    public static final String KEY_JSON_PRODUCT_STATUS = "product_status";
     /**
      * POST Param Key
      */
@@ -67,6 +78,7 @@ public class Constants {
     public static final String USER_REGISTER = "user/register";
     public static final String USER_PROFILE = "user/profile";
     public static final String USER_PROFILE_UPDATE = "user/profile/update";
+    public static final String MASTERS_JSON = "masters.json";
 
     /**
      * Static Constants
@@ -74,4 +86,9 @@ public class Constants {
     public static final String USER_TYPE_AGENT = "AG";
     public static final String USER_TYPE_SUPPLIER = "SP";
     public static final String USER_TYPE_SUBSCRIBER = "SC";
+
+    /**
+     * Cursor loaders
+     */
+    public static final int CURSOR_LOADER_LOAD_AGENT_PRODUCTS = 1;
 }

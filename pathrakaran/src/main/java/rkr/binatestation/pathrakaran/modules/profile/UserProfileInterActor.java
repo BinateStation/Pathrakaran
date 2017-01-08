@@ -75,7 +75,7 @@ class UserProfileInterActor implements UserProfileListeners.InterActorListener {
                         if (dataJsonObject != null) {
                             if (isPresenterLive()) {
                                 mPresenterListener.setUserData(new UserDetailsModel(
-                                        dataJsonObject.optString(KEY_JSON_USER_ID),
+                                        dataJsonObject.optLong(KEY_JSON_USER_ID),
                                         dataJsonObject.optString(KEY_JSON_NAME),
                                         dataJsonObject.optString(KEY_JSON_ADDRESS),
                                         dataJsonObject.optString(KEY_JSON_POSTCODE),
@@ -202,7 +202,7 @@ class UserProfileInterActor implements UserProfileListeners.InterActorListener {
                                 if (dataJsonObject != null) {
                                     if (isPresenterLive()) {
                                         mPresenterListener.setUserData(new UserDetailsModel(
-                                                dataJsonObject.optString(KEY_JSON_USER_ID),
+                                                dataJsonObject.optLong(KEY_JSON_USER_ID),
                                                 dataJsonObject.optString(KEY_JSON_NAME),
                                                 dataJsonObject.optString(KEY_JSON_ADDRESS),
                                                 dataJsonObject.optString(KEY_JSON_POSTCODE),

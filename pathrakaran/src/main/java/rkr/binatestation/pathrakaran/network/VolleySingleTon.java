@@ -18,6 +18,7 @@ public class VolleySingleTon {
     private static final String domainUrl = "http://itzlarc.in/pathrakkaran/";
     private static final String localDomainUrl = "";
     private static final String domainUrlForImage = "http://itzlarc.in/pathrakkaran/images/profile/";
+    private static final String localDomainUrlForImage = "http://itzlarc.in/pathrakkaran/images/profile/";
 
     private static VolleySingleTon mInstance;
     private RequestQueue mRequestQueue;
@@ -51,7 +52,13 @@ public class VolleySingleTon {
     }
 
     public static String getDomainUrlForImage() {
-        return domainUrlForImage;
+        switch (BuildConfig.BUILD_TYPE) {
+            case "release":
+            case "debug":
+                return domainUrlForImage;
+            default:
+                return localDomainUrlForImage;
+        }
     }
 
     public static String getDomainUrl() {
