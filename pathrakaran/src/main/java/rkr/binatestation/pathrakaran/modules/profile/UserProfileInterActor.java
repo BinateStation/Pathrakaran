@@ -62,7 +62,7 @@ class UserProfileInterActor implements UserProfileListeners.InterActorListener {
     }
 
     @Override
-    public void getUserDetails(Context context, final String userId) {
+    public void getUserDetails(Context context, final long userId) {
         StringRequest stringRequest = new StringRequest(Request.Method.POST,
                 VolleySingleTon.getDomainUrl() + Constants.USER_PROFILE, new Response.Listener<String>() {
             @Override
@@ -125,7 +125,7 @@ class UserProfileInterActor implements UserProfileListeners.InterActorListener {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put(KEY_POST_USER_ID, userId);
+                params.put(KEY_POST_USER_ID, "" + userId);
                 Log.d(TAG, "getParams() returned: " + params);
                 return params;
             }

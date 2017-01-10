@@ -28,17 +28,11 @@ class UserProfilePresenter implements UserProfileListeners.PresenterListener {
     }
 
     @Override
-    public void getUserDetails(Context context, String userId) {
+    public void getUserDetails(Context context, long userId) {
         if (isViewLive()) {
             mViewListener.showProgressView();
         }
-        if (TextUtils.isEmpty(userId)) {
-            if (isViewLive()) {
-                mViewListener.hideProgressView();
-            }
-            return;
-        }
-        if ("0".equalsIgnoreCase(userId)) {
+        if (0 == userId) {
             if (isViewLive()) {
                 mViewListener.hideProgressView();
             }

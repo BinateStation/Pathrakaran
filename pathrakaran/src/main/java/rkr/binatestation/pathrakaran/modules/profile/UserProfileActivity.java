@@ -155,7 +155,7 @@ public class UserProfileActivity extends AppCompatActivity implements OnMapReady
         mProfilePictureNetworkImageView.setOnClickListener(this);
 
         if (isPresenterLive()) {
-            mPresenterListener.getUserDetails(this, getSharedPreferences(getPackageName(), MODE_PRIVATE).getString(KEY_SP_USER_ID, "0"));
+            mPresenterListener.getUserDetails(this, getSharedPreferences(getPackageName(), MODE_PRIVATE).getLong(KEY_SP_USER_ID, 0));
         }
     }
 

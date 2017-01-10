@@ -25,7 +25,7 @@ interface UserProfileListeners {
 
     interface PresenterListener {
 
-        void getUserDetails(Context context, String userId);
+        void getUserDetails(Context context, long userId);
 
         void setUserData(UserDetailsModel userDetailsModel);
 
@@ -36,7 +36,7 @@ interface UserProfileListeners {
 
     interface InterActorListener {
 
-        void getUserDetails(Context context, String userId);
+        void getUserDetails(Context context, long userId);
 
         void updateUserDetails(Context context, long userId, String name, String address, String postcode, String latitude, String longitude, String imagePath);
     }
