@@ -37,6 +37,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -46,10 +48,22 @@ import java.util.Arrays;
 import rkr.binatestation.pathrakkaran.R;
 import rkr.binatestation.pathrakkaran.models.UserDetailsModel;
 import rkr.binatestation.pathrakkaran.network.VolleySingleTon;
+import rkr.binatestation.pathrakkaran.utils.Constants;
 import rkr.binatestation.pathrakkaran.utils.GeneralUtils;
 
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_ADDRESS;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_DATA;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_EMAIL;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_IMAGE;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_LATITUDE;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_LONGITUDE;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_MESSAGE;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_MOBILE;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_NAME;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_POSTCODE;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_USER;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_USER_ID;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_USER_TYPE;
 import static rkr.binatestation.pathrakkaran.utils.Constants.REQUEST_EXTERNAL_STORAGE;
 import static rkr.binatestation.pathrakkaran.utils.Constants.REQUEST_LOCATION_PERMISSION;
 import static rkr.binatestation.pathrakkaran.utils.GeneralUtils.alert;
@@ -94,7 +108,9 @@ public class UserProfileActivity extends AppCompatActivity implements OnMapReady
         @Override
         public void onError(String uploadId, Exception exception) {
             try {
-                hideProgressView();
+                if (isPresenterLive()) {
+                    mPresenterListener.errorGettingUserDetails("Something went wrong, please try again later.!");
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -107,7 +123,48 @@ public class UserProfileActivity extends AppCompatActivity implements OnMapReady
             Log.i(TAG, "Upload with ID " + uploadId
                     + " has been completed with HTTP " + serverResponseCode
                     + ". Response from server: " + serverResponseMessage);
-            hideProgressView();
+            try {
+                JSONObject jsonObject = new JSONObject(serverResponseMessage);
+                if (200 == jsonObject.optInt(Constants.KEY_STATUS)) {
+                    JSONObject dataJsonObject = jsonObject.optJSONObject(KEY_DATA);
+                    if (dataJsonObject != null) {
+                        if (isPresenterLive()) {
+                            mPresenterListener.setUserData(new UserDetailsModel(
+                                    dataJsonObject.optLong(KEY_USER_ID),
+                                    dataJsonObject.optString(KEY_NAME),
+                                    dataJsonObject.optString(KEY_ADDRESS),
+                                    dataJsonObject.optString(KEY_POSTCODE),
+                                    dataJsonObject.optString(KEY_EMAIL),
+                                    dataJsonObject.optString(KEY_MOBILE),
+                                    dataJsonObject.optString(KEY_IMAGE),
+                                    dataJsonObject.optInt(KEY_USER_TYPE),
+                                    dataJsonObject.optDouble(KEY_LATITUDE),
+                                    dataJsonObject.optDouble(KEY_LONGITUDE)
+
+                            ));
+                        }
+                        showAlert("Successfully updated..!");
+                    } else {
+                        if (isPresenterLive()) {
+                            mPresenterListener.errorGettingUserDetails(
+                                    jsonObject.has(KEY_MESSAGE) ?
+                                            jsonObject.optString(KEY_MESSAGE) :
+                                            "Something went wrong, please try again later.!"
+                            );
+                        }
+                    }
+                } else {
+                    if (isPresenterLive()) {
+                        mPresenterListener.errorGettingUserDetails(
+                                jsonObject.has(KEY_MESSAGE) ?
+                                        jsonObject.optString(KEY_MESSAGE) :
+                                        "Something went wrong, please try again later.!"
+                        );
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     };
     private LatLng mLatLng;
