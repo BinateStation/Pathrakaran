@@ -20,6 +20,9 @@ public class UserDetailsModel implements Parcelable {
             return new UserDetailsModel[size];
         }
     };
+    public static final int USER_TYPE_AGENT = 1;
+    public static final int USER_TYPE_SUPPLIER = 2;
+    public static final int USER_TYPE_SUBSCRIBER = 3;
     private long userId;
     private String name;
     private String address;
@@ -27,11 +30,11 @@ public class UserDetailsModel implements Parcelable {
     private String email;
     private String mobile;
     private String image;
-    private String userType;
+    private int userType;//1 Agent,2 Supplier,3 Agent;
     private double latitude;
     private double longitude;
 
-    public UserDetailsModel(long userId, String name, String address, String postcode, String email, String mobile, String image, String userType, double latitude, double longitude) {
+    public UserDetailsModel(long userId, String name, String address, String postcode, String email, String mobile, String image, int userType, double latitude, double longitude) {
         this.userId = userId;
         this.name = name;
         this.address = address;
@@ -52,7 +55,7 @@ public class UserDetailsModel implements Parcelable {
         email = in.readString();
         mobile = in.readString();
         image = in.readString();
-        userType = in.readString();
+        userType = in.readInt();
         latitude = in.readDouble();
         longitude = in.readDouble();
     }
@@ -113,11 +116,11 @@ public class UserDetailsModel implements Parcelable {
         this.image = image;
     }
 
-    public String getUserType() {
+    public int getUserType() {
         return userType;
     }
 
-    public void setUserType(String userType) {
+    public void setUserType(int userType) {
         this.userType = userType;
     }
 
@@ -151,7 +154,7 @@ public class UserDetailsModel implements Parcelable {
         dest.writeString(email);
         dest.writeString(mobile);
         dest.writeString(image);
-        dest.writeString(userType);
+        dest.writeInt(userType);
         dest.writeDouble(latitude);
         dest.writeDouble(longitude);
     }

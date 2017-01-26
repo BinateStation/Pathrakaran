@@ -82,7 +82,7 @@ class UserProfileInterActor implements UserProfileListeners.InterActorListener {
                                         dataJsonObject.optString(KEY_JSON_EMAIL),
                                         dataJsonObject.optString(KEY_JSON_MOBILE),
                                         dataJsonObject.optString(KEY_JSON_IMAGE),
-                                        dataJsonObject.optString(KEY_JSON_USER_TYPE),
+                                        dataJsonObject.optInt(KEY_JSON_USER_TYPE),
                                         dataJsonObject.optDouble(KEY_JSON_LATITUDE),
                                         dataJsonObject.optDouble(KEY_JSON_LONGITUDE)
 
@@ -209,7 +209,7 @@ class UserProfileInterActor implements UserProfileListeners.InterActorListener {
                                                 dataJsonObject.optString(KEY_JSON_EMAIL),
                                                 dataJsonObject.optString(KEY_JSON_MOBILE),
                                                 dataJsonObject.optString(KEY_JSON_IMAGE),
-                                                dataJsonObject.optString(KEY_JSON_USER_TYPE),
+                                                dataJsonObject.optInt(KEY_JSON_USER_TYPE),
                                                 dataJsonObject.optDouble(KEY_JSON_LATITUDE),
                                                 dataJsonObject.optDouble(KEY_JSON_LONGITUDE)
 

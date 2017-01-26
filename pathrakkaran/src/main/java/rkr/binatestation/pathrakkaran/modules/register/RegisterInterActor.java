@@ -74,7 +74,7 @@ class RegisterInterActor implements RegisterListeners.InterActorListener {
     }
 
     @Override
-    public void register(final Context context, final String name, final String phone, final String email, final String password, final String userType, final String loginType) {
+    public void register(final Context context, final String name, final String phone, final String email, final String password, final int userType, final String loginType) {
         Log.d(TAG, "register() called with: context = [" + context + "], name = [" + name + "], phone = [" + phone + "], email = [" + email + "], password = [" + password + "], userType = [" + userType + "], loginType = [" + loginType + "]");
         StringRequest stringRequest = new StringRequest(
                 POST,
@@ -96,7 +96,7 @@ class RegisterInterActor implements RegisterListeners.InterActorListener {
                                             .putString(KEY_SP_USER_EMAIL, dataJsonObject.optString(KEY_JSON_EMAIL))
                                             .putString(KEY_SP_USER_PHONE, dataJsonObject.optString(KEY_JSON_MOBILE))
                                             .putString(KEY_SP_USER_IMAGE, dataJsonObject.optString(KEY_JSON_IMAGE))
-                                            .putString(KEY_SP_USER_TYPE, dataJsonObject.optString(KEY_JSON_USER_TYPE))
+                                            .putInt(KEY_SP_USER_TYPE, dataJsonObject.optInt(KEY_JSON_USER_TYPE))
                                             .putString(KEY_JSON_LATITUDE, dataJsonObject.optString(KEY_SP_USER_LATITUDE))
                                             .putString(KEY_JSON_LONGITUDE, dataJsonObject.optString(KEY_SP_USER_LONGITUDE))
                                             .putBoolean(KEY_SP_IS_LOGGED_IN, true).apply();
@@ -144,7 +144,7 @@ class RegisterInterActor implements RegisterListeners.InterActorListener {
                 params.put(KEY_POST_NAME, name);
                 params.put(KEY_POST_MOBILE, phone);
                 params.put(KEY_POST_PASSWORD, password);
-                params.put(KEY_POST_USER_TYPE, userType);
+                params.put(KEY_POST_USER_TYPE, "" + userType);
                 params.put(KEY_POST_ADDRESS, "");
                 params.put(KEY_POST_POSTCODE, "");
                 params.put(KEY_POST_EMAIL, email);

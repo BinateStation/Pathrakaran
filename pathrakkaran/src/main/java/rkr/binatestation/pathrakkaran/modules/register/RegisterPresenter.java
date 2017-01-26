@@ -3,9 +3,10 @@ package rkr.binatestation.pathrakkaran.modules.register;
 import android.content.Context;
 import android.text.TextUtils;
 
-import static rkr.binatestation.pathrakkaran.utils.Constants.USER_TYPE_AGENT;
-import static rkr.binatestation.pathrakkaran.utils.Constants.USER_TYPE_SUBSCRIBER;
-import static rkr.binatestation.pathrakkaran.utils.Constants.USER_TYPE_SUPPLIER;
+import static rkr.binatestation.pathrakkaran.models.UserDetailsModel.USER_TYPE_AGENT;
+import static rkr.binatestation.pathrakkaran.models.UserDetailsModel.USER_TYPE_SUBSCRIBER;
+import static rkr.binatestation.pathrakkaran.models.UserDetailsModel.USER_TYPE_SUPPLIER;
+
 
 /**
  * Created by RKR on 10/12/2016.
@@ -70,7 +71,7 @@ class RegisterPresenter implements RegisterListeners.PresenterListener {
                 mViewListener.hideProgress();
             }
         } else {
-            String userTypeValue = USER_TYPE_SUBSCRIBER;
+            int userTypeValue = USER_TYPE_SUBSCRIBER;
             switch (userType) {
                 case 0:
                     userTypeValue = USER_TYPE_SUBSCRIBER;

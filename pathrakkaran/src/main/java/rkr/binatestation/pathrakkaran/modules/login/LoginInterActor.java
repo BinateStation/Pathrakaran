@@ -33,8 +33,8 @@ import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_JSON_STATUS;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_JSON_USER_ID;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_JSON_USER_TYPE;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_POST_LOGIN_TYPE;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_POST_MOBILE;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_POST_PASSWORD;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_POST_USER;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_SP_IS_LOGGED_IN;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_SP_USER_ADDRESS;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_SP_USER_EMAIL;
@@ -101,7 +101,7 @@ class LoginInterActor implements LoginListeners.InterActorListener {
                                                 .putString(KEY_SP_USER_EMAIL, dataJsonObject.optString(KEY_JSON_EMAIL))
                                                 .putString(KEY_SP_USER_PHONE, dataJsonObject.optString(KEY_JSON_MOBILE))
                                                 .putString(KEY_SP_USER_IMAGE, dataJsonObject.optString(KEY_JSON_IMAGE))
-                                                .putString(KEY_SP_USER_TYPE, dataJsonObject.optString(KEY_JSON_USER_TYPE))
+                                                .putInt(KEY_SP_USER_TYPE, dataJsonObject.optInt(KEY_JSON_USER_TYPE))
                                                 .putString(KEY_JSON_LATITUDE, dataJsonObject.optString(KEY_SP_USER_LATITUDE))
                                                 .putString(KEY_JSON_LONGITUDE, dataJsonObject.optString(KEY_SP_USER_LONGITUDE))
                                                 .putBoolean(KEY_SP_IS_LOGGED_IN, true).apply();
@@ -134,7 +134,7 @@ class LoginInterActor implements LoginListeners.InterActorListener {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put(KEY_POST_MOBILE, username);
+                params.put(KEY_POST_USER, username);
                 params.put(KEY_POST_PASSWORD, password);
                 params.put(KEY_POST_LOGIN_TYPE, loginType);
 

@@ -86,13 +86,6 @@ public class Constants {
     public static final String PRODUCTS_SUBSCRIBE_JSON = "products/subscribe.json";
 
     /**
-     * Static Constants
-     */
-    public static final String USER_TYPE_AGENT = "AG";
-    public static final String USER_TYPE_SUPPLIER = "SP";
-    public static final String USER_TYPE_SUBSCRIBER = "SC";
-
-    /**
      * Cursor loaders
      */
     public static final int CURSOR_LOADER_LOAD_AGENT_PRODUCTS = 1;

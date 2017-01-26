@@ -37,6 +37,6 @@ interface RegisterListeners {
     }
 
     interface InterActorListener {
-        void register(Context context, String name, String phoneNumber, String email, String password, String userTypeValue, String loginType);
+        void register(Context context, String name, String phoneNumber, String email, String password, int userTypeValue, String loginType);
     }
 }

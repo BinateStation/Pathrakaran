@@ -127,7 +127,7 @@ public class AddProductFragment extends DialogFragment implements LoaderManager.
     private void setCompanySpinner(List<CompanyMasterModel> companyMasterModelList) {
         if (companyMasterModelList == null) {
             companyMasterModelList = new ArrayList<>();
-            companyMasterModelList.add(new CompanyMasterModel(0, "Select a Company", "", 0));
+            companyMasterModelList.add(new CompanyMasterModel(0, "Select a Company", "", false));
         }
         ArrayAdapter companyMasterModelArrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, companyMasterModelList);
         companyMasterModelArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -140,7 +140,7 @@ public class AddProductFragment extends DialogFragment implements LoaderManager.
         Log.d(TAG, "setProductsSpinner() called with: productMasterModelList = [" + productMasterModelList + "]");
         if (productMasterModelList == null) {
             productMasterModelList = new ArrayList<>();
-            productMasterModelList.add(new ProductMasterModel(0, 0, "Select a Product", "", "", 0, 0));
+            productMasterModelList.add(new ProductMasterModel(0, 0, "Select a Product", "", 0, 0, 0));
         }
         ArrayAdapter productMasterModelArrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, productMasterModelList);
         productMasterModelArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

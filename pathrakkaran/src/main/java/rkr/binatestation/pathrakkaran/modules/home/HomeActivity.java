@@ -19,8 +19,10 @@ import rkr.binatestation.pathrakkaran.activities.SplashScreen;
 import rkr.binatestation.pathrakkaran.fragments.SMHome;
 import rkr.binatestation.pathrakkaran.modules.products.ProductListFragment;
 import rkr.binatestation.pathrakkaran.modules.profile.UserProfileActivity;
-import rkr.binatestation.pathrakkaran.utils.Constants;
 
+import static rkr.binatestation.pathrakkaran.models.UserDetailsModel.USER_TYPE_AGENT;
+import static rkr.binatestation.pathrakkaran.models.UserDetailsModel.USER_TYPE_SUBSCRIBER;
+import static rkr.binatestation.pathrakkaran.models.UserDetailsModel.USER_TYPE_SUPPLIER;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_SP_USER_NAME;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_SP_USER_PHONE;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_SP_USER_TYPE;
@@ -58,7 +60,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        handleNavigationMenuItems(navigationView, getSharedPreferences(getPackageName(), MODE_PRIVATE).getString(KEY_SP_USER_TYPE, getString(R.string.app_name)));
+        handleNavigationMenuItems(navigationView, getSharedPreferences(getPackageName(), MODE_PRIVATE).getInt(KEY_SP_USER_TYPE, 0));
 
         //Get Masters
         if (isPresenterLive()) {
@@ -66,26 +68,33 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    private void handleNavigationMenuItems(NavigationView navigationView, String type) {
+    private void handleNavigationMenuItems(NavigationView navigationView, int type) {
         Log.d(TAG, "handleNavigationMenuItems() called with: navigationView = [" + navigationView + "], type = [" + type + "]");
         Menu menu = navigationView.getMenu();
-        if (Constants.USER_TYPE_AGENT.equalsIgnoreCase(type)) {
-            navigationView.setCheckedItem(R.id.nav_AM_home);
-            menu.setGroupVisible(R.id.nav_subscriberModule, false);
-            menu.setGroupVisible(R.id.nav_suppliersModule, false);
-        } else if (Constants.USER_TYPE_SUPPLIER.equalsIgnoreCase(type)) {
-            navigationView.setCheckedItem(R.id.nav_SPM_home);
-            menu.setGroupVisible(R.id.nav_subscriberModule, false);
-            menu.setGroupVisible(R.id.nav_agentModule, false);
-        } else {
-            navigationView.setCheckedItem(R.id.nav_SM_home);
-            menu.setGroupVisible(R.id.nav_agentModule, false);
-            menu.setGroupVisible(R.id.nav_suppliersModule, false);
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
-                    .replace(R.id.ABH_contentLayout, SMHome.newInstance())
-                    .commit();
+        switch (type) {
+            case USER_TYPE_AGENT: {
+                navigationView.setCheckedItem(R.id.nav_AM_home);
+                menu.setGroupVisible(R.id.nav_subscriberModule, false);
+                menu.setGroupVisible(R.id.nav_suppliersModule, false);
+            }
+            break;
+            case USER_TYPE_SUPPLIER: {
+                navigationView.setCheckedItem(R.id.nav_SPM_home);
+                menu.setGroupVisible(R.id.nav_subscriberModule, false);
+                menu.setGroupVisible(R.id.nav_agentModule, false);
+            }
+            break;
+            case USER_TYPE_SUBSCRIBER: {
+                navigationView.setCheckedItem(R.id.nav_SM_home);
+                menu.setGroupVisible(R.id.nav_agentModule, false);
+                menu.setGroupVisible(R.id.nav_suppliersModule, false);
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
+                        .replace(R.id.ABH_contentLayout, SMHome.newInstance())
+                        .commit();
+            }
+            break;
         }
     }
 

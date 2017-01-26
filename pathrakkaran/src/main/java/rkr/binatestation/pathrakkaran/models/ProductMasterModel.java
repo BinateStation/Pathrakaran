@@ -52,17 +52,22 @@ public class ProductMasterModel implements Parcelable {
             return new ProductMasterModel[size];
         }
     };
+    public static final int PRODUCT_TYPE_DAILY = 1;
+    public static final int PRODUCT_TYPE_WEEKLY = 2;
+    public static final int PRODUCT_TYPE_BIMONTHLY = 3;
+    public static final int PRODUCT_TYPE_MONTHLY = 4;
+    public static final int PRODUCT_TYPE_YEARLY = 5;
     private static final String TAG = "ProductMasterModel";
     private long id;
     private long productId;
     private long companyId;
     private String productName;
     private String productImage;
-    private String productType;
+    private int productType;
     private double productPrice;
     private double productCost;
 
-    public ProductMasterModel(long productId, long companyId, String productName, String productImage, String productType, double productPrice, double productCost) {
+    public ProductMasterModel(long productId, long companyId, String productName, String productImage, int productType, double productPrice, double productCost) {
         this.productId = productId;
         this.companyId = companyId;
         this.productName = productName;
@@ -78,7 +83,7 @@ public class ProductMasterModel implements Parcelable {
         this.companyId = in.readLong();
         this.productName = in.readString();
         this.productImage = in.readString();
-        this.productType = in.readString();
+        this.productType = in.readInt();
         this.productPrice = in.readDouble();
         this.productCost = in.readDouble();
     }
@@ -104,7 +109,7 @@ public class ProductMasterModel implements Parcelable {
         contentValues.put(COLUMN_PRODUCT_NAME, jsonObject.optString(KEY_JSON_PRODUCT_NAME));
         contentValues.put(COLUMN_PRODUCT_PRICE, jsonObject.optInt(KEY_JSON_PRODUCT_PRICE));
         contentValues.put(COLUMN_PRODUCT_IMAGE, jsonObject.optString(KEY_JSON_PRODUCT_IMAGE));
-        contentValues.put(COLUMN_PRODUCT_TYPE, jsonObject.optString(KEY_JSON_PRODUCT_TYPE));
+        contentValues.put(COLUMN_PRODUCT_TYPE, jsonObject.optInt(KEY_JSON_PRODUCT_TYPE));
         contentValues.put(COLUMN_PRODUCT_STATUS, jsonObject.optInt(KEY_JSON_PRODUCT_STATUS));
         Log.d(TAG, "getContentValues() returned: " + contentValues);
         return contentValues;
@@ -131,7 +136,7 @@ public class ProductMasterModel implements Parcelable {
                         productMasterModelMap.get(productMasterModel.getCompanyId()).add(productMasterModel);
                     } else {
                         List<ProductMasterModel> productMasterModelList = new ArrayList<>();
-                        productMasterModelList.add(new ProductMasterModel(0, 0, "Select a Product", "", "", 0, 0));
+                        productMasterModelList.add(new ProductMasterModel(0, 0, "Select a Product", "", 0, 0, 0));
                         productMasterModelList.add(productMasterModel);
                         productMasterModelMap.put(productMasterModel.getCompanyId(), productMasterModelList);
                     }
@@ -150,7 +155,7 @@ public class ProductMasterModel implements Parcelable {
                 cursor.getLong(cursor.getColumnIndex(PathrakkaranContract.ProductMasterTable.COLUMN_COMPANY_ID)),
                 cursor.getString(cursor.getColumnIndex(PathrakkaranContract.ProductMasterTable.COLUMN_PRODUCT_NAME)),
                 cursor.getString(cursor.getColumnIndex(PathrakkaranContract.ProductMasterTable.COLUMN_PRODUCT_IMAGE)),
-                cursor.getString(cursor.getColumnIndex(PathrakkaranContract.ProductMasterTable.COLUMN_PRODUCT_TYPE)),
+                cursor.getInt(cursor.getColumnIndex(PathrakkaranContract.ProductMasterTable.COLUMN_PRODUCT_TYPE)),
                 cursor.getDouble(cursor.getColumnIndex(PathrakkaranContract.ProductMasterTable.COLUMN_PRODUCT_PRICE)),
                 cursor.getDouble(cursor.getColumnIndex(PathrakkaranContract.ProductMasterTable.COLUMN_PRODUCT_COST))
         );
@@ -205,12 +210,29 @@ public class ProductMasterModel implements Parcelable {
         this.productImage = productImage;
     }
 
-    public String getProductType() {
+    public int getProductType() {
         return productType;
     }
 
-    public void setProductType(String productType) {
+    public void setProductType(int productType) {
         this.productType = productType;
+    }
+
+    public String getProductTypeLabel(int productType) {
+        switch (productType) {
+            case 1:
+                return "Daily";
+            case 2:
+                return "Weekly";
+            case 3:
+                return "Bimonthly";
+            case 4:
+                return "Monthly";
+            case 5:
+                return "Yearly";
+            default:
+                return "";
+        }
     }
 
     public double getProductPrice() {
@@ -241,7 +263,7 @@ public class ProductMasterModel implements Parcelable {
         dest.writeLong(companyId);
         dest.writeString(productName);
         dest.writeString(productImage);
-        dest.writeString(productType);
+        dest.writeInt(productType);
         dest.writeDouble(productPrice);
         dest.writeDouble(productCost);
     }

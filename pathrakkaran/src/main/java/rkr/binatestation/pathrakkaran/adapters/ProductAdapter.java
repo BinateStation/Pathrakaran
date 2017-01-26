@@ -47,12 +47,14 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ItemHold
         }
         if (productMasterModel != null) {
             holder.productNameTextView.setText(productMasterModel.getProductName());
-            holder.productTypeTextView.setText(productMasterModel.getProductType());
+            holder.productTypeTextView.setText(productMasterModel.getProductTypeLabel(productMasterModel.getProductType()));
             holder.productPriceTextView.setText(String.format(Locale.getDefault(), "%s", productMasterModel.getProductPrice()));
             holder.productNetworkImageView.setImageUrl(
                     VolleySingleTon.getDomainUrlForImage() + productMasterModel.getProductImage(),
                     VolleySingleTon.getInstance(holder.productNetworkImageView.getContext()).getImageLoader()
             );
+            holder.productNetworkImageView.setDefaultImageResId(R.drawable.ic_menu_gallery);
+            holder.productNetworkImageView.setErrorImageResId(R.drawable.ic_menu_gallery);
         }
     }
 

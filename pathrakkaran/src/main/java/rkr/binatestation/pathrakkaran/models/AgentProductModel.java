@@ -43,7 +43,7 @@ public class AgentProductModel implements Parcelable {
     private long id;
     private long productId;
     private long agentId;
-    private int saveStatus;
+    private int saveStatus;// save status 1- saved, 2 - For saving, 3 - temp
     private ProductMasterModel productMasterModel;
     private CompanyMasterModel companyMasterModel;
 

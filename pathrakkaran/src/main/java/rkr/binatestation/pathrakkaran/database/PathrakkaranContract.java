@@ -19,8 +19,38 @@ public final class PathrakkaranContract {
     static final String PATH_PRODUCT_MASTER = "product_master";
     static final String PATH_AGENT_PRODUCT_LIST = "agent_product_list";
     static final String PATH_AGENT_PRODUCT_LIST_JOIN_PRODUCT_MASTER_JOIN_COMPANY_MASTER = "agent_product_list_join_product_master_join_company_master";
+    /**
+     * INT,
+     * INTEGER,
+     * TINYINT,
+     * SMALLINT,
+     * MEDIUMINT,
+     * BIGINT,
+     * UNSIGNED BIG INT,
+     * INT2,
+     * INT8
+     */
     private static final String INTEGER = " INTEGER ";
+    /**
+     * CHARACTER(20),
+     * VARCHAR(255),
+     * VARYING CHARACTER(255),
+     * NCHAR(55),
+     * NATIVE CHARACTER(70),
+     * NVARCHAR(100),
+     * TEXT,
+     * CLOB
+     */
     private static final String TEXT = " TEXT ";
+    /**
+     * REAL,
+     * DOUBLE,
+     * DOUBLE PRECISION,
+     * FLOAT
+     */
+    private static final String REAL = " REAL ";
+    private static final String NONE = " NONE ";//BLOB, no data type specified
+    private static final String NUMERIC = " NUMERIC ";//NUMERIC, DECIMAL(10,5), BOOLEAN, DATE DATETIME
     private static final String PRIMARY_KEY = " PRIMARY KEY ";
     private static final String AUTOINCREMENT = " AUTOINCREMENT ";
     private static final String COMMA = " , ";
@@ -50,7 +80,7 @@ public final class PathrakkaranContract {
                 COLUMN_COMPANY_ID + INTEGER + UNIQUE + NOT_NULL + COMMA +
                 COLUMN_COMPANY_NAME + TEXT + NOT_NULL + COMMA +
                 COLUMN_COMPANY_LOGO + TEXT + COMMA +
-                COLUMN_COMPANY_STATUS + INTEGER +
+                COLUMN_COMPANY_STATUS + NUMERIC +
                 " );";
 
         // Returns the Uri referencing a category with the specified id.
@@ -71,7 +101,7 @@ public final class PathrakkaranContract {
         public static final String COLUMN_PRODUCT_NAME = "PM_product_name";
         // product image url
         public static final String COLUMN_PRODUCT_IMAGE = "PM_product_image";
-        // product type identifier D- Daily, W - Weekly, M- monthly, Y- Yearly
+        // product type identifier 1- Daily, 2 - Weekly,3 - Bimonthly, 4- monthly, 5- Yearly
         public static final String COLUMN_PRODUCT_TYPE = "PM_product_type";
         // product selling price
         public static final String COLUMN_PRODUCT_PRICE = "PM_product_price";
@@ -89,10 +119,10 @@ public final class PathrakkaranContract {
                 COLUMN_COMPANY_ID + INTEGER + COMMA +
                 COLUMN_PRODUCT_NAME + TEXT + COMMA +
                 COLUMN_PRODUCT_IMAGE + TEXT + COMMA +
-                COLUMN_PRODUCT_TYPE + TEXT + COMMA +
-                COLUMN_PRODUCT_PRICE + INTEGER + COMMA +
-                COLUMN_PRODUCT_COST + INTEGER + COMMA +
-                COLUMN_PRODUCT_STATUS + INTEGER +
+                COLUMN_PRODUCT_TYPE + INTEGER + COMMA +
+                COLUMN_PRODUCT_PRICE + REAL + COMMA +
+                COLUMN_PRODUCT_COST + REAL + COMMA +
+                COLUMN_PRODUCT_STATUS + NUMERIC +
                 " );";
 
         // Returns the Uri referencing a Picture with the specified id.

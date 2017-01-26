@@ -46,9 +46,9 @@ public class CompanyMasterModel implements Parcelable {
     private long companyId;
     private String companyName;
     private String companyLogo;
-    private int companyStatus;
+    private boolean companyStatus;
 
-    public CompanyMasterModel(long companyId, String companyName, String companyLogo, int companyStatus) {
+    public CompanyMasterModel(long companyId, String companyName, String companyLogo, boolean companyStatus) {
         this.companyId = companyId;
         this.companyName = companyName;
         this.companyLogo = companyLogo;
@@ -60,7 +60,7 @@ public class CompanyMasterModel implements Parcelable {
         companyId = in.readLong();
         companyName = in.readString();
         companyLogo = in.readString();
-        companyStatus = in.readInt();
+        companyStatus = in.readInt() == 1;
     }
 
     private static ContentValues[] getContentValuesArray(JSONArray jsonArray) {
@@ -96,7 +96,7 @@ public class CompanyMasterModel implements Parcelable {
     public static List<CompanyMasterModel> getAll(Cursor cursor) {
         Log.d(TAG, "getAll() called with: cursor = [" + cursor + "]");
         List<CompanyMasterModel> companyMasterModelList = new ArrayList<>();
-        companyMasterModelList.add(new CompanyMasterModel(0, "Select a Company", "", 0));
+        companyMasterModelList.add(new CompanyMasterModel(0, "Select a Company", "", false));
         if (cursor != null) {
             if (cursor.moveToFirst()) {
                 do {
@@ -115,7 +115,7 @@ public class CompanyMasterModel implements Parcelable {
                 cursor.getLong(cursor.getColumnIndex(COLUMN_COMPANY_ID)),
                 cursor.getString(cursor.getColumnIndex(COLUMN_COMPANY_NAME)),
                 cursor.getString(cursor.getColumnIndex(COLUMN_COMPANY_LOGO)),
-                cursor.getInt(cursor.getColumnIndex(COLUMN_COMPANY_STATUS))
+                cursor.getInt(cursor.getColumnIndex(COLUMN_COMPANY_STATUS)) == 1
         );
         companyMasterModel.setId(cursor.getLong(cursor.getColumnIndex(_ID)));
         Log.d(TAG, "cursorToCompanyMasterModel() returned: " + companyMasterModel);
@@ -159,11 +159,11 @@ public class CompanyMasterModel implements Parcelable {
         this.companyLogo = companyLogo;
     }
 
-    public int getCompanyStatus() {
+    public boolean getCompanyStatus() {
         return companyStatus;
     }
 
-    public void setCompanyStatus(int companyStatus) {
+    public void setCompanyStatus(boolean companyStatus) {
         this.companyStatus = companyStatus;
     }
 
@@ -178,6 +178,6 @@ public class CompanyMasterModel implements Parcelable {
         dest.writeLong(companyId);
         dest.writeString(companyName);
         dest.writeString(companyLogo);
-        dest.writeInt(companyStatus);
+        dest.writeInt(companyStatus ? 1 : 0);
     }
 }
