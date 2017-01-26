@@ -92,11 +92,6 @@ public class Constants {
     public static final int CURSOR_LOADER_LOAD_COMPANIES = 2;
     public static final int CURSOR_LOADER_LOAD_PRODUCTS = 3;
     /**
-     * Result receiver constants
-     */
-    public static final int RECEIVER_ADD_PRODUCT_AGENT = 1;
-
-    /**
      * KEY bundle
      */
     public static final String KEY_AGENT_PRODUCT_LIST = "agent_product_list";

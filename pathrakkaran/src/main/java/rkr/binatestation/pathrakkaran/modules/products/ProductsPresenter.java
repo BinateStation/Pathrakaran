@@ -32,13 +32,13 @@ class ProductsPresenter implements ProductsListeners.PresenterListener {
     }
 
     @Override
-    public void loadProductList(LoaderManager loaderManager) {
+    public void loadProductList(LoaderManager loaderManager, long userId) {
         Log.d(TAG, "loadProductList() called with: loaderManager = [" + loaderManager + "]");
         if (isViewListener()) {
             mViewListener.showProgressBar();
         }
         if (isInterActorLive()) {
-            mInterActorListener.loadProductList(loaderManager);
+            mInterActorListener.loadProductList(loaderManager, userId);
         }
     }
 

@@ -108,11 +108,11 @@ public class PathrakkaranProvider extends ContentProvider {
             }
             case AGENT_PRODUCT_LIST_JOIN_PRODUCT_MASTER_JOIN_COMPANY_MASTER: {
                 SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
-                String joinedTable = AgentProductListTable.TABLE_NAME + " APL JOIN " +
-                        ProductMasterTable.TABLE_NAME + " PM ON PM." + ProductMasterTable.COLUMN_PRODUCT_ID +
-                        " = APL." + AgentProductListTable.COLUMN_PRODUCT_ID + " JOIN " +
-                        CompanyMasterTable.TABLE_NAME + " CM ON CM." + CompanyMasterTable.COLUMN_COMPANY_ID +
-                        " = PM." + ProductMasterTable.COLUMN_COMPANY_ID;
+                String joinedTable = AgentProductListTable.TABLE_NAME + " JOIN " +
+                        ProductMasterTable.TABLE_NAME + " ON " + ProductMasterTable.COLUMN_PRODUCT_ID +
+                        " = " + AgentProductListTable.COLUMN_PRODUCT_ID + " JOIN " +
+                        CompanyMasterTable.TABLE_NAME + " ON " + CompanyMasterTable.COLUMN_COMPANY_ID +
+                        " = " + ProductMasterTable.COLUMN_COMPANY_ID;
                 queryBuilder.setTables(joinedTable);
                 retCursor = queryBuilder.query(
                         mOpenHelper.getReadableDatabase(),

@@ -137,11 +137,11 @@ public final class PathrakkaranContract {
 
         public static final Uri CONTENT_URI_JOIN_PRODUCT_MASTER_JOIN_COMPANY_MASTER = BASE_CONTENT_URI.buildUpon().appendPath(PATH_AGENT_PRODUCT_LIST_JOIN_PRODUCT_MASTER_JOIN_COMPANY_MASTER).build();
         // agent id
-        public static final String COLUMN_AGENT_ID = "agent_id";
+        public static final String COLUMN_AGENT_ID = "APL_agent_id";
         // product id
-        public static final String COLUMN_PRODUCT_ID = "product_id";
+        public static final String COLUMN_PRODUCT_ID = "APL_product_id";
         // save status 1- saved, 2 - For saving, 3 - temp
-        public static final String COLUMN_SAVE_STATUS = "save_status";
+        public static final String COLUMN_SAVE_STATUS = "APL_save_status";
         // Name of the Agent Product list table.
         public static final String TABLE_NAME = PATH_AGENT_PRODUCT_LIST;
         static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "." + PATH_AGENT_PRODUCT_LIST;

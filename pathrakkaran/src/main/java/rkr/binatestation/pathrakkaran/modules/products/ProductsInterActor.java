@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import rkr.binatestation.pathrakkaran.database.DatabaseOperationService;
+import rkr.binatestation.pathrakkaran.database.PathrakkaranContract;
 import rkr.binatestation.pathrakkaran.models.AgentProductModel;
 import rkr.binatestation.pathrakkaran.network.VolleySingleTon;
 
@@ -48,14 +49,16 @@ class ProductsInterActor implements ProductsListeners.InterActorListener, Loader
     }
 
     @Override
-    public void loadProductList(LoaderManager loaderManager) {
+    public void loadProductList(LoaderManager loaderManager, long userId) {
         Log.d(TAG, "loadProductList() called with: loaderManager = [" + loaderManager + "]");
+        Bundle bundle = new Bundle();
+        bundle.putLong(KEY_SP_USER_ID, userId);
         if (loaderManager.getLoader(CURSOR_LOADER_LOAD_AGENT_PRODUCTS) == null) {
-            loaderManager.initLoader(CURSOR_LOADER_LOAD_AGENT_PRODUCTS, null, this);
+            loaderManager.initLoader(CURSOR_LOADER_LOAD_AGENT_PRODUCTS, bundle, this);
         } else {
-            loaderManager.restartLoader(CURSOR_LOADER_LOAD_AGENT_PRODUCTS, null, this);
+            loaderManager.restartLoader(CURSOR_LOADER_LOAD_AGENT_PRODUCTS, bundle, this);
         }
-        getProductsFromServer();
+        getProductsFromServer(userId);
     }
 
     @Override
@@ -66,13 +69,14 @@ class ProductsInterActor implements ProductsListeners.InterActorListener, Loader
                 if (isPresenterLive()) {
                     Context context = mPresenterListener.getContext();
                     if (context != null) {
+                        long userId = args.getLong(KEY_SP_USER_ID, 0);
                         return new CursorLoader(
                                 context,
                                 CONTENT_URI_JOIN_PRODUCT_MASTER_JOIN_COMPANY_MASTER,
                                 null,
-                                null,
-                                null,
-                                null
+                                PathrakkaranContract.AgentProductListTable.COLUMN_AGENT_ID + " = ? ",
+                                new String[]{"" + userId},
+                                PathrakkaranContract.CompanyMasterTable.COLUMN_COMPANY_NAME
                         );
                     }
                 }
@@ -98,12 +102,11 @@ class ProductsInterActor implements ProductsListeners.InterActorListener, Loader
 
     }
 
-    private void getProductsFromServer() {
+    private void getProductsFromServer(final long userId) {
         Log.d(TAG, "getProductsFromServer() called");
         if (isPresenterLive()) {
             final Context context = mPresenterListener.getContext();
             if (context != null) {
-                final String userId = "" + context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE).getLong(KEY_SP_USER_ID, 0);
                 StringRequest stringRequest = new StringRequest(
                         Request.Method.POST,
                         VolleySingleTon.getDomainUrl() + PRODUCTS_MY_PRODUCTS_JSON,
@@ -132,7 +135,7 @@ class ProductsInterActor implements ProductsListeners.InterActorListener, Loader
                     @Override
                     protected Map<String, String> getParams() {
                         Map<String, String> params = new HashMap<>();
-                        params.put(KEY_POST_AGENT_ID, userId);
+                        params.put(KEY_POST_AGENT_ID, "" + userId);
 
                         Log.d(TAG, "getParams() returned: " + getUrl() + "  " + params);
                         return params;

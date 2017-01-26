@@ -28,7 +28,9 @@ import java.util.Map;
 
 import rkr.binatestation.pathrakkaran.R;
 import rkr.binatestation.pathrakkaran.database.DatabaseOperationService;
-import rkr.binatestation.pathrakkaran.database.PathrakkaranContract;
+import rkr.binatestation.pathrakkaran.database.PathrakkaranContract.AgentProductListTable;
+import rkr.binatestation.pathrakkaran.database.PathrakkaranContract.CompanyMasterTable;
+import rkr.binatestation.pathrakkaran.database.PathrakkaranContract.ProductMasterTable;
 import rkr.binatestation.pathrakkaran.fragments.dialogs.AlertDialogFragment;
 import rkr.binatestation.pathrakkaran.models.AgentProductModel;
 import rkr.binatestation.pathrakkaran.models.CompanyMasterModel;
@@ -49,14 +51,20 @@ public class AddProductFragment extends DialogFragment implements LoaderManager.
     private Spinner mCompanySpinner;
     private Spinner mProductsSpinner;
     private ContentLoadingProgressBar mProgressBar;
+    private AddProductListener mAddProductListener;
+    private long userId;
 
     public AddProductFragment() {
         // Required empty public constructor
     }
 
-    public static AddProductFragment newInstance() {
+    public static AddProductFragment newInstance(long userId, AddProductListener addProductListener) {
         Log.d(TAG, "newInstance() called");
+        Bundle bundle = new Bundle();
+        bundle.putLong(KEY_SP_USER_ID, userId);
         AddProductFragment fragment = new AddProductFragment();
+        fragment.setArguments(bundle);
+        fragment.mAddProductListener = addProductListener;
         Log.d(TAG, "newInstance() returned: " + fragment);
         return fragment;
     }
@@ -64,6 +72,7 @@ public class AddProductFragment extends DialogFragment implements LoaderManager.
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        userId = getArguments().getLong(KEY_SP_USER_ID, 0);
         loadMasters();
     }
 
@@ -127,7 +136,7 @@ public class AddProductFragment extends DialogFragment implements LoaderManager.
     private void setCompanySpinner(List<CompanyMasterModel> companyMasterModelList) {
         if (companyMasterModelList == null) {
             companyMasterModelList = new ArrayList<>();
-            companyMasterModelList.add(new CompanyMasterModel(0, "Select a Company", "", false));
+            companyMasterModelList.add(CompanyMasterModel.getDefaultValue());
         }
         ArrayAdapter companyMasterModelArrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, companyMasterModelList);
         companyMasterModelArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -140,7 +149,7 @@ public class AddProductFragment extends DialogFragment implements LoaderManager.
         Log.d(TAG, "setProductsSpinner() called with: productMasterModelList = [" + productMasterModelList + "]");
         if (productMasterModelList == null) {
             productMasterModelList = new ArrayList<>();
-            productMasterModelList.add(new ProductMasterModel(0, 0, "Select a Product", "", 0, 0, 0));
+            productMasterModelList.add(ProductMasterModel.getDefaultValue());
         }
         ArrayAdapter productMasterModelArrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, productMasterModelList);
         productMasterModelArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -155,19 +164,21 @@ public class AddProductFragment extends DialogFragment implements LoaderManager.
             case CURSOR_LOADER_LOAD_COMPANIES:
                 return new CursorLoader(
                         getContext(),
-                        PathrakkaranContract.CompanyMasterTable.CONTENT_URI,
+                        CompanyMasterTable.CONTENT_URI,
                         null,
-                        PathrakkaranContract.CompanyMasterTable.COLUMN_COMPANY_STATUS + " = ? ",
+                        CompanyMasterTable.COLUMN_COMPANY_STATUS + " = ? ",
                         new String[]{"1"},
                         null
                 );
             case CURSOR_LOADER_LOAD_PRODUCTS:
                 return new CursorLoader(
                         getContext(),
-                        PathrakkaranContract.ProductMasterTable.CONTENT_URI,
+                        ProductMasterTable.CONTENT_URI,
                         null,
-                        PathrakkaranContract.ProductMasterTable.COLUMN_PRODUCT_STATUS + " = ? ",
-                        new String[]{"1"},
+                        ProductMasterTable.COLUMN_PRODUCT_STATUS + " = ? and " +
+                                ProductMasterTable.COLUMN_PRODUCT_ID + " not in ( select " + AgentProductListTable.COLUMN_PRODUCT_ID + " from " + AgentProductListTable.TABLE_NAME + " " +
+                                "where " + AgentProductListTable.COLUMN_AGENT_ID + " = ? )",
+                        new String[]{"1", "" + userId},
                         null
                 );
         }
@@ -232,6 +243,10 @@ public class AddProductFragment extends DialogFragment implements LoaderManager.
                             if (mProgressBar != null) {
                                 mProgressBar.hide();
                             }
+                            if (mAddProductListener != null) {
+                                mAddProductListener.onFinishListener();
+                            }
+                            dismiss();
                         }
                     });
                 }
@@ -242,5 +257,9 @@ public class AddProductFragment extends DialogFragment implements LoaderManager.
     private void showAlert(String message) {
         AlertDialogFragment alertDialogFragment = AlertDialogFragment.newInstance(message);
         alertDialogFragment.show(getChildFragmentManager(), alertDialogFragment.getTag());
+    }
+
+    public interface AddProductListener {
+        void onFinishListener();
     }
 }

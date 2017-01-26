@@ -1,6 +1,7 @@
 package rkr.binatestation.pathrakkaran.modules.products;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -19,6 +20,8 @@ import rkr.binatestation.pathrakkaran.R;
 import rkr.binatestation.pathrakkaran.adapters.ProductAdapter;
 import rkr.binatestation.pathrakkaran.models.AgentProductModel;
 
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_SP_USER_ID;
+
 /**
  * Fragment to show the list of products
  */
@@ -29,6 +32,7 @@ public class ProductListFragment extends Fragment implements View.OnClickListene
 
     private ContentLoadingProgressBar mProgressBar;
     private ProductAdapter mProductAdapter;
+    private long userId = 0;
 
     private ProductsListeners.PresenterListener mPresenterListener;
 
@@ -59,6 +63,7 @@ public class ProductListFragment extends Fragment implements View.OnClickListene
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPresenterListener = new ProductsPresenter(this);
+        userId = getContext().getSharedPreferences(getContext().getPackageName(), Context.MODE_PRIVATE).getLong(KEY_SP_USER_ID, 0);
     }
 
     @Override
@@ -76,8 +81,9 @@ public class ProductListFragment extends Fragment implements View.OnClickListene
         //Setting addProduct button
         addProduct.setOnClickListener(this);
         if (isPresenterLive()) {
-            mPresenterListener.loadProductList(getLoaderManager());
+            mPresenterListener.loadProductList(getLoaderManager(), userId);
         }
+
     }
 
     @Override
@@ -92,7 +98,14 @@ public class ProductListFragment extends Fragment implements View.OnClickListene
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.FPL_action_add_product:
-                AddProductFragment addProductFragment = AddProductFragment.newInstance();
+                AddProductFragment addProductFragment = AddProductFragment.newInstance(userId, new AddProductFragment.AddProductListener() {
+                    @Override
+                    public void onFinishListener() {
+                        if (isPresenterLive()) {
+                            mPresenterListener.loadProductList(getLoaderManager(), userId);
+                        }
+                    }
+                });
                 addProductFragment.show(getChildFragmentManager(), addProductFragment.getTag());
                 break;
         }

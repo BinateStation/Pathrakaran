@@ -24,7 +24,7 @@ interface ProductsListeners {
     }
 
     interface PresenterListener {
-        void loadProductList(LoaderManager loaderManager);
+        void loadProductList(LoaderManager loaderManager, long userId);
 
         void setProductList(List<AgentProductModel> productModelList);
 
@@ -33,6 +33,6 @@ interface ProductsListeners {
     }
 
     interface InterActorListener {
-        void loadProductList(LoaderManager loaderManager);
+        void loadProductList(LoaderManager loaderManager, long userId);
     }
 }

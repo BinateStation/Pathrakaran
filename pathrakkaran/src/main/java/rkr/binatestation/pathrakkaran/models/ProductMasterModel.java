@@ -88,6 +88,10 @@ public class ProductMasterModel implements Parcelable {
         this.productCost = in.readDouble();
     }
 
+    public static ProductMasterModel getDefaultValue() {
+        return new ProductMasterModel(0, 0, "Select a Product", "", 0, 0, 0);
+    }
+
     private static ContentValues[] getContentValuesArray(JSONArray jsonArray) {
         Log.d(TAG, "getContentValuesArray() called with: jsonArray = [" + jsonArray + "]");
         ContentValues[] contentValues = new ContentValues[jsonArray.length()];
@@ -136,7 +140,7 @@ public class ProductMasterModel implements Parcelable {
                         productMasterModelMap.get(productMasterModel.getCompanyId()).add(productMasterModel);
                     } else {
                         List<ProductMasterModel> productMasterModelList = new ArrayList<>();
-                        productMasterModelList.add(new ProductMasterModel(0, 0, "Select a Product", "", 0, 0, 0));
+                        productMasterModelList.add(getDefaultValue());
                         productMasterModelList.add(productMasterModel);
                         productMasterModelMap.put(productMasterModel.getCompanyId(), productMasterModelList);
                     }

@@ -39,13 +39,16 @@ import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_JSON_PRODUCTS;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_JSON_STATUS;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_POST_AGENT_ID;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_POST_PRODUCT_ID;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_SP_USER_ID;
 import static rkr.binatestation.pathrakkaran.utils.Constants.PRODUCTS_SUBSCRIBE_JSON;
-import static rkr.binatestation.pathrakkaran.utils.Constants.RECEIVER_ADD_PRODUCT_AGENT;
 
 /**
  * This IntentService use to do Database operations in background thread
  */
 public class DatabaseOperationService extends IntentService {
+
+    public static final int RECEIVER_ADD_PRODUCT_AGENT = 1;
+
     // IntentService can perform
     private static final String ACTION_SAVE_MASTERS = "rkr.binatestation.pathrakaran.database.action.SAVE_MASTERS";
     private static final String ACTION_ADD_PRODUCT_AGENT = "rkr.binatestation.pathrakaran.database.action.ADD_PRODUCT_AGENT";
@@ -142,12 +145,13 @@ public class DatabaseOperationService extends IntentService {
             e.printStackTrace();
         }
 
+        long userId = getSharedPreferences(getPackageName(), Context.MODE_PRIVATE).getLong(KEY_SP_USER_ID, 0);
         Cursor cursor = getContentResolver().query(
                 PathrakkaranContract.AgentProductListTable.CONTENT_URI_JOIN_PRODUCT_MASTER_JOIN_COMPANY_MASTER,
                 null,
-                null,
-                null,
-                null
+                PathrakkaranContract.AgentProductListTable.COLUMN_AGENT_ID + " = ? ",
+                new String[]{"" + userId},
+                PathrakkaranContract.CompanyMasterTable.COLUMN_COMPANY_NAME
         );
         if (cursor != null) {
             if (mResultReceiver != null) {

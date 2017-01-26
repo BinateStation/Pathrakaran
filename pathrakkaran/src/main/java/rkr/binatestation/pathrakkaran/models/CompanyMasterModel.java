@@ -63,6 +63,9 @@ public class CompanyMasterModel implements Parcelable {
         companyStatus = in.readInt() == 1;
     }
 
+    public static CompanyMasterModel getDefaultValue() {
+        return new CompanyMasterModel(0, "Select a Company", "", false);
+    }
     private static ContentValues[] getContentValuesArray(JSONArray jsonArray) {
         Log.d(TAG, "getContentValuesArray() called with: jsonArray = [" + jsonArray + "]");
         ContentValues[] contentValues = new ContentValues[jsonArray.length()];
@@ -96,7 +99,7 @@ public class CompanyMasterModel implements Parcelable {
     public static List<CompanyMasterModel> getAll(Cursor cursor) {
         Log.d(TAG, "getAll() called with: cursor = [" + cursor + "]");
         List<CompanyMasterModel> companyMasterModelList = new ArrayList<>();
-        companyMasterModelList.add(new CompanyMasterModel(0, "Select a Company", "", false));
+        companyMasterModelList.add(getDefaultValue());
         if (cursor != null) {
             if (cursor.moveToFirst()) {
                 do {
