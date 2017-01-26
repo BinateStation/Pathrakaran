@@ -23,26 +23,19 @@ import rkr.binatestation.pathrakkaran.models.UserDetailsModel;
 import rkr.binatestation.pathrakkaran.network.VolleySingleTon;
 import rkr.binatestation.pathrakkaran.utils.Constants;
 
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_JSON_ADDRESS;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_JSON_DATA;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_JSON_EMAIL;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_JSON_IMAGE;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_JSON_LATITUDE;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_JSON_LONGITUDE;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_JSON_MESSAGE;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_JSON_MOBILE;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_JSON_NAME;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_JSON_POSTCODE;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_JSON_USER_ID;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_JSON_USER_TYPE;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_POST_ADDRESS;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_POST_IMAGE;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_POST_LATITUDE;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_POST_LONGITUDE;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_POST_NAME;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_POST_POSTCODE;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_POST_USER_ID;
-import static rkr.binatestation.pathrakkaran.utils.Constants.USER_PROFILE_UPDATE;
+import static rkr.binatestation.pathrakkaran.utils.Constants.END_URL_USER_PROFILE_UPDATE;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_ADDRESS;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_DATA;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_EMAIL;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_IMAGE;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_LATITUDE;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_LONGITUDE;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_MESSAGE;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_MOBILE;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_NAME;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_POSTCODE;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_USER_ID;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_USER_TYPE;
 
 /**
  * Created by RKR on 11/12/2016.
@@ -64,35 +57,35 @@ class UserProfileInterActor implements UserProfileListeners.InterActorListener {
     @Override
     public void getUserDetails(Context context, final long userId) {
         StringRequest stringRequest = new StringRequest(Request.Method.POST,
-                VolleySingleTon.getDomainUrl() + Constants.USER_PROFILE, new Response.Listener<String>() {
+                VolleySingleTon.getDomainUrl() + Constants.END_URL_USER_PROFILE, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.d(TAG, "onResponse() called with: response = [" + response + "]");
                 try {
                     JSONObject jsonObject = new JSONObject(response);
-                    if (200 == jsonObject.optInt(Constants.KEY_JSON_STATUS)) {
-                        JSONObject dataJsonObject = jsonObject.optJSONObject(KEY_JSON_DATA);
+                    if (200 == jsonObject.optInt(Constants.KEY_STATUS)) {
+                        JSONObject dataJsonObject = jsonObject.optJSONObject(KEY_DATA);
                         if (dataJsonObject != null) {
                             if (isPresenterLive()) {
                                 mPresenterListener.setUserData(new UserDetailsModel(
-                                        dataJsonObject.optLong(KEY_JSON_USER_ID),
-                                        dataJsonObject.optString(KEY_JSON_NAME),
-                                        dataJsonObject.optString(KEY_JSON_ADDRESS),
-                                        dataJsonObject.optString(KEY_JSON_POSTCODE),
-                                        dataJsonObject.optString(KEY_JSON_EMAIL),
-                                        dataJsonObject.optString(KEY_JSON_MOBILE),
-                                        dataJsonObject.optString(KEY_JSON_IMAGE),
-                                        dataJsonObject.optInt(KEY_JSON_USER_TYPE),
-                                        dataJsonObject.optDouble(KEY_JSON_LATITUDE),
-                                        dataJsonObject.optDouble(KEY_JSON_LONGITUDE)
+                                        dataJsonObject.optLong(KEY_USER_ID),
+                                        dataJsonObject.optString(KEY_NAME),
+                                        dataJsonObject.optString(KEY_ADDRESS),
+                                        dataJsonObject.optString(KEY_POSTCODE),
+                                        dataJsonObject.optString(KEY_EMAIL),
+                                        dataJsonObject.optString(KEY_MOBILE),
+                                        dataJsonObject.optString(KEY_IMAGE),
+                                        dataJsonObject.optInt(KEY_USER_TYPE),
+                                        dataJsonObject.optDouble(KEY_LATITUDE),
+                                        dataJsonObject.optDouble(KEY_LONGITUDE)
 
                                 ));
                             }
                         } else {
                             if (isPresenterLive()) {
                                 mPresenterListener.errorGettingUserDetails(
-                                        jsonObject.has(KEY_JSON_MESSAGE) ?
-                                                jsonObject.optString(KEY_JSON_MESSAGE) :
+                                        jsonObject.has(KEY_MESSAGE) ?
+                                                jsonObject.optString(KEY_MESSAGE) :
                                                 "Something went wrong, please try again later.!"
                                 );
                             }
@@ -100,8 +93,8 @@ class UserProfileInterActor implements UserProfileListeners.InterActorListener {
                     } else {
                         if (isPresenterLive()) {
                             mPresenterListener.errorGettingUserDetails(
-                                    jsonObject.has(KEY_JSON_MESSAGE) ?
-                                            jsonObject.optString(KEY_JSON_MESSAGE) :
+                                    jsonObject.has(KEY_MESSAGE) ?
+                                            jsonObject.optString(KEY_MESSAGE) :
                                             "Something went wrong, please try again later.!"
                             );
                         }
@@ -125,7 +118,7 @@ class UserProfileInterActor implements UserProfileListeners.InterActorListener {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put(KEY_POST_USER_ID, "" + userId);
+                params.put(KEY_USER_ID, "" + userId);
                 Log.d(TAG, "getParams() returned: " + params);
                 return params;
             }
@@ -140,22 +133,23 @@ class UserProfileInterActor implements UserProfileListeners.InterActorListener {
         VolleySingleTon.getInstance(context).addToRequestQueue(context, stringRequest);
     }
 
-    public void updateUserDetails(Context context, final long userId, final String name, final String address, final String postcode, final String latitude, final String longitude, String imagePath) {
-        updateUserDetailsWithImage(context, userId, name, address, postcode, latitude, longitude, imagePath);
+    public void updateUserDetails(Context context, long userId, String name, String email, String address, String postcode, String latitude, String longitude, String imagePath) {
+        updateUserDetailsWithImage(context, userId, name, email, address, postcode, latitude, longitude, imagePath);
     }
 
-    private void updateUserDetailsWithImage(final Context context, long userId, String name, String address, String postcode, String latitude, String longitude, String imagePath) {
+    private void updateUserDetailsWithImage(Context context, long userId, String name, String email, String address, String postcode, String latitude, String longitude, String imagePath) {
         if (imagePath != null) {
             File file = new File(imagePath);
             if (file.exists()) {
-                MultipartUploadRequest request = new MultipartUploadRequest(context, file.getName(), VolleySingleTon.getDomainUrl() + Constants.USER_PROFILE_UPDATE);
-                request.addFileToUpload(imagePath, KEY_POST_IMAGE, file.getName(), ContentType.IMAGE_JPEG);
-                request.addParameter(KEY_POST_USER_ID, "" + userId);
-                request.addParameter(KEY_POST_NAME, name);
-                request.addParameter(KEY_POST_ADDRESS, address);
-                request.addParameter(KEY_POST_POSTCODE, postcode);
-                request.addParameter(KEY_POST_LATITUDE, latitude);
-                request.addParameter(KEY_POST_LONGITUDE, longitude);
+                MultipartUploadRequest request = new MultipartUploadRequest(context, file.getName(), VolleySingleTon.getDomainUrl() + Constants.END_URL_USER_PROFILE_UPDATE);
+                request.addFileToUpload(imagePath, KEY_IMAGE, file.getName(), ContentType.IMAGE_JPEG);
+                request.addParameter(KEY_USER_ID, "" + userId);
+                request.addParameter(KEY_NAME, name);
+                request.addParameter(KEY_ADDRESS, address);
+                request.addParameter(KEY_EMAIL, email);
+                request.addParameter(KEY_POSTCODE, postcode);
+                request.addParameter(KEY_LATITUDE, latitude);
+                request.addParameter(KEY_LONGITUDE, longitude);
 
                 //configure the notification
                 request.setNotificationConfig(R.drawable.ic_my_library_books_24dp,
@@ -179,17 +173,17 @@ class UserProfileInterActor implements UserProfileListeners.InterActorListener {
                     exc.printStackTrace();
                 }
             } else {
-                updateUserDetailsWithoutImage(context, userId, name, address, postcode, latitude, longitude);
+                updateUserDetailsWithoutImage(context, userId, name, email, address, postcode, latitude, longitude);
             }
         } else {
-            updateUserDetailsWithoutImage(context, userId, name, address, postcode, latitude, longitude);
+            updateUserDetailsWithoutImage(context, userId, name, email, address, postcode, latitude, longitude);
         }
     }
 
-    private void updateUserDetailsWithoutImage(Context context, final long userId, final String name, final String address, final String postcode, final String latitude, final String longitude) {
+    private void updateUserDetailsWithoutImage(Context context, final long userId, final String name, final String email, final String address, final String postcode, final String latitude, final String longitude) {
         StringRequest stringRequest = new StringRequest(
                 Request.Method.POST,
-                VolleySingleTon.getDomainUrl() + USER_PROFILE_UPDATE,
+                VolleySingleTon.getDomainUrl() + END_URL_USER_PROFILE_UPDATE,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -197,29 +191,29 @@ class UserProfileInterActor implements UserProfileListeners.InterActorListener {
 
                         try {
                             JSONObject jsonObject = new JSONObject(response);
-                            if (200 == jsonObject.optInt(Constants.KEY_JSON_STATUS)) {
-                                JSONObject dataJsonObject = jsonObject.optJSONObject(KEY_JSON_DATA);
+                            if (200 == jsonObject.optInt(Constants.KEY_STATUS)) {
+                                JSONObject dataJsonObject = jsonObject.optJSONObject(KEY_DATA);
                                 if (dataJsonObject != null) {
                                     if (isPresenterLive()) {
                                         mPresenterListener.setUserData(new UserDetailsModel(
-                                                dataJsonObject.optLong(KEY_JSON_USER_ID),
-                                                dataJsonObject.optString(KEY_JSON_NAME),
-                                                dataJsonObject.optString(KEY_JSON_ADDRESS),
-                                                dataJsonObject.optString(KEY_JSON_POSTCODE),
-                                                dataJsonObject.optString(KEY_JSON_EMAIL),
-                                                dataJsonObject.optString(KEY_JSON_MOBILE),
-                                                dataJsonObject.optString(KEY_JSON_IMAGE),
-                                                dataJsonObject.optInt(KEY_JSON_USER_TYPE),
-                                                dataJsonObject.optDouble(KEY_JSON_LATITUDE),
-                                                dataJsonObject.optDouble(KEY_JSON_LONGITUDE)
+                                                dataJsonObject.optLong(KEY_USER_ID),
+                                                dataJsonObject.optString(KEY_NAME),
+                                                dataJsonObject.optString(KEY_ADDRESS),
+                                                dataJsonObject.optString(KEY_POSTCODE),
+                                                dataJsonObject.optString(KEY_EMAIL),
+                                                dataJsonObject.optString(KEY_MOBILE),
+                                                dataJsonObject.optString(KEY_IMAGE),
+                                                dataJsonObject.optInt(KEY_USER_TYPE),
+                                                dataJsonObject.optDouble(KEY_LATITUDE),
+                                                dataJsonObject.optDouble(KEY_LONGITUDE)
 
                                         ));
                                     }
                                 } else {
                                     if (isPresenterLive()) {
                                         mPresenterListener.errorGettingUserDetails(
-                                                jsonObject.has(KEY_JSON_MESSAGE) ?
-                                                        jsonObject.optString(KEY_JSON_MESSAGE) :
+                                                jsonObject.has(KEY_MESSAGE) ?
+                                                        jsonObject.optString(KEY_MESSAGE) :
                                                         "Something went wrong, please try again later.!"
                                         );
                                     }
@@ -227,8 +221,8 @@ class UserProfileInterActor implements UserProfileListeners.InterActorListener {
                             } else {
                                 if (isPresenterLive()) {
                                     mPresenterListener.errorGettingUserDetails(
-                                            jsonObject.has(KEY_JSON_MESSAGE) ?
-                                                    jsonObject.optString(KEY_JSON_MESSAGE) :
+                                            jsonObject.has(KEY_MESSAGE) ?
+                                                    jsonObject.optString(KEY_MESSAGE) :
                                                     "Something went wrong, please try again later.!"
                                     );
                                 }
@@ -255,12 +249,13 @@ class UserProfileInterActor implements UserProfileListeners.InterActorListener {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put(KEY_POST_USER_ID, "" + userId);
-                params.put(KEY_POST_NAME, name);
-                params.put(KEY_POST_ADDRESS, address);
-                params.put(KEY_POST_POSTCODE, postcode);
-                params.put(KEY_POST_LATITUDE, latitude);
-                params.put(KEY_POST_LONGITUDE, longitude);
+                params.put(KEY_USER_ID, "" + userId);
+                params.put(KEY_NAME, name);
+                params.put(KEY_ADDRESS, address);
+                params.put(KEY_EMAIL, email);
+                params.put(KEY_POSTCODE, postcode);
+                params.put(KEY_LATITUDE, latitude);
+                params.put(KEY_LONGITUDE, longitude);
 
                 Log.d(TAG, "getParams() returned: " + params);
                 return params;

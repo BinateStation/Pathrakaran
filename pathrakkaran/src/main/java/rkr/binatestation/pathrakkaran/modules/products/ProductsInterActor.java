@@ -26,10 +26,10 @@ import rkr.binatestation.pathrakkaran.network.VolleySingleTon;
 
 import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.AgentProductListTable.CONTENT_URI_JOIN_PRODUCT_MASTER_JOIN_COMPANY_MASTER;
 import static rkr.binatestation.pathrakkaran.utils.Constants.CURSOR_LOADER_LOAD_AGENT_PRODUCTS;
+import static rkr.binatestation.pathrakkaran.utils.Constants.END_URL_PRODUCTS_MY_PRODUCTS;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_AGENT_ID;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_AGENT_PRODUCT_LIST;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_POST_AGENT_ID;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_SP_USER_ID;
-import static rkr.binatestation.pathrakkaran.utils.Constants.PRODUCTS_MY_PRODUCTS_JSON;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_USER_ID;
 
 /**
  * Created by RKR on 8/1/2017.
@@ -52,7 +52,7 @@ class ProductsInterActor implements ProductsListeners.InterActorListener, Loader
     public void loadProductList(LoaderManager loaderManager, long userId) {
         Log.d(TAG, "loadProductList() called with: loaderManager = [" + loaderManager + "]");
         Bundle bundle = new Bundle();
-        bundle.putLong(KEY_SP_USER_ID, userId);
+        bundle.putLong(KEY_USER_ID, userId);
         if (loaderManager.getLoader(CURSOR_LOADER_LOAD_AGENT_PRODUCTS) == null) {
             loaderManager.initLoader(CURSOR_LOADER_LOAD_AGENT_PRODUCTS, bundle, this);
         } else {
@@ -69,7 +69,7 @@ class ProductsInterActor implements ProductsListeners.InterActorListener, Loader
                 if (isPresenterLive()) {
                     Context context = mPresenterListener.getContext();
                     if (context != null) {
-                        long userId = args.getLong(KEY_SP_USER_ID, 0);
+                        long userId = args.getLong(KEY_USER_ID, 0);
                         return new CursorLoader(
                                 context,
                                 CONTENT_URI_JOIN_PRODUCT_MASTER_JOIN_COMPANY_MASTER,
@@ -109,7 +109,7 @@ class ProductsInterActor implements ProductsListeners.InterActorListener, Loader
             if (context != null) {
                 StringRequest stringRequest = new StringRequest(
                         Request.Method.POST,
-                        VolleySingleTon.getDomainUrl() + PRODUCTS_MY_PRODUCTS_JSON,
+                        VolleySingleTon.getDomainUrl() + END_URL_PRODUCTS_MY_PRODUCTS,
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
@@ -135,7 +135,7 @@ class ProductsInterActor implements ProductsListeners.InterActorListener, Loader
                     @Override
                     protected Map<String, String> getParams() {
                         Map<String, String> params = new HashMap<>();
-                        params.put(KEY_POST_AGENT_ID, "" + userId);
+                        params.put(KEY_AGENT_ID, "" + userId);
 
                         Log.d(TAG, "getParams() returned: " + getUrl() + "  " + params);
                         return params;

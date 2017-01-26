@@ -48,7 +48,7 @@ import rkr.binatestation.pathrakkaran.models.UserDetailsModel;
 import rkr.binatestation.pathrakkaran.network.VolleySingleTon;
 import rkr.binatestation.pathrakkaran.utils.GeneralUtils;
 
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_SP_USER_ID;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_USER_ID;
 import static rkr.binatestation.pathrakkaran.utils.Constants.REQUEST_EXTERNAL_STORAGE;
 import static rkr.binatestation.pathrakkaran.utils.Constants.REQUEST_LOCATION_PERMISSION;
 import static rkr.binatestation.pathrakkaran.utils.GeneralUtils.alert;
@@ -155,7 +155,7 @@ public class UserProfileActivity extends AppCompatActivity implements OnMapReady
         mProfilePictureNetworkImageView.setOnClickListener(this);
 
         if (isPresenterLive()) {
-            mPresenterListener.getUserDetails(this, getSharedPreferences(getPackageName(), MODE_PRIVATE).getLong(KEY_SP_USER_ID, 0));
+            mPresenterListener.getUserDetails(this, getSharedPreferences(getPackageName(), MODE_PRIVATE).getLong(KEY_USER_ID, 0));
         }
     }
 
@@ -246,8 +246,8 @@ public class UserProfileActivity extends AppCompatActivity implements OnMapReady
         mNameEditText.setFocusableInTouchMode(flag);
         mPhoneNumberEditText.setFocusable(false);
         mPhoneNumberEditText.setFocusableInTouchMode(false);
-        mEmailEditText.setFocusable(false);
-        mEmailEditText.setFocusableInTouchMode(false);
+        mEmailEditText.setFocusable(flag);
+        mEmailEditText.setFocusableInTouchMode(flag);
         mAddressEditText.setClickable(flag);
         mAddressEditText.setFocusableInTouchMode(flag);
         mPostcodeEditText.setClickable(flag);
@@ -386,8 +386,9 @@ public class UserProfileActivity extends AppCompatActivity implements OnMapReady
                 if (view.isSelected() && isPresenterLive()) {
                     mPresenterListener.validateInputs(
                             this,
-                            getSharedPreferences(getPackageName(), MODE_PRIVATE).getLong(KEY_SP_USER_ID, 0),
+                            getSharedPreferences(getPackageName(), MODE_PRIVATE).getLong(KEY_USER_ID, 0),
                             mNameEditText.getText().toString().trim(),
+                            mEmailEditText.getText().toString().trim(),
                             mAddressEditText.getText().toString().trim(),
                             mPostcodeEditText.getText().toString().trim(),
                             (mLatLng != null) ? mLatLng.latitude + "" : "",

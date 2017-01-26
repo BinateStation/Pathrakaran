@@ -20,7 +20,7 @@ import rkr.binatestation.pathrakkaran.R;
 import rkr.binatestation.pathrakkaran.adapters.ProductAdapter;
 import rkr.binatestation.pathrakkaran.models.AgentProductModel;
 
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_SP_USER_ID;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_USER_ID;
 
 /**
  * Fragment to show the list of products
@@ -63,7 +63,7 @@ public class ProductListFragment extends Fragment implements View.OnClickListene
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPresenterListener = new ProductsPresenter(this);
-        userId = getContext().getSharedPreferences(getContext().getPackageName(), Context.MODE_PRIVATE).getLong(KEY_SP_USER_ID, 0);
+        userId = getContext().getSharedPreferences(getContext().getPackageName(), Context.MODE_PRIVATE).getLong(KEY_USER_ID, 0);
     }
 
     @Override

@@ -19,8 +19,8 @@ import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.Agent
 import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.AgentProductListTable.COLUMN_PRODUCT_ID;
 import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.AgentProductListTable.COLUMN_SAVE_STATUS;
 import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.AgentProductListTable.CONTENT_URI;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_JSON_AGENT_ID;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_JSON_PRODUCT_ID;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_AGENT_ID;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_PRODUCT_ID;
 
 /**
  * Created by RKR on 08/01/2017.
@@ -133,8 +133,8 @@ public class AgentProductModel implements Parcelable {
 
     private static ContentValues getContentValues(JSONObject jsonObject) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COLUMN_AGENT_ID, jsonObject.optLong(KEY_JSON_AGENT_ID));
-        contentValues.put(COLUMN_PRODUCT_ID, jsonObject.optLong(KEY_JSON_PRODUCT_ID));
+        contentValues.put(COLUMN_AGENT_ID, jsonObject.optLong(KEY_AGENT_ID));
+        contentValues.put(COLUMN_PRODUCT_ID, jsonObject.optLong(KEY_PRODUCT_ID));
         contentValues.put(COLUMN_SAVE_STATUS, "1");
         return contentValues;
     }

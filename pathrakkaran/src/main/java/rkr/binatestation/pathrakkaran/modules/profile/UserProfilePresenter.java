@@ -60,7 +60,7 @@ class UserProfilePresenter implements UserProfileListeners.PresenterListener {
     }
 
     @Override
-    public void validateInputs(Context context, long userId, String name, String address, String postcode, String latitude, String longitude, String imagePath) {
+    public void validateInputs(Context context, long userId, String name, String email, String address, String postcode, String latitude, String longitude, String imagePath) {
         if (isViewLive()) {
             mViewListener.showProgressView();
         }
@@ -77,7 +77,7 @@ class UserProfilePresenter implements UserProfileListeners.PresenterListener {
             }
         } else {
             if (isInterActorLive()) {
-                mInterActorListener.updateUserDetails(context, userId, name, address, postcode, latitude, longitude, imagePath);
+                mInterActorListener.updateUserDetails(context, userId, name, email, address, postcode, latitude, longitude, imagePath);
             }
         }
     }

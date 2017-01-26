@@ -20,9 +20,9 @@ import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.Compa
 import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.CompanyMasterTable.COLUMN_COMPANY_NAME;
 import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.CompanyMasterTable.COLUMN_COMPANY_STATUS;
 import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.CompanyMasterTable.CONTENT_URI;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_JSON_COMPANY_ID;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_JSON_COMPANY_NAME;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_JSON_COMPANY_STATUS;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_COMPANY_ID;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_COMPANY_NAME;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_COMPANY_STATUS;
 
 /**
  * Created by RKR on 8/1/2017.
@@ -82,9 +82,9 @@ public class CompanyMasterModel implements Parcelable {
     private static ContentValues getContentValues(JSONObject jsonObject) {
         Log.d(TAG, "getContentValues() called with: jsonObject = [" + jsonObject + "]");
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COLUMN_COMPANY_ID, jsonObject.optInt(KEY_JSON_COMPANY_ID));
-        contentValues.put(COLUMN_COMPANY_NAME, jsonObject.optString(KEY_JSON_COMPANY_NAME));
-        contentValues.put(COLUMN_COMPANY_STATUS, jsonObject.optInt(KEY_JSON_COMPANY_STATUS));
+        contentValues.put(COLUMN_COMPANY_ID, jsonObject.optInt(KEY_COMPANY_ID));
+        contentValues.put(COLUMN_COMPANY_NAME, jsonObject.optString(KEY_COMPANY_NAME));
+        contentValues.put(COLUMN_COMPANY_STATUS, jsonObject.optInt(KEY_COMPANY_STATUS));
         Log.d(TAG, "getContentValues() returned: " + contentValues);
         return contentValues;
     }

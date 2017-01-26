@@ -31,16 +31,16 @@ import rkr.binatestation.pathrakkaran.network.VolleySingleTon;
 import static android.provider.BaseColumns._ID;
 import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.AgentProductListTable.COLUMN_SAVE_STATUS;
 import static rkr.binatestation.pathrakkaran.utils.Constants.CURSOR_LOADER_LOAD_AGENT_PRODUCTS;
+import static rkr.binatestation.pathrakkaran.utils.Constants.END_URL_PRODUCTS_SUBSCRIBE;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_AGENT_ID;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_AGENT_PRODUCT_LIST;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_JSON_COMPANIES;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_JSON_DATA;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_JSON_MESSAGE;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_JSON_PRODUCTS;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_JSON_STATUS;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_POST_AGENT_ID;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_POST_PRODUCT_ID;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_SP_USER_ID;
-import static rkr.binatestation.pathrakkaran.utils.Constants.PRODUCTS_SUBSCRIBE_JSON;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_COMPANIES;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_DATA;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_MESSAGE;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_PRODUCTS;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_PRODUCT_ID;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_STATUS;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_USER_ID;
 
 /**
  * This IntentService use to do Database operations in background thread
@@ -134,18 +134,18 @@ public class DatabaseOperationService extends IntentService {
         Log.d(TAG, "handleActionSaveProductAgent() called with: param1 = [" + param1 + "]");
         try {
             JSONObject jsonObject = new JSONObject(param1);
-            String message = jsonObject.optString(KEY_JSON_MESSAGE);
+            String message = jsonObject.optString(KEY_MESSAGE);
             Log.d(TAG, "handleActionSaveMasters: " + message);
-            if (jsonObject.has(KEY_JSON_STATUS) && 200 == jsonObject.optInt(KEY_JSON_STATUS)) {
-                if (jsonObject.has(KEY_JSON_DATA)) {
-                    AgentProductModel.bulkInsert(getContentResolver(), jsonObject.optJSONArray(KEY_JSON_DATA));
+            if (jsonObject.has(KEY_STATUS) && 200 == jsonObject.optInt(KEY_STATUS)) {
+                if (jsonObject.has(KEY_DATA)) {
+                    AgentProductModel.bulkInsert(getContentResolver(), jsonObject.optJSONArray(KEY_DATA));
                 }
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        long userId = getSharedPreferences(getPackageName(), Context.MODE_PRIVATE).getLong(KEY_SP_USER_ID, 0);
+        long userId = getSharedPreferences(getPackageName(), Context.MODE_PRIVATE).getLong(KEY_USER_ID, 0);
         Cursor cursor = getContentResolver().query(
                 PathrakkaranContract.AgentProductListTable.CONTENT_URI_JOIN_PRODUCT_MASTER_JOIN_COMPANY_MASTER,
                 null,
@@ -171,13 +171,13 @@ public class DatabaseOperationService extends IntentService {
         }
         StringRequest stringRequest = new StringRequest(
                 Request.Method.POST,
-                VolleySingleTon.getDomainUrl() + PRODUCTS_SUBSCRIBE_JSON,
+                VolleySingleTon.getDomainUrl() + END_URL_PRODUCTS_SUBSCRIBE,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         try {
                             JSONObject jsonObject = new JSONObject(response);
-                            int responseCode = jsonObject.optInt(KEY_JSON_STATUS);
+                            int responseCode = jsonObject.optInt(KEY_STATUS);
                             if (200 == responseCode) {
                                 ContentValues contentValues = new ContentValues();
                                 contentValues.put(COLUMN_SAVE_STATUS, 1);
@@ -203,8 +203,8 @@ public class DatabaseOperationService extends IntentService {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put(KEY_POST_AGENT_ID, "" + agentProductModel.getAgentId());
-                params.put(KEY_POST_PRODUCT_ID, "" + agentProductModel.getProductId());
+                params.put(KEY_AGENT_ID, "" + agentProductModel.getAgentId());
+                params.put(KEY_PRODUCT_ID, "" + agentProductModel.getProductId());
 
                 Log.d(TAG, "getParams() returned: " + getUrl() + "  " + params);
                 return params;
@@ -221,14 +221,14 @@ public class DatabaseOperationService extends IntentService {
     private void handleActionSaveMasters(String param1) {
         try {
             JSONObject jsonObject = new JSONObject(param1);
-            String message = jsonObject.optString(KEY_JSON_MESSAGE);
+            String message = jsonObject.optString(KEY_MESSAGE);
             Log.d(TAG, "handleActionSaveMasters: " + message);
-            if (jsonObject.has(KEY_JSON_STATUS) && 200 == jsonObject.optInt(KEY_JSON_STATUS)) {
-                if (jsonObject.has(KEY_JSON_DATA)) {
-                    JSONObject dataJsonObject = jsonObject.optJSONObject(KEY_JSON_DATA);
+            if (jsonObject.has(KEY_STATUS) && 200 == jsonObject.optInt(KEY_STATUS)) {
+                if (jsonObject.has(KEY_DATA)) {
+                    JSONObject dataJsonObject = jsonObject.optJSONObject(KEY_DATA);
                     if (dataJsonObject != null) {
-                        JSONArray companiesJsonArray = dataJsonObject.optJSONArray(KEY_JSON_COMPANIES);
-                        JSONArray productsJsonArray = dataJsonObject.optJSONArray(KEY_JSON_PRODUCTS);
+                        JSONArray companiesJsonArray = dataJsonObject.optJSONArray(KEY_COMPANIES);
+                        JSONArray productsJsonArray = dataJsonObject.optJSONArray(KEY_PRODUCTS);
                         if (companiesJsonArray != null && companiesJsonArray.length() > 0) {
                             CompanyMasterModel.bulkInsert(getContentResolver(), companiesJsonArray);
                         }

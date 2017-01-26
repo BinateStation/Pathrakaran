@@ -11,7 +11,7 @@ import com.android.volley.toolbox.StringRequest;
 import rkr.binatestation.pathrakkaran.database.DatabaseOperationService;
 import rkr.binatestation.pathrakkaran.network.VolleySingleTon;
 
-import static rkr.binatestation.pathrakkaran.utils.Constants.MASTERS_JSON;
+import static rkr.binatestation.pathrakkaran.utils.Constants.END_URL_MASTERS;
 
 /**
  * Created by RKR on 8/1/2017.
@@ -36,7 +36,7 @@ class HomeInterActor implements HomeListeners.InterActorListener {
         Log.d(TAG, "getMasters() called");
         StringRequest stringRequest = new StringRequest(
                 Request.Method.GET,
-                VolleySingleTon.getDomainUrl() + MASTERS_JSON,
+                VolleySingleTon.getDomainUrl() + END_URL_MASTERS,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {

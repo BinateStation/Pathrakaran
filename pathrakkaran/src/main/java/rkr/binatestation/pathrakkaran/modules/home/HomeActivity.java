@@ -23,9 +23,9 @@ import rkr.binatestation.pathrakkaran.modules.profile.UserProfileActivity;
 import static rkr.binatestation.pathrakkaran.models.UserDetailsModel.USER_TYPE_AGENT;
 import static rkr.binatestation.pathrakkaran.models.UserDetailsModel.USER_TYPE_SUBSCRIBER;
 import static rkr.binatestation.pathrakkaran.models.UserDetailsModel.USER_TYPE_SUPPLIER;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_SP_USER_NAME;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_SP_USER_PHONE;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_SP_USER_TYPE;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_USER_NAME;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_USER_PHONE;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_USER_TYPE;
 
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, HomeListeners.ViewListener {
@@ -49,8 +49,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(getSharedPreferences(getPackageName(), MODE_PRIVATE).getString(KEY_SP_USER_NAME, getString(R.string.app_name)));
-            getSupportActionBar().setSubtitle(getSharedPreferences(getPackageName(), MODE_PRIVATE).getString(KEY_SP_USER_PHONE, getString(R.string.app_name)));
+            getSupportActionBar().setTitle(getSharedPreferences(getPackageName(), MODE_PRIVATE).getString(KEY_USER_NAME, getString(R.string.app_name)));
+            getSupportActionBar().setSubtitle(getSharedPreferences(getPackageName(), MODE_PRIVATE).getString(KEY_USER_PHONE, getString(R.string.app_name)));
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -60,7 +60,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        handleNavigationMenuItems(navigationView, getSharedPreferences(getPackageName(), MODE_PRIVATE).getInt(KEY_SP_USER_TYPE, 0));
+        handleNavigationMenuItems(navigationView, getSharedPreferences(getPackageName(), MODE_PRIVATE).getInt(KEY_USER_TYPE, 0));
 
         //Get Masters
         if (isPresenterLive()) {

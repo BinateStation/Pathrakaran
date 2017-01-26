@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import rkr.binatestation.pathrakkaran.modules.home.HomeActivity;
 import rkr.binatestation.pathrakkaran.modules.login.LoginActivity;
 
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_SP_IS_LOGGED_IN;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_IS_LOGGED_IN;
 
 
 /**
@@ -18,7 +18,7 @@ public class SplashScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Start your app HomeActivity activity
-        if (getSharedPreferences(getPackageName(), MODE_PRIVATE).getBoolean(KEY_SP_IS_LOGGED_IN, false)) {
+        if (getSharedPreferences(getPackageName(), MODE_PRIVATE).getBoolean(KEY_IS_LOGGED_IN, false)) {
             startActivity(new Intent(SplashScreen.this, HomeActivity.class));
         } else {
             startActivity(new Intent(SplashScreen.this, LoginActivity.class));

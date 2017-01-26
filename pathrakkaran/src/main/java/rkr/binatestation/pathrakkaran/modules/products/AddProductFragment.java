@@ -38,7 +38,7 @@ import rkr.binatestation.pathrakkaran.models.ProductMasterModel;
 
 import static rkr.binatestation.pathrakkaran.utils.Constants.CURSOR_LOADER_LOAD_COMPANIES;
 import static rkr.binatestation.pathrakkaran.utils.Constants.CURSOR_LOADER_LOAD_PRODUCTS;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_SP_USER_ID;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_USER_ID;
 
 /**
  * Dialog fragment for adding product for Agent
@@ -61,7 +61,7 @@ public class AddProductFragment extends DialogFragment implements LoaderManager.
     public static AddProductFragment newInstance(long userId, AddProductListener addProductListener) {
         Log.d(TAG, "newInstance() called");
         Bundle bundle = new Bundle();
-        bundle.putLong(KEY_SP_USER_ID, userId);
+        bundle.putLong(KEY_USER_ID, userId);
         AddProductFragment fragment = new AddProductFragment();
         fragment.setArguments(bundle);
         fragment.mAddProductListener = addProductListener;
@@ -72,7 +72,7 @@ public class AddProductFragment extends DialogFragment implements LoaderManager.
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        userId = getArguments().getLong(KEY_SP_USER_ID, 0);
+        userId = getArguments().getLong(KEY_USER_ID, 0);
         loadMasters();
     }
 
@@ -235,7 +235,7 @@ public class AddProductFragment extends DialogFragment implements LoaderManager.
                 if (productMasterModel != null) {
                     DatabaseOperationService.startActionAddProductAgent(getContext(), new AgentProductModel(
                             productMasterModel.getProductId(),
-                            getContext().getSharedPreferences(getContext().getPackageName(), Context.MODE_PRIVATE).getLong(KEY_SP_USER_ID, 0),
+                            getContext().getSharedPreferences(getContext().getPackageName(), Context.MODE_PRIVATE).getLong(KEY_USER_ID, 0),
                             2
                     ), new ResultReceiver(new Handler()) {
                         @Override

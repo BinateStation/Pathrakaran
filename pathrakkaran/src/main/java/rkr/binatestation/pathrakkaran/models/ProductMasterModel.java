@@ -27,13 +27,13 @@ import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.Produ
 import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.ProductMasterTable.COLUMN_PRODUCT_STATUS;
 import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.ProductMasterTable.COLUMN_PRODUCT_TYPE;
 import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.ProductMasterTable.CONTENT_URI;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_JSON_COMPANY_ID;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_JSON_PRODUCT_ID;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_JSON_PRODUCT_IMAGE;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_JSON_PRODUCT_NAME;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_JSON_PRODUCT_PRICE;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_JSON_PRODUCT_STATUS;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_JSON_PRODUCT_TYPE;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_COMPANY_ID;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_PRODUCT_ID;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_PRODUCT_IMAGE;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_PRODUCT_NAME;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_PRODUCT_PRICE;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_PRODUCT_STATUS;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_PRODUCT_TYPE;
 
 /**
  * Created by RKR on 8/1/2017.
@@ -108,13 +108,13 @@ public class ProductMasterModel implements Parcelable {
     private static ContentValues getContentValues(JSONObject jsonObject) {
         Log.d(TAG, "getContentValues() called with: jsonObject = [" + jsonObject + "]");
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COLUMN_PRODUCT_ID, jsonObject.optInt(KEY_JSON_PRODUCT_ID));
-        contentValues.put(COLUMN_COMPANY_ID, jsonObject.optInt(KEY_JSON_COMPANY_ID));
-        contentValues.put(COLUMN_PRODUCT_NAME, jsonObject.optString(KEY_JSON_PRODUCT_NAME));
-        contentValues.put(COLUMN_PRODUCT_PRICE, jsonObject.optInt(KEY_JSON_PRODUCT_PRICE));
-        contentValues.put(COLUMN_PRODUCT_IMAGE, jsonObject.optString(KEY_JSON_PRODUCT_IMAGE));
-        contentValues.put(COLUMN_PRODUCT_TYPE, jsonObject.optInt(KEY_JSON_PRODUCT_TYPE));
-        contentValues.put(COLUMN_PRODUCT_STATUS, jsonObject.optInt(KEY_JSON_PRODUCT_STATUS));
+        contentValues.put(COLUMN_PRODUCT_ID, jsonObject.optInt(KEY_PRODUCT_ID));
+        contentValues.put(COLUMN_COMPANY_ID, jsonObject.optInt(KEY_COMPANY_ID));
+        contentValues.put(COLUMN_PRODUCT_NAME, jsonObject.optString(KEY_PRODUCT_NAME));
+        contentValues.put(COLUMN_PRODUCT_PRICE, jsonObject.optInt(KEY_PRODUCT_PRICE));
+        contentValues.put(COLUMN_PRODUCT_IMAGE, jsonObject.optString(KEY_PRODUCT_IMAGE));
+        contentValues.put(COLUMN_PRODUCT_TYPE, jsonObject.optInt(KEY_PRODUCT_TYPE));
+        contentValues.put(COLUMN_PRODUCT_STATUS, jsonObject.optInt(KEY_PRODUCT_STATUS));
         Log.d(TAG, "getContentValues() returned: " + contentValues);
         return contentValues;
     }
