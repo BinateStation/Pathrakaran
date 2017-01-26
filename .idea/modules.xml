@@ -4,8 +4,10 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Pathrakaran.iml" filepath="$PROJECT_DIR$/Pathrakaran.iml" />
       <module fileurl="file://$PROJECT_DIR$/Pathrakaran.iml" filepath="$PROJECT_DIR$/Pathrakaran.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Pathrakkaran.iml" filepath="$PROJECT_DIR$/Pathrakkaran.iml" />
       <module fileurl="file://$PROJECT_DIR$/pathrakaran/pathrakaran.iml" filepath="$PROJECT_DIR$/pathrakaran/pathrakaran.iml" />
       <module fileurl="file://$PROJECT_DIR$/pathrakaran/pathrakaran.iml" filepath="$PROJECT_DIR$/pathrakaran/pathrakaran.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pathrakkaran/pathrakkaran.iml" filepath="$PROJECT_DIR$/pathrakkaran/pathrakkaran.iml" />
     </modules>
   </component>
 </project>
