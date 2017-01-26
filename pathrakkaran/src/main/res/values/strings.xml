@@ -150,4 +150,11 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="name_error_message">Name is Mandatory.!</string>
+    <string name="mobile_mandatory_alert_message">Phone number is mandatory.!</string>
+    <string name="mobile_invalid_alert_msg">Invalid phone number.!</string>
+    <string name="invalid_email_alert_msg">Please use a valid email address.!</string>
+    <string name="empty_password_alert_msg">Please type your password here.!</string>
+    <string name="confirm_password_empty_msg">Please confirm your password.!</string>
+    <string name="password_mismatch_alert_msg">Password mismatch.!</string>
 </resources>

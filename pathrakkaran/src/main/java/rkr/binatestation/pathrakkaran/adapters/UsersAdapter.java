@@ -1,5 +1,7 @@
 package rkr.binatestation.pathrakkaran.adapters;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +15,10 @@ import java.util.List;
 
 import rkr.binatestation.pathrakkaran.R;
 import rkr.binatestation.pathrakkaran.models.UserDetailsModel;
+import rkr.binatestation.pathrakkaran.modules.profile.UserProfileActivity;
 import rkr.binatestation.pathrakkaran.network.VolleySingleTon;
+
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_USER;
 
 
 /**
@@ -64,6 +69,16 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ItemHolder> 
             networkImageView = (NetworkImageView) itemView.findViewById(R.id.AULI_image);
             nameTextView = (TextView) itemView.findViewById(R.id.AULI_name);
             mobileTextView = (TextView) itemView.findViewById(R.id.AULI_mobile);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Context context = v.getContext();
+                    if (context != null) {
+                        context.startActivity(new Intent(context, UserProfileActivity.class)
+                                .putExtra(KEY_USER, mUserDetailsModelList.get(getAdapterPosition())));
+                    }
+                }
+            });
         }
     }
 }

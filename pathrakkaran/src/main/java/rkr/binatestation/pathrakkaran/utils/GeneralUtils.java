@@ -11,6 +11,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 
 import java.io.File;
@@ -137,5 +138,8 @@ public class GeneralUtils {
         return false;
     }
 
+    public static boolean validateEmail(String email) {
+        return Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
 
 }

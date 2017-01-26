@@ -3,6 +3,9 @@ package rkr.binatestation.pathrakkaran.modules.register;
 import android.content.Context;
 import android.text.TextUtils;
 
+import rkr.binatestation.pathrakkaran.R;
+import rkr.binatestation.pathrakkaran.utils.GeneralUtils;
+
 import static rkr.binatestation.pathrakkaran.models.UserDetailsModel.USER_TYPE_AGENT;
 import static rkr.binatestation.pathrakkaran.models.UserDetailsModel.USER_TYPE_SUBSCRIBER;
 import static rkr.binatestation.pathrakkaran.models.UserDetailsModel.USER_TYPE_SUPPLIER;
@@ -37,37 +40,37 @@ class RegisterPresenter implements RegisterListeners.PresenterListener {
         }
         if (TextUtils.isEmpty(name)) {
             if (isViewLive()) {
-                mViewListener.nameFieldError("Name is Mandatory.!");
+                mViewListener.nameFieldError(context.getString(R.string.name_error_message));
                 mViewListener.hideProgress();
             }
         } else if (TextUtils.isEmpty(phoneNumber)) {
             if (isViewLive()) {
-                mViewListener.phoneFieldError("Phone number is mandatory.!");
+                mViewListener.phoneFieldError(context.getString(R.string.mobile_mandatory_alert_message));
                 mViewListener.hideProgress();
             }
         } else if ((!TextUtils.isDigitsOnly(phoneNumber) || (TextUtils.getTrimmedLength(phoneNumber) < 10))) {
             if (isViewLive()) {
-                mViewListener.phoneFieldError("Invalid mFieldPhoneNumberEditText number.!");
+                mViewListener.phoneFieldError(context.getString(R.string.mobile_invalid_alert_msg));
                 mViewListener.hideProgress();
             }
-        } else if (TextUtils.isEmpty(email)) {
+        } else if (!TextUtils.isEmpty(email) && !GeneralUtils.validateEmail(email)) {
             if (isViewLive()) {
-                mViewListener.emailFieldError("Please use a valid email address.!");
+                mViewListener.emailFieldError(context.getString(R.string.invalid_email_alert_msg));
                 mViewListener.hideProgress();
             }
         } else if (TextUtils.isEmpty(password)) {
             if (isViewLive()) {
-                mViewListener.passwordFieldError("Please type your password here.!");
+                mViewListener.passwordFieldError(context.getString(R.string.empty_password_alert_msg));
                 mViewListener.hideProgress();
             }
         } else if (TextUtils.isEmpty(confirmPassword)) {
             if (isViewLive()) {
-                mViewListener.confirmPassword("Please confirm your password.!");
+                mViewListener.confirmPassword(context.getString(R.string.confirm_password_empty_msg));
                 mViewListener.hideProgress();
             }
         } else if (!password.equalsIgnoreCase(confirmPassword)) {
             if (isViewLive()) {
-                mViewListener.confirmPassword("Password mismatch.!");
+                mViewListener.confirmPassword(context.getString(R.string.password_mismatch_alert_msg));
                 mViewListener.hideProgress();
             }
         } else {

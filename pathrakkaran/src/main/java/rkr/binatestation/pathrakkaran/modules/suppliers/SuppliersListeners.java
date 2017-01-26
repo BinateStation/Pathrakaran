@@ -28,11 +28,15 @@ interface SuppliersListeners {
 
         void setSuppliersList(List<UserDetailsModel> userDetailsModelList);
 
+        void registerSupplier(Context context, String name, String mobile, String email, long userId);
+
         Context getContext();
 
     }
 
     interface InterActorListener {
         void loadSuppliersList(LoaderManager loaderManager, long userId);
+
+        void register(Context context, String name, String mobile, String email, int userTypeValue, long userId);
     }
 }

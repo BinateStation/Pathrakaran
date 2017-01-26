@@ -8,6 +8,8 @@ import java.util.List;
 
 import rkr.binatestation.pathrakkaran.models.UserDetailsModel;
 
+import static rkr.binatestation.pathrakkaran.models.UserDetailsModel.USER_TYPE_SUPPLIER;
+
 /**
  * Created by RKR on 26/1/2017.
  * SuppliersPresenter.
@@ -50,6 +52,14 @@ class SuppliersPresenter implements SuppliersListeners.PresenterListener {
         if (isViewListener()) {
             mViewListener.setRecyclerView(userDetailsModelList);
             mViewListener.hideProgressBar();
+        }
+    }
+
+    @Override
+    public void registerSupplier(Context context, String name, String mobile, String email, long userId) {
+        int userTypeValue = USER_TYPE_SUPPLIER;
+        if (isInterActorLive()) {
+            mInterActorListener.register(context, name, mobile, email, userTypeValue, userId);
         }
     }
 

@@ -33,6 +33,7 @@ public class SuppliersListFragment extends Fragment implements SuppliersListener
     private long userId = 0;
     private SuppliersListeners.PresenterListener mPresenterListener;
     private UsersAdapter mUsersAdapter;
+    private AddSupplierFragment mAddSupplierFragment;
 
     public SuppliersListFragment() {
         // Required empty public constructor
@@ -78,25 +79,29 @@ public class SuppliersListFragment extends Fragment implements SuppliersListener
 
         //Setting addProduct button
         addProduct.setOnClickListener(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         if (isPresenterLive()) {
             mPresenterListener.loadSuppliersList(getLoaderManager(), userId);
         }
     }
 
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.FL_action_add_product:
-//                AddProductFragment addProductFragment = AddProductFragment.newInstance(userId, new AddProductFragment.AddProductListener() {
-//                    @Override
-//                    public void onFinishListener() {
-//                        if (isPresenterLive()) {
-//                            mPresenterListener.loadSuppliersList(getLoaderManager(), userId);
-//                        }
-//                    }
-//                });
-//                addProductFragment.show(getChildFragmentManager(), addProductFragment.getTag());
+                mAddSupplierFragment = AddSupplierFragment.newInstance(new AddSupplierFragment.AddSupplierListener() {
+                    @Override
+                    public void submit(String name, String mobile, String email) {
+                        if (isPresenterLive()) {
+                            mPresenterListener.registerSupplier(getContext(), name, mobile, email, userId);
+                        }
+                    }
+                });
+                mAddSupplierFragment.show(getChildFragmentManager(), mAddSupplierFragment.getTag());
                 break;
         }
     }
@@ -120,6 +125,10 @@ public class SuppliersListFragment extends Fragment implements SuppliersListener
         Log.d(TAG, "setRecyclerView() called with: userDetailsModelList = [" + userDetailsModelList + "]");
         if (mUsersAdapter != null) {
             mUsersAdapter.setUserDetailsModelList(userDetailsModelList);
+        }
+        if (mAddSupplierFragment != null && mAddSupplierFragment.isResumed()) {
+            mAddSupplierFragment.hideProgress();
+            mAddSupplierFragment.dismiss();
         }
     }
 

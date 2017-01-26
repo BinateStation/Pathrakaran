@@ -31,8 +31,14 @@ import static rkr.binatestation.pathrakkaran.models.UserDetailsModel.USER_TYPE_S
 import static rkr.binatestation.pathrakkaran.utils.Constants.CURSOR_LOADER_LOAD_AGENT_PRODUCTS;
 import static rkr.binatestation.pathrakkaran.utils.Constants.CURSOR_LOADER_LOAD_SUPPLIERS;
 import static rkr.binatestation.pathrakkaran.utils.Constants.END_URL_SUPPLIERS_GET_LIST;
+import static rkr.binatestation.pathrakkaran.utils.Constants.END_URL_SUPPLIERS_REGISTER;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_AGENT_ID;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_EMAIL;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_LOGIN_TYPE;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_MOBILE;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_NAME;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_USER_ID;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_USER_TYPE;
 
 /**
  * Created by RKR on 26/1/2017.
@@ -62,6 +68,43 @@ class SuppliersInterActor implements SuppliersListeners.InterActorListener, Load
             loaderManager.restartLoader(CURSOR_LOADER_LOAD_SUPPLIERS, bundle, this);
         }
         getSuppliersFromServer(userId);
+    }
+
+    @Override
+    public void register(Context context, final String name, final String mobile, final String email, final int userTypeValue, final long userId) {
+        StringRequest stringRequest = new StringRequest(
+                Request.Method.POST,
+                VolleySingleTon.getDomainUrl() + END_URL_SUPPLIERS_REGISTER,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d(TAG, "onResponse() called with: response = [" + response + "]");
+                        getSuppliersFromServer(userId);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e(TAG, "onErrorResponse: ", error);
+                    }
+                }
+        ) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put(KEY_AGENT_ID, "" + userId);
+                params.put(KEY_NAME, name);
+                params.put(KEY_MOBILE, mobile);
+                params.put(KEY_EMAIL, email);
+                params.put(KEY_USER_TYPE, "" + userTypeValue);
+                params.put(KEY_LOGIN_TYPE, "N");
+
+                Log.d(TAG, "getParams() returned: " + getUrl() + "  " + params);
+                return params;
+            }
+        };
+        VolleySingleTon.getInstance(context).addToRequestQueue(context, stringRequest);
+
     }
 
     private void getSuppliersFromServer(final long userId) {

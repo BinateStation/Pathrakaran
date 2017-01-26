@@ -111,12 +111,6 @@
 
         </android.support.v7.widget.LinearLayoutCompat>
 
-        <android.support.v4.widget.ContentLoadingProgressBar
-            android:id="@+id/AL_progress_bar"
-            style="@style/Widget.AppCompat.ProgressBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/AL_action_login"
@@ -124,6 +118,14 @@
             android:layout_height="wrap_content"
             android:onClick="onClick"
             android:src="@drawable/ic_done_24dp"
+            app:layout_anchor="@id/AL_login_line_view"
+            app:layout_anchorGravity="center" />
+
+        <android.support.v4.widget.ContentLoadingProgressBar
+            android:id="@+id/AL_progress_bar"
+            style="@style/Widget.AppCompat.ProgressBar"
+            android:layout_width="@dimen/progress_bar_size"
+            android:layout_height="@dimen/progress_bar_size"
             app:layout_anchor="@id/AL_login_line_view"
             app:layout_anchorGravity="center" />
 

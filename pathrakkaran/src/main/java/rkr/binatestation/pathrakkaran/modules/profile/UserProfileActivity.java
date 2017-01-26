@@ -48,6 +48,7 @@ import rkr.binatestation.pathrakkaran.models.UserDetailsModel;
 import rkr.binatestation.pathrakkaran.network.VolleySingleTon;
 import rkr.binatestation.pathrakkaran.utils.GeneralUtils;
 
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_USER;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_USER_ID;
 import static rkr.binatestation.pathrakkaran.utils.Constants.REQUEST_EXTERNAL_STORAGE;
 import static rkr.binatestation.pathrakkaran.utils.Constants.REQUEST_LOCATION_PERMISSION;
@@ -114,6 +115,8 @@ public class UserProfileActivity extends AppCompatActivity implements OnMapReady
     private String mSelectedImagePath = "";
     private Marker mMarker;
 
+    private UserDetailsModel mUserDetailsModel;
+
     private boolean isPresenterLive() {
         return mPresenterListener != null;
     }
@@ -123,7 +126,6 @@ public class UserProfileActivity extends AppCompatActivity implements OnMapReady
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
 
-        buildGoogleApiClient();
         mPresenterListener = new UserProfilePresenter(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.AUP_toolbar);
@@ -154,12 +156,14 @@ public class UserProfileActivity extends AppCompatActivity implements OnMapReady
         mProfilePictureNetworkImageView = (NetworkImageView) findViewById(R.id.AUP_profile_picture);
         mProfilePictureNetworkImageView.setOnClickListener(this);
 
-        if (isPresenterLive()) {
-            mPresenterListener.getUserDetails(this, getSharedPreferences(getPackageName(), MODE_PRIVATE).getLong(KEY_USER_ID, 0));
+        mUserDetailsModel = getIntent().getParcelableExtra(KEY_USER);
+        if (mUserDetailsModel == null) {
+            if (isPresenterLive()) {
+                mPresenterListener.getUserDetails(this, getSharedPreferences(getPackageName(), MODE_PRIVATE).getLong(KEY_USER_ID, 0));
+            }
+        } else {
+            setView(mUserDetailsModel);
         }
-    }
-
-    private void buildGoogleApiClient() {
     }
 
     @Override
@@ -307,7 +311,7 @@ public class UserProfileActivity extends AppCompatActivity implements OnMapReady
 
     @Override
     public void setView(UserDetailsModel userDetailsModel) {
-        Log.d(TAG, "setView() called with: userDetailsModel = [" + userDetailsModel + "]");
+        Log.d(TAG, "setView() called with: mUserDetailsModel = [" + userDetailsModel + "]");
         setEditable(false);
         if (userDetailsModel != null) {
             mNameEditText.setText(userDetailsModel.getName());
@@ -386,7 +390,7 @@ public class UserProfileActivity extends AppCompatActivity implements OnMapReady
                 if (view.isSelected() && isPresenterLive()) {
                     mPresenterListener.validateInputs(
                             this,
-                            getSharedPreferences(getPackageName(), MODE_PRIVATE).getLong(KEY_USER_ID, 0),
+                            (mUserDetailsModel == null) ? getSharedPreferences(getPackageName(), MODE_PRIVATE).getLong(KEY_USER_ID, 0) : mUserDetailsModel.getUserId(),
                             mNameEditText.getText().toString().trim(),
                             mEmailEditText.getText().toString().trim(),
                             mAddressEditText.getText().toString().trim(),
