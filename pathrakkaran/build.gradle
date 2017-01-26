@@ -13,7 +13,7 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -34,3 +34,4 @@ dependencies {
     testCompile 'junit:junit:4.12'
     debugCompile 'im.dino:dbinspector:3.3.0@aar'
 }
+apply plugin: 'com.google.gms.google-services'

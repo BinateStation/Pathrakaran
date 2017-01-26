@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "491670345991",
+    "firebase_url": "https://speedy-atom-123118.firebaseio.com",
+    "project_id": "speedy-atom-123118",
+    "storage_bucket": "speedy-atom-123118.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:491670345991:android:d290f9b08d311021",
+        "android_client_info": {
+          "package_name": "rkr.binatestation.pathrakkaran"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "491670345991-htfo5h1bsq50rl0c9vtarptoch40baru.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "rkr.binatestation.pathrakkaran",
+            "certificate_hash": "A6398017621F56E1332CB75C3090F5A1AE03D5C9"
+          }
+        },
+        {
+          "client_id": "491670345991-rsroh2bqa8dg0bk4jt3tglfqah347ju5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBuvDOpuJdQKyckIwi_cS7ZTcaf1dlLjxA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "491670345991-rsroh2bqa8dg0bk4jt3tglfqah347ju5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
