@@ -18,6 +18,7 @@ public final class PathrakkaranContract {
     static final String PATH_COMPANY_MASTER = "company_master";
     static final String PATH_PRODUCT_MASTER = "product_master";
     static final String PATH_AGENT_PRODUCT_LIST = "agent_product_list";
+    static final String PATH_USER_DETAILS = "user_details";
     static final String PATH_AGENT_PRODUCT_LIST_JOIN_PRODUCT_MASTER_JOIN_COMPANY_MASTER = "agent_product_list_join_product_master_join_company_master";
     /**
      * INT,
@@ -151,6 +152,53 @@ public final class PathrakkaranContract {
                 COLUMN_AGENT_ID + INTEGER + COMMA +
                 COLUMN_PRODUCT_ID + INTEGER + UNIQUE + NOT_NULL + COMMA +
                 COLUMN_SAVE_STATUS + INTEGER +
+                " );";
+
+        // Returns the Uri referencing a Picture with the specified id.
+        static Uri buildUriWithId(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+    }
+
+    public static final class UserDetailsTable implements BaseColumns {
+
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_USER_DETAILS).build();
+        // user id
+        public static final String COLUMN_USER_ID = "user_id";
+        // user name
+        public static final String COLUMN_NAME = "name";
+        // user status
+        public static final String COLUMN_ADDRESS = "address";
+        // postcode
+        public static final String COLUMN_POSTCODE = "postcode";
+        // user email id
+        public static final String COLUMN_EMAIL = "email";
+        // user mobile number
+        public static final String COLUMN_MOBILE = "mobile";
+        // user image url
+        public static final String COLUMN_IMAGE = "image";
+        // user type 1- agent, 2 supplier, 3 subscriber
+        public static final String COLUMN_USER_TYPE = "user_type";
+        // user latitude
+        public static final String COLUMN_LATITUDE = "latitude";
+        // user longitude
+        public static final String COLUMN_LONGITUDE = "longitude";
+        // Name of the User details table.
+        public static final String TABLE_NAME = PATH_USER_DETAILS;
+        static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "." + PATH_USER_DETAILS;
+        // Create a table to hold User details.
+        static final String SQL_QUERY_CREATE_TABLE = CREATE_TABLE + TABLE_NAME + " (" +
+                _ID + INTEGER + PRIMARY_KEY + AUTOINCREMENT + COMMA +
+                COLUMN_USER_ID + INTEGER + UNIQUE + NOT_NULL + COMMA +
+                COLUMN_NAME + TEXT + NOT_NULL + COMMA +
+                COLUMN_ADDRESS + TEXT + COMMA +
+                COLUMN_POSTCODE + TEXT + COMMA +
+                COLUMN_EMAIL + TEXT + COMMA +
+                COLUMN_MOBILE + INTEGER + COMMA +
+                COLUMN_IMAGE + TEXT + COMMA +
+                COLUMN_USER_TYPE + INTEGER + NOT_NULL + COMMA +
+                COLUMN_LATITUDE + REAL + COMMA +
+                COLUMN_LONGITUDE + REAL +
                 " );";
 
         // Returns the Uri referencing a Picture with the specified id.

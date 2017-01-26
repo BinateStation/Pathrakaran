@@ -24,11 +24,11 @@ import rkr.binatestation.pathrakkaran.database.PathrakkaranContract;
 import rkr.binatestation.pathrakkaran.models.AgentProductModel;
 import rkr.binatestation.pathrakkaran.network.VolleySingleTon;
 
+import static rkr.binatestation.pathrakkaran.database.DatabaseOperationService.KEY_SUCCESS_MESSAGE;
 import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.AgentProductListTable.CONTENT_URI_JOIN_PRODUCT_MASTER_JOIN_COMPANY_MASTER;
 import static rkr.binatestation.pathrakkaran.utils.Constants.CURSOR_LOADER_LOAD_AGENT_PRODUCTS;
 import static rkr.binatestation.pathrakkaran.utils.Constants.END_URL_PRODUCTS_MY_PRODUCTS;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_AGENT_ID;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_AGENT_PRODUCT_LIST;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_USER_ID;
 
 /**
@@ -50,7 +50,7 @@ class ProductsInterActor implements ProductsListeners.InterActorListener, Loader
 
     @Override
     public void loadProductList(LoaderManager loaderManager, long userId) {
-        Log.d(TAG, "loadProductList() called with: loaderManager = [" + loaderManager + "]");
+        Log.d(TAG, "loadSuppliersList() called with: loaderManager = [" + loaderManager + "]");
         Bundle bundle = new Bundle();
         bundle.putLong(KEY_USER_ID, userId);
         if (loaderManager.getLoader(CURSOR_LOADER_LOAD_AGENT_PRODUCTS) == null) {
@@ -117,7 +117,7 @@ class ProductsInterActor implements ProductsListeners.InterActorListener, Loader
                                 DatabaseOperationService.startActionSaveProductAgent(context, response, new ResultReceiver(new Handler()) {
                                     @Override
                                     protected void onReceiveResult(int resultCode, Bundle resultData) {
-                                        ArrayList<AgentProductModel> productModelArrayList = resultData.getParcelableArrayList(KEY_AGENT_PRODUCT_LIST);
+                                        ArrayList<AgentProductModel> productModelArrayList = resultData.getParcelableArrayList(KEY_SUCCESS_MESSAGE);
                                         if (isPresenterLive()) {
                                             mPresenterListener.setProductList(productModelArrayList);
                                         }

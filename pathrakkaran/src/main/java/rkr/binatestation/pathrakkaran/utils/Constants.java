@@ -46,7 +46,6 @@ public class Constants {
     public static final String KEY_LONGITUDE = "longitude";
     public static final String KEY_AGENT_ID = "agent_id";
     public static final String KEY_PRODUCT_ID = "product_id";
-    public static final String KEY_AGENT_PRODUCT_LIST = "agent_product_list";
     /**
      * Id to identity READ_CONTACTS permission request.
      */
@@ -64,6 +63,7 @@ public class Constants {
     public static final String END_URL_MASTERS = "masters";
     public static final String END_URL_PRODUCTS_MY_PRODUCTS = "products/myProducts";
     public static final String END_URL_PRODUCTS_SUBSCRIBE = "products/subscribe";
+    public static final String END_URL_SUPPLIERS_GET_LIST = "suppliers/getList";
 
     /**
      * Cursor loaders
@@ -71,4 +71,5 @@ public class Constants {
     public static final int CURSOR_LOADER_LOAD_AGENT_PRODUCTS = 1;
     public static final int CURSOR_LOADER_LOAD_COMPANIES = 2;
     public static final int CURSOR_LOADER_LOAD_PRODUCTS = 3;
+    public static final int CURSOR_LOADER_LOAD_SUPPLIERS = 4;
 }

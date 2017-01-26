@@ -9,12 +9,12 @@
     tools:context="rkr.binatestation.pathrakkaran.modules.products.ProductListFragment">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/FPL_recycler_view"
+        android:id="@+id/FL_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/FPL_action_add_product"
+        android:id="@+id/FL_action_add_product"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
@@ -22,7 +22,7 @@
         android:src="@drawable/ic_add_white_24dp" />
 
     <android.support.v4.widget.ContentLoadingProgressBar
-        android:id="@+id/FPL_progress_bar"
+        android:id="@+id/FL_progress_bar"
         style="@style/Widget.AppCompat.ProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

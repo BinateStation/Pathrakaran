@@ -26,14 +26,17 @@ import java.util.Map;
 import rkr.binatestation.pathrakkaran.models.AgentProductModel;
 import rkr.binatestation.pathrakkaran.models.CompanyMasterModel;
 import rkr.binatestation.pathrakkaran.models.ProductMasterModel;
+import rkr.binatestation.pathrakkaran.models.UserDetailsModel;
 import rkr.binatestation.pathrakkaran.network.VolleySingleTon;
 
 import static android.provider.BaseColumns._ID;
 import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.AgentProductListTable.COLUMN_SAVE_STATUS;
+import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserDetailsTable.COLUMN_NAME;
+import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserDetailsTable.COLUMN_USER_TYPE;
+import static rkr.binatestation.pathrakkaran.models.UserDetailsModel.USER_TYPE_SUPPLIER;
 import static rkr.binatestation.pathrakkaran.utils.Constants.CURSOR_LOADER_LOAD_AGENT_PRODUCTS;
 import static rkr.binatestation.pathrakkaran.utils.Constants.END_URL_PRODUCTS_SUBSCRIBE;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_AGENT_ID;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_AGENT_PRODUCT_LIST;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_COMPANIES;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_DATA;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_MESSAGE;
@@ -47,12 +50,19 @@ import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_USER_ID;
  */
 public class DatabaseOperationService extends IntentService {
 
-    public static final int RECEIVER_ADD_PRODUCT_AGENT = 1;
+    public static final int RESULT_CODE_SUCCESS = 1;
+    public static final int RESULT_CODE_ERROR = 2;
+    public static final int RESULT_CODE_IN_PROGRESS = 3;
+
+    public static final String KEY_SUCCESS_MESSAGE = "success_message";
+    public static final String KEY_ERROR_MESSAGE = "error_message";
+    public static final String KEY_IN_PROGRESS_MESSAGE = "in_progress_message";
 
     // IntentService can perform
     private static final String ACTION_SAVE_MASTERS = "rkr.binatestation.pathrakaran.database.action.SAVE_MASTERS";
     private static final String ACTION_ADD_PRODUCT_AGENT = "rkr.binatestation.pathrakaran.database.action.ADD_PRODUCT_AGENT";
     private static final String ACTION_SAVE_PRODUCT_AGENT = "rkr.binatestation.pathrakaran.database.action.SAVE_PRODUCT_AGENT";
+    private static final String ACTION_SAVE_SUPPLIERS = "rkr.binatestation.pathrakaran.database.action.AVE_SUPPLIERS";
 
     private static final String EXTRA_PARAM1 = "extra_param_1";
     private static final String KEY_RECEIVER = "receiver";
@@ -105,6 +115,20 @@ public class DatabaseOperationService extends IntentService {
         context.startService(intent);
     }
 
+    /**
+     * Starts this service to perform action Suppliers with the given parameters. If
+     * the service is already performing a task this action will be queued.
+     *
+     * @see IntentService
+     */
+    public static void startActionSaveSuppliers(Context context, String response, ResultReceiver resultReceiver) {
+        Intent intent = new Intent(context, DatabaseOperationService.class);
+        intent.setAction(ACTION_SAVE_SUPPLIERS);
+        intent.putExtra(EXTRA_PARAM1, response);
+        intent.putExtra(KEY_RECEIVER, resultReceiver);
+        context.startService(intent);
+    }
+
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
@@ -126,7 +150,42 @@ public class DatabaseOperationService extends IntentService {
                     handleActionSaveProductAgent(param1);
                 }
                 break;
+                case ACTION_SAVE_SUPPLIERS: {
+                    final String param1 = intent.getStringExtra(EXTRA_PARAM1);
+                    mResultReceiver = intent.getParcelableExtra(KEY_RECEIVER);
+                    handleActionSaveSuppliers(param1);
+                }
+                break;
             }
+        }
+    }
+
+    private void handleActionSaveSuppliers(String param1) {
+        Log.d(TAG, "handleActionSaveSuppliers() called with: param1 = [" + param1 + "]");
+        try {
+            JSONObject jsonObject = new JSONObject(param1);
+            String message = jsonObject.optString(KEY_MESSAGE);
+            Log.d(TAG, "handleActionSaveMasters: " + message);
+            if (jsonObject.has(KEY_STATUS) && 200 == jsonObject.optInt(KEY_STATUS)) {
+                if (jsonObject.has(KEY_DATA)) {
+                    UserDetailsModel.bulkInsert(getContentResolver(), jsonObject.optJSONArray(KEY_DATA));
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        Cursor cursor = getContentResolver().query(
+                PathrakkaranContract.UserDetailsTable.CONTENT_URI,
+                null,
+                COLUMN_USER_TYPE + " = ? ",
+                new String[]{"" + USER_TYPE_SUPPLIER},
+                COLUMN_NAME
+        );
+        if (cursor != null) {
+            Bundle bundle = new Bundle();
+            bundle.putParcelableArrayList(KEY_SUCCESS_MESSAGE, UserDetailsModel.getAll(cursor));
+            mResultReceiver.send(CURSOR_LOADER_LOAD_AGENT_PRODUCTS, bundle);
         }
     }
 
@@ -154,11 +213,15 @@ public class DatabaseOperationService extends IntentService {
                 PathrakkaranContract.CompanyMasterTable.COLUMN_COMPANY_NAME
         );
         if (cursor != null) {
-            if (mResultReceiver != null) {
-                Bundle bundle = new Bundle();
-                bundle.putParcelableArrayList(KEY_AGENT_PRODUCT_LIST, AgentProductModel.getAgentProductModelList(cursor));
-                mResultReceiver.send(CURSOR_LOADER_LOAD_AGENT_PRODUCTS, bundle);
-            }
+            Bundle bundle = new Bundle();
+            bundle.putParcelableArrayList(KEY_SUCCESS_MESSAGE, AgentProductModel.getAgentProductModelList(cursor));
+            sendReceiverData(RESULT_CODE_SUCCESS, bundle);
+        }
+    }
+
+    private void sendReceiverData(int resultCode, Bundle data) {
+        if (mResultReceiver != null) {
+            mResultReceiver.send(resultCode, data);
         }
     }
 
@@ -166,9 +229,7 @@ public class DatabaseOperationService extends IntentService {
         Log.d(TAG, "handleActionAddProductAgent() called with: agentProductModel = [" + agentProductModel + "]");
         final Uri uri = AgentProductModel.insert(getContentResolver(), agentProductModel);
 
-        if (mResultReceiver != null) {
-            mResultReceiver.send(RECEIVER_ADD_PRODUCT_AGENT, null);
-        }
+        sendReceiverData(RESULT_CODE_SUCCESS, null);
         StringRequest stringRequest = new StringRequest(
                 Request.Method.POST,
                 VolleySingleTon.getDomainUrl() + END_URL_PRODUCTS_SUBSCRIBE,

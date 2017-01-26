@@ -1,7 +1,39 @@
 package rkr.binatestation.pathrakkaran.models;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserDetailsTable.COLUMN_ADDRESS;
+import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserDetailsTable.COLUMN_EMAIL;
+import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserDetailsTable.COLUMN_IMAGE;
+import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserDetailsTable.COLUMN_LATITUDE;
+import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserDetailsTable.COLUMN_LONGITUDE;
+import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserDetailsTable.COLUMN_MOBILE;
+import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserDetailsTable.COLUMN_NAME;
+import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserDetailsTable.COLUMN_POSTCODE;
+import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserDetailsTable.COLUMN_USER_ID;
+import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserDetailsTable.COLUMN_USER_TYPE;
+import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserDetailsTable.CONTENT_URI;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_ADDRESS;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_EMAIL;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_IMAGE;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_LATITUDE;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_LONGITUDE;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_MOBILE;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_NAME;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_POSTCODE;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_USER_ID;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_USER_TYPE;
 
 /**
  * Created by RKR on 11/12/2016.
@@ -23,6 +55,8 @@ public class UserDetailsModel implements Parcelable {
     public static final int USER_TYPE_AGENT = 1;
     public static final int USER_TYPE_SUPPLIER = 2;
     public static final int USER_TYPE_SUBSCRIBER = 3;
+    private static final String TAG = "UserDetailsModel";
+    private long id;
     private long userId;
     private String name;
     private String address;
@@ -48,6 +82,7 @@ public class UserDetailsModel implements Parcelable {
     }
 
     private UserDetailsModel(Parcel in) {
+        id = in.readLong();
         userId = in.readLong();
         name = in.readString();
         address = in.readString();
@@ -58,6 +93,84 @@ public class UserDetailsModel implements Parcelable {
         userType = in.readInt();
         latitude = in.readDouble();
         longitude = in.readDouble();
+    }
+
+    public static ArrayList<UserDetailsModel> getAll(Cursor cursor) {
+        Log.d(TAG, "getAll() called with: cursor = [" + cursor + "]");
+        ArrayList<UserDetailsModel> userDetailsModelList = new ArrayList<>();
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                do {
+                    userDetailsModelList.add(cursorToUserDetailsModel(cursor));
+                } while (cursor.moveToNext());
+            }
+            cursor.close();
+        }
+        Log.d(TAG, "getAll() returned: " + userDetailsModelList);
+        return userDetailsModelList;
+    }
+
+    public static int bulkInsert(ContentResolver contentResolver, JSONArray jsonArray) {
+        Log.d(TAG, "bulkInsert() called with: contentResolver = [" + contentResolver + "], jsonArray = [" + jsonArray + "]");
+        int noOfRowsInserted = contentResolver.bulkInsert(CONTENT_URI, getContentValuesArray(jsonArray));
+        Log.d(TAG, "bulkInsert() returned: " + noOfRowsInserted);
+        return noOfRowsInserted;
+    }
+
+    private static ContentValues[] getContentValuesArray(JSONArray jsonArray) {
+        Log.d(TAG, "getContentValuesArray() called with: jsonArray = [" + jsonArray + "]");
+        ContentValues[] contentValues = new ContentValues[jsonArray.length()];
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject jsonObject = jsonArray.optJSONObject(i);
+            if (jsonObject != null) {
+                contentValues[i] = getContentValues(jsonObject);
+            }
+        }
+        Log.d(TAG, "getContentValuesArray() returned: " + Arrays.toString(contentValues));
+        return contentValues;
+    }
+
+    private static ContentValues getContentValues(JSONObject jsonObject) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_USER_ID, jsonObject.optLong(KEY_USER_ID));
+        contentValues.put(COLUMN_NAME, jsonObject.optString(KEY_NAME));
+        contentValues.put(COLUMN_ADDRESS, jsonObject.optString(KEY_ADDRESS));
+        contentValues.put(COLUMN_POSTCODE, jsonObject.optString(KEY_POSTCODE));
+        contentValues.put(COLUMN_EMAIL, jsonObject.optString(KEY_EMAIL));
+        contentValues.put(COLUMN_MOBILE, jsonObject.optString(KEY_MOBILE));
+        contentValues.put(COLUMN_IMAGE, jsonObject.optString(KEY_IMAGE));
+        contentValues.put(COLUMN_USER_TYPE, jsonObject.optInt(KEY_USER_TYPE));
+        contentValues.put(COLUMN_LATITUDE, jsonObject.optDouble(KEY_LATITUDE));
+        contentValues.put(COLUMN_LONGITUDE, jsonObject.optDouble(KEY_LONGITUDE));
+        return contentValues;
+    }
+
+    private static UserDetailsModel cursorToUserDetailsModel(Cursor cursor) {
+        Log.d(TAG, "cursorToUserDetailsModel() called with: cursor = [" + cursor + "]");
+        UserDetailsModel userDetailsModel = new UserDetailsModel(
+                cursor.getLong(cursor.getColumnIndex(COLUMN_USER_ID)),
+                cursor.getString(cursor.getColumnIndex(COLUMN_NAME)),
+                cursor.getString(cursor.getColumnIndex(COLUMN_ADDRESS)),
+                cursor.getString(cursor.getColumnIndex(COLUMN_POSTCODE)),
+                cursor.getString(cursor.getColumnIndex(COLUMN_EMAIL)),
+                cursor.getString(cursor.getColumnIndex(COLUMN_MOBILE)),
+                cursor.getString(cursor.getColumnIndex(COLUMN_IMAGE)),
+                cursor.getInt(cursor.getColumnIndex(COLUMN_USER_TYPE)),
+                cursor.getDouble(cursor.getColumnIndex(COLUMN_LATITUDE)),
+                cursor.getDouble(cursor.getColumnIndex(COLUMN_LONGITUDE))
+
+        );
+        userDetailsModel.setId(cursor.getLong(0));
+        Log.d(TAG, "cursorToUserDetailsModel() returned: " + userDetailsModel);
+        return userDetailsModel;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public long getUserId() {
@@ -147,6 +260,7 @@ public class UserDetailsModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(id);
         dest.writeLong(userId);
         dest.writeString(name);
         dest.writeString(address);

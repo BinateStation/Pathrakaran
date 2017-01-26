@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import rkr.binatestation.pathrakkaran.database.PathrakkaranContract.AgentProductListTable;
 import rkr.binatestation.pathrakkaran.database.PathrakkaranContract.CompanyMasterTable;
 import rkr.binatestation.pathrakkaran.database.PathrakkaranContract.ProductMasterTable;
+import rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserDetailsTable;
 
 class RKRsPathrakkaranSQLiteHelper extends SQLiteOpenHelper {
 
@@ -24,6 +25,7 @@ class RKRsPathrakkaranSQLiteHelper extends SQLiteOpenHelper {
         database.execSQL(CompanyMasterTable.SQL_QUERY_CREATE_TABLE);
         database.execSQL(ProductMasterTable.SQL_QUERY_CREATE_TABLE);
         database.execSQL(AgentProductListTable.SQL_QUERY_CREATE_TABLE);
+        database.execSQL(UserDetailsTable.SQL_QUERY_CREATE_TABLE);
     }
 
     @Override
@@ -32,6 +34,7 @@ class RKRsPathrakkaranSQLiteHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + CompanyMasterTable.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + ProductMasterTable.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + AgentProductListTable.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + UserDetailsTable.TABLE_NAME);
         onCreate(db);
     }
 

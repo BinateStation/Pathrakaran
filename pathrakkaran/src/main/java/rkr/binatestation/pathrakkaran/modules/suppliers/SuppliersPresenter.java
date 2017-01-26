@@ -1,4 +1,4 @@
-package rkr.binatestation.pathrakkaran.modules.products;
+package rkr.binatestation.pathrakkaran.modules.suppliers;
 
 import android.content.Context;
 import android.support.v4.app.LoaderManager;
@@ -6,21 +6,22 @@ import android.util.Log;
 
 import java.util.List;
 
-import rkr.binatestation.pathrakkaran.models.AgentProductModel;
+import rkr.binatestation.pathrakkaran.models.UserDetailsModel;
 
 /**
- * Created by RKR on 8/1/2017.
- * ProductsPresenter.
+ * Created by RKR on 26/1/2017.
+ * SuppliersPresenter.
  */
 
-class ProductsPresenter implements ProductsListeners.PresenterListener {
-    private static final String TAG = "ProductsPresenter";
-    private ProductsListeners.ViewListener mViewListener;
-    private ProductsListeners.InterActorListener mInterActorListener;
+class SuppliersPresenter implements SuppliersListeners.PresenterListener {
 
-    ProductsPresenter(ProductsListeners.ViewListener viewListener) {
+    private static final String TAG = "SuppliersPresenter";
+    private SuppliersListeners.ViewListener mViewListener;
+    private SuppliersListeners.InterActorListener mInterActorListener;
+
+    SuppliersPresenter(SuppliersListeners.ViewListener viewListener) {
         mViewListener = viewListener;
-        mInterActorListener = new ProductsInterActor(this);
+        mInterActorListener = new SuppliersInterActor(this);
     }
 
     private boolean isViewListener() {
@@ -31,21 +32,23 @@ class ProductsPresenter implements ProductsListeners.PresenterListener {
         return mInterActorListener != null;
     }
 
+
     @Override
-    public void loadProductList(LoaderManager loaderManager, long userId) {
+    public void loadSuppliersList(LoaderManager loaderManager, long userId) {
         Log.d(TAG, "loadSuppliersList() called with: loaderManager = [" + loaderManager + "], userId = [" + userId + "]");
         if (isViewListener()) {
             mViewListener.showProgressBar();
         }
         if (isInterActorLive()) {
-            mInterActorListener.loadProductList(loaderManager, userId);
+            mInterActorListener.loadSuppliersList(loaderManager, userId);
         }
+
     }
 
     @Override
-    public void setProductList(List<AgentProductModel> productModelList) {
+    public void setSuppliersList(List<UserDetailsModel> userDetailsModelList) {
         if (isViewListener()) {
-            mViewListener.setRecyclerView(productModelList);
+            mViewListener.setRecyclerView(userDetailsModelList);
             mViewListener.hideProgressBar();
         }
     }
