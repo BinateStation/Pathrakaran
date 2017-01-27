@@ -168,7 +168,10 @@ public class DatabaseOperationService extends IntentService {
             Log.d(TAG, "handleActionSaveMasters: " + message);
             if (jsonObject.has(KEY_STATUS) && 200 == jsonObject.optInt(KEY_STATUS)) {
                 if (jsonObject.has(KEY_DATA)) {
-                    UserDetailsModel.bulkInsert(getContentResolver(), jsonObject.optJSONArray(KEY_DATA));
+                    JSONArray jsonArray = jsonObject.optJSONArray(KEY_DATA);
+                    if (jsonArray != null && jsonArray.length() > 0) {
+                        UserDetailsModel.bulkInsert(getContentResolver(), jsonArray);
+                    }
                 }
             }
         } catch (JSONException e) {

@@ -113,7 +113,8 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="50dp"
                 android:layout_marginTop="50dp"
-                android:background="@color/colorPrimaryDark" />
+                android:background="@color/colorPrimaryDark"
+                android:onClick="onClick" />
 
         </android.support.v7.widget.LinearLayoutCompat>
 
@@ -121,6 +122,7 @@
             android:id="@+id/AR_action_login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="onClick"
             android:src="@drawable/ic_done_24dp"
             app:layout_anchor="@id/AR_action_login_button_line"
             app:layout_anchorGravity="center" />

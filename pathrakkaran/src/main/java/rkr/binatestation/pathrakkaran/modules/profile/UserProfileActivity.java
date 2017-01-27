@@ -85,6 +85,7 @@ public class UserProfileActivity extends AppCompatActivity implements OnMapReady
     private EditText mEmailEditText;
     private EditText mAddressEditText;
     private EditText mPostcodeEditText;
+    private View mActionSubmitView;
     private MapView mUserLocationMapView;
     private ContentLoadingProgressBar mProgressBar;
     private final AbstractUploadServiceReceiver uploadReceiver = new AbstractUploadServiceReceiver() {
@@ -194,6 +195,8 @@ public class UserProfileActivity extends AppCompatActivity implements OnMapReady
         mAddressEditText = (EditText) findViewById(R.id.AUP_field_address);
         mPhoneNumberEditText = (EditText) findViewById(R.id.AUP_field_phone_number);
         mPostcodeEditText = (EditText) findViewById(R.id.AUP_field_postcode);
+        mActionSubmitView = findViewById(R.id.AUP_action_edit_save);
+        mActionSubmitView.setOnClickListener(this);
 
         mNameTextInputLayout = (TextInputLayout) findViewById(R.id.AUP_field_name_layout);
 
@@ -309,9 +312,9 @@ public class UserProfileActivity extends AppCompatActivity implements OnMapReady
         mPhoneNumberEditText.setFocusableInTouchMode(false);
         mEmailEditText.setFocusable(flag);
         mEmailEditText.setFocusableInTouchMode(flag);
-        mAddressEditText.setClickable(flag);
+        mAddressEditText.setFocusable(flag);
         mAddressEditText.setFocusableInTouchMode(flag);
-        mPostcodeEditText.setClickable(flag);
+        mPostcodeEditText.setFocusable(flag);
         mPostcodeEditText.setFocusableInTouchMode(flag);
     }
 
@@ -329,7 +332,9 @@ public class UserProfileActivity extends AppCompatActivity implements OnMapReady
             googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                 @Override
                 public void onMapClick(LatLng latLng) {
-                    startPlacePicker();
+                    if (mActionSubmitView.isSelected()) {
+                        startPlacePicker();
+                    }
                 }
             });
         }
@@ -370,6 +375,7 @@ public class UserProfileActivity extends AppCompatActivity implements OnMapReady
     public void setView(UserDetailsModel userDetailsModel) {
         Log.d(TAG, "setView() called with: mUserDetailsModel = [" + userDetailsModel + "]");
         setEditable(false);
+        mActionSubmitView.setSelected(false);
         if (userDetailsModel != null) {
             mNameEditText.setText(userDetailsModel.getName());
             mEmailEditText.setText(userDetailsModel.getEmail());
@@ -467,7 +473,9 @@ public class UserProfileActivity extends AppCompatActivity implements OnMapReady
                 }
                 break;
             case R.id.AUP_field_map_view:
-                startPlacePicker();
+                if (mActionSubmitView.isSelected()) {
+                    startPlacePicker();
+                }
                 break;
         }
     }
