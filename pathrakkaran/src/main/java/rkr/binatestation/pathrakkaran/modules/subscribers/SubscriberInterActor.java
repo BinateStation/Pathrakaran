@@ -1,4 +1,4 @@
-package rkr.binatestation.pathrakkaran.modules.suppliers;
+package rkr.binatestation.pathrakkaran.modules.subscribers;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -27,8 +27,8 @@ import static rkr.binatestation.pathrakkaran.database.DatabaseOperationService.K
 import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserDetailsTable.COLUMN_NAME;
 import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserDetailsTable.COLUMN_USER_TYPE;
 import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserDetailsTable.CONTENT_URI;
-import static rkr.binatestation.pathrakkaran.models.UserDetailsModel.USER_TYPE_SUPPLIER;
-import static rkr.binatestation.pathrakkaran.utils.Constants.CURSOR_LOADER_LOAD_SUPPLIERS;
+import static rkr.binatestation.pathrakkaran.models.UserDetailsModel.USER_TYPE_SUBSCRIBER;
+import static rkr.binatestation.pathrakkaran.utils.Constants.CURSOR_LOADER_LOAD_SUBSCRIBERS;
 import static rkr.binatestation.pathrakkaran.utils.Constants.END_URL_SUPPLIERS_GET_LIST;
 import static rkr.binatestation.pathrakkaran.utils.Constants.END_URL_SUPPLIERS_REGISTER;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_AGENT_ID;
@@ -40,15 +40,17 @@ import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_USER_ID;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_USER_TYPE;
 
 /**
- * Created by RKR on 26/1/2017.
- * SuppliersInterActor.
+ * Created by RKR on 28/1/2017.
+ * SubscriberInterActor.
  */
 
-class SuppliersInterActor implements SuppliersListeners.InterActorListener, LoaderManager.LoaderCallbacks<Cursor> {
-    private static final String TAG = "SuppliersInterActor";
-    private SuppliersListeners.PresenterListener mPresenterListener;
+class SubscriberInterActor implements SubscriberListeners.InterActorListener, LoaderManager.LoaderCallbacks<Cursor> {
 
-    SuppliersInterActor(SuppliersListeners.PresenterListener presenterListener) {
+    private static final String TAG = "SubscriberInterActor";
+
+    private SubscriberListeners.PresenterListener mPresenterListener;
+
+    SubscriberInterActor(SubscriberListeners.PresenterListener presenterListener) {
         mPresenterListener = presenterListener;
     }
 
@@ -57,57 +59,20 @@ class SuppliersInterActor implements SuppliersListeners.InterActorListener, Load
     }
 
     @Override
-    public void loadSuppliersList(LoaderManager loaderManager, long userId) {
-        Log.d(TAG, "loadSuppliersList() called with: loaderManager = [" + loaderManager + "]");
+    public void loadSubscriberList(LoaderManager loaderManager, long userId) {
+        Log.d(TAG, "loadSubscriberList() called with: loaderManager = [" + loaderManager + "], userId = [" + userId + "]");
         Bundle bundle = new Bundle();
         bundle.putLong(KEY_USER_ID, userId);
-        if (loaderManager.getLoader(CURSOR_LOADER_LOAD_SUPPLIERS) == null) {
-            loaderManager.initLoader(CURSOR_LOADER_LOAD_SUPPLIERS, bundle, this);
+        if (loaderManager.getLoader(CURSOR_LOADER_LOAD_SUBSCRIBERS) == null) {
+            loaderManager.initLoader(CURSOR_LOADER_LOAD_SUBSCRIBERS, bundle, this);
         } else {
-            loaderManager.restartLoader(CURSOR_LOADER_LOAD_SUPPLIERS, bundle, this);
+            loaderManager.restartLoader(CURSOR_LOADER_LOAD_SUBSCRIBERS, bundle, this);
         }
-        getSuppliersFromServer(userId);
+        getSubscribersFromServer(userId);
     }
 
-    @Override
-    public void register(Context context, final String name, final String mobile, final String email, final int userTypeValue, final long userId) {
-        StringRequest stringRequest = new StringRequest(
-                Request.Method.POST,
-                VolleySingleTon.getDomainUrl() + END_URL_SUPPLIERS_REGISTER,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.d(TAG, "onResponse() called with: response = [" + response + "]");
-                        getSuppliersFromServer(userId);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e(TAG, "onErrorResponse: ", error);
-                    }
-                }
-        ) {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put(KEY_AGENT_ID, "" + userId);
-                params.put(KEY_NAME, name);
-                params.put(KEY_MOBILE, mobile);
-                params.put(KEY_EMAIL, email);
-                params.put(KEY_USER_TYPE, "" + userTypeValue);
-                params.put(KEY_LOGIN_TYPE, "N");
-
-                Log.d(TAG, "getParams() returned: " + getUrl() + "  " + params);
-                return params;
-            }
-        };
-        VolleySingleTon.getInstance(context).addToRequestQueue(context, stringRequest);
-
-    }
-
-    private void getSuppliersFromServer(final long userId) {
-        Log.d(TAG, "getSuppliersFromServer() called with: userId = [" + userId + "]");
+    private void getSubscribersFromServer(final long userId) {
+        Log.d(TAG, "getSubscribersFromServer() called with: userId = [" + userId + "]");
         if (isPresenterLive()) {
             final Context context = mPresenterListener.getContext();
             if (context != null) {
@@ -121,9 +86,9 @@ class SuppliersInterActor implements SuppliersListeners.InterActorListener, Load
                                 DatabaseOperationService.startActionSaveUsers(context, response, new ResultReceiver(new Handler()) {
                                     @Override
                                     protected void onReceiveResult(int resultCode, Bundle resultData) {
-                                        ArrayList<UserDetailsModel> productModelArrayList = resultData.getParcelableArrayList(KEY_SUCCESS_MESSAGE);
+                                        ArrayList<UserDetailsModel> userDetailsModelArrayList = resultData.getParcelableArrayList(KEY_SUCCESS_MESSAGE);
                                         if (isPresenterLive()) {
-                                            mPresenterListener.setSuppliersList(productModelArrayList);
+                                            mPresenterListener.setSubscriberList(userDetailsModelArrayList);
                                         }
                                     }
                                 });
@@ -152,10 +117,48 @@ class SuppliersInterActor implements SuppliersListeners.InterActorListener, Load
     }
 
     @Override
+    public void register(Context context, final String name, final String mobile, final String email, final int userTypeValue, final long userId) {
+        Log.d(TAG, "register() called with: context = [" + context + "], name = [" + name + "], mobile = [" + mobile + "], email = [" + email + "], userTypeValue = [" + userTypeValue + "], userId = [" + userId + "]");
+        StringRequest stringRequest = new StringRequest(
+                Request.Method.POST,
+                VolleySingleTon.getDomainUrl() + END_URL_SUPPLIERS_REGISTER,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d(TAG, "onResponse() called with: response = [" + response + "]");
+                        getSubscribersFromServer(userId);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e(TAG, "onErrorResponse: ", error);
+                    }
+                }
+        ) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put(KEY_AGENT_ID, "" + userId);
+                params.put(KEY_NAME, name);
+                params.put(KEY_MOBILE, mobile);
+                params.put(KEY_EMAIL, email);
+                params.put(KEY_USER_TYPE, "" + userTypeValue);
+                params.put(KEY_LOGIN_TYPE, "N");
+
+                Log.d(TAG, "getParams() returned: " + getUrl() + "  " + params);
+                return params;
+            }
+        };
+        VolleySingleTon.getInstance(context).addToRequestQueue(context, stringRequest);
+
+    }
+
+    @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Log.d(TAG, "onCreateLoader() called with: id = [" + id + "], args = [" + args + "]");
         switch (id) {
-            case CURSOR_LOADER_LOAD_SUPPLIERS:
+            case CURSOR_LOADER_LOAD_SUBSCRIBERS:
                 if (isPresenterLive()) {
                     Context context = mPresenterListener.getContext();
                     if (context != null) {
@@ -164,7 +167,7 @@ class SuppliersInterActor implements SuppliersListeners.InterActorListener, Load
                                 CONTENT_URI,
                                 null,
                                 COLUMN_USER_TYPE + " = ? ",
-                                new String[]{"" + USER_TYPE_SUPPLIER},
+                                new String[]{"" + USER_TYPE_SUBSCRIBER},
                                 COLUMN_NAME
                         );
                     }
@@ -177,11 +180,12 @@ class SuppliersInterActor implements SuppliersListeners.InterActorListener, Load
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         Log.d(TAG, "onLoadFinished() called with: loader = [" + loader + "], data = [" + data + "]");
         switch (loader.getId()) {
-            case CURSOR_LOADER_LOAD_SUPPLIERS:
+            case CURSOR_LOADER_LOAD_SUBSCRIBERS:
                 if (isPresenterLive()) {
-                    mPresenterListener.setSuppliersList(UserDetailsModel.getAll(data));
+                    mPresenterListener.setSubscriberList(UserDetailsModel.getAll(data));
                 }
                 break;
+
         }
     }
 

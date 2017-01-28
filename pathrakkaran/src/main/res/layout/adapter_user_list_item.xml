@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal">
 
-    <com.android.volley.toolbox.NetworkImageView
+    <rkr.binatestation.pathrakkaran.utils.CircleImageView
         android:id="@+id/AULI_image"
         android:layout_width="60dp"
         android:layout_height="60dp"

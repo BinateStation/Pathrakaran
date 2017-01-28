@@ -62,7 +62,7 @@ public class DatabaseOperationService extends IntentService {
     private static final String ACTION_SAVE_MASTERS = "rkr.binatestation.pathrakaran.database.action.SAVE_MASTERS";
     private static final String ACTION_ADD_PRODUCT_AGENT = "rkr.binatestation.pathrakaran.database.action.ADD_PRODUCT_AGENT";
     private static final String ACTION_SAVE_PRODUCT_AGENT = "rkr.binatestation.pathrakaran.database.action.SAVE_PRODUCT_AGENT";
-    private static final String ACTION_SAVE_SUPPLIERS = "rkr.binatestation.pathrakaran.database.action.AVE_SUPPLIERS";
+    private static final String ACTION_SAVE_USERS = "rkr.binatestation.pathrakaran.database.action.SAVE_USERS";
 
     private static final String EXTRA_PARAM1 = "extra_param_1";
     private static final String KEY_RECEIVER = "receiver";
@@ -121,9 +121,9 @@ public class DatabaseOperationService extends IntentService {
      *
      * @see IntentService
      */
-    public static void startActionSaveSuppliers(Context context, String response, ResultReceiver resultReceiver) {
+    public static void startActionSaveUsers(Context context, String response, ResultReceiver resultReceiver) {
         Intent intent = new Intent(context, DatabaseOperationService.class);
-        intent.setAction(ACTION_SAVE_SUPPLIERS);
+        intent.setAction(ACTION_SAVE_USERS);
         intent.putExtra(EXTRA_PARAM1, response);
         intent.putExtra(KEY_RECEIVER, resultReceiver);
         context.startService(intent);
@@ -150,18 +150,18 @@ public class DatabaseOperationService extends IntentService {
                     handleActionSaveProductAgent(param1);
                 }
                 break;
-                case ACTION_SAVE_SUPPLIERS: {
+                case ACTION_SAVE_USERS: {
                     final String param1 = intent.getStringExtra(EXTRA_PARAM1);
                     mResultReceiver = intent.getParcelableExtra(KEY_RECEIVER);
-                    handleActionSaveSuppliers(param1);
+                    handleActionSaveUsers(param1);
                 }
                 break;
             }
         }
     }
 
-    private void handleActionSaveSuppliers(String param1) {
-        Log.d(TAG, "handleActionSaveSuppliers() called with: param1 = [" + param1 + "]");
+    private void handleActionSaveUsers(String param1) {
+        Log.d(TAG, "handleActionSaveUsers() called with: param1 = [" + param1 + "]");
         try {
             JSONObject jsonObject = new JSONObject(param1);
             String message = jsonObject.optString(KEY_MESSAGE);

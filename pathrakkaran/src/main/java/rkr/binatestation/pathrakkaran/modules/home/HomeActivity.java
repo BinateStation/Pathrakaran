@@ -19,6 +19,7 @@ import rkr.binatestation.pathrakkaran.activities.SplashScreen;
 import rkr.binatestation.pathrakkaran.fragments.SMHome;
 import rkr.binatestation.pathrakkaran.modules.products.ProductListFragment;
 import rkr.binatestation.pathrakkaran.modules.profile.UserProfileActivity;
+import rkr.binatestation.pathrakkaran.modules.subscribers.SubscribersListFragment;
 import rkr.binatestation.pathrakkaran.modules.suppliers.SuppliersListFragment;
 
 import static rkr.binatestation.pathrakkaran.models.UserDetailsModel.USER_TYPE_AGENT;
@@ -159,6 +160,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_AM_suppliersList:
                 fragment = SuppliersListFragment.newInstance();
+                break;
+            case R.id.nav_AM_subscribersList:
+                fragment = SubscribersListFragment.newInstance();
                 break;
             case R.id.nav_SM_profile:
             case R.id.nav_AM_profile:

@@ -1,4 +1,5 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -24,8 +25,9 @@
     <android.support.v4.widget.ContentLoadingProgressBar
         android:id="@+id/FL_progress_bar"
         style="@style/Widget.AppCompat.ProgressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center" />
+        android:layout_width="@dimen/progress_bar_size"
+        android:layout_height="@dimen/progress_bar_size"
+        app:layout_anchor="@id/FL_action_add_product"
+        app:layout_anchorGravity="center" />
 
-</FrameLayout>
+</android.support.design.widget.CoordinatorLayout>
