@@ -21,6 +21,7 @@ public final class PathrakkaranContract {
     static final String PATH_USER_DETAILS = "user_details";
     static final String PATH_TRANSACTIONS = "transactions";
     static final String PATH_AGENT_PRODUCT_LIST_JOIN_PRODUCT_MASTER_JOIN_COMPANY_MASTER = "agent_product_list_join_product_master_join_company_master";
+    static final String PATH_TRANSACTIONS_JOIN_USER_DETAILS = "transactions_join_user_details";
     /**
      * INT,
      * INTEGER,
@@ -201,7 +202,8 @@ public final class PathrakkaranContract {
                 COLUMN_IMAGE + TEXT + COMMA +
                 COLUMN_USER_TYPE + INTEGER + NOT_NULL + COMMA +
                 COLUMN_LATITUDE + REAL + COMMA +
-                COLUMN_LONGITUDE + REAL +
+                COLUMN_LONGITUDE + REAL + COMMA +
+                COLUMN_SAVE_STATUS + INTEGER +
                 " );";
 
         // Returns the Uri referencing a Picture with the specified id.
@@ -213,6 +215,8 @@ public final class PathrakkaranContract {
     public static final class TransactionsTable implements BaseColumns {
 
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_TRANSACTIONS).build();
+        // Transaction table join to user details
+        public static final Uri CONTENT_URI_JOIN_USER_DETAILS = BASE_CONTENT_URI.buildUpon().appendPath(PATH_TRANSACTIONS_JOIN_USER_DETAILS).build();
         // Transaction id
         public static final String COLUMN_TRANSACTION_ID = "T_transaction_id";
         // Payer user id
@@ -235,7 +239,8 @@ public final class PathrakkaranContract {
                 COLUMN_PAYER + INTEGER + NOT_NULL + COMMA +
                 COLUMN_PAYEE + INTEGER + NOT_NULL + COMMA +
                 COLUMN_AMOUNT + REAL + COMMA +
-                COLUMN_DATE + REAL +
+                COLUMN_DATE + REAL + COMMA +
+                COLUMN_SAVE_STATUS + INTEGER +
                 " );";
 
         // Returns the Uri referencing a Picture with the specified id.

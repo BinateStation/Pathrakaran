@@ -6,7 +6,7 @@ import android.util.Log;
 
 import java.util.List;
 
-import rkr.binatestation.pathrakkaran.models.UserDetailsModel;
+import rkr.binatestation.pathrakkaran.models.TransactionModel;
 
 /**
  * Created by RKR on 28/1/2017.
@@ -44,10 +44,10 @@ class TransactionPresenter implements TransactionListeners.PresenterListener {
     }
 
     @Override
-    public void setTransactionList(List<UserDetailsModel> userDetailsModelList) {
-        Log.d(TAG, "setTransactionList() called with: userDetailsModelList = [" + userDetailsModelList + "]");
+    public void setTransactionList(List<TransactionModel> transactionModelList) {
+        Log.d(TAG, "setTransactionList() called with: transactionModelList = [" + transactionModelList + "]");
         if (isViewListener()) {
-            mViewListener.setRecyclerView(userDetailsModelList);
+            mViewListener.setRecyclerView(transactionModelList);
             mViewListener.hideProgressBar();
         }
     }

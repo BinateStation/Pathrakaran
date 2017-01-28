@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.os.ResultReceiver;
 import android.util.Log;
@@ -20,12 +19,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import rkr.binatestation.pathrakkaran.database.DatabaseOperationService;
-import rkr.binatestation.pathrakkaran.database.PathrakkaranContract;
 import rkr.binatestation.pathrakkaran.models.AgentProductModel;
 import rkr.binatestation.pathrakkaran.network.VolleySingleTon;
 
 import static rkr.binatestation.pathrakkaran.database.DatabaseOperationService.KEY_SUCCESS_MESSAGE;
-import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.AgentProductListTable.CONTENT_URI_JOIN_PRODUCT_MASTER_JOIN_COMPANY_MASTER;
 import static rkr.binatestation.pathrakkaran.utils.Constants.CURSOR_LOADER_LOAD_AGENT_PRODUCTS;
 import static rkr.binatestation.pathrakkaran.utils.Constants.END_URL_PRODUCTS_MY_PRODUCTS;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_AGENT_ID;
@@ -70,14 +67,7 @@ class ProductsInterActor implements ProductsListeners.InterActorListener, Loader
                     Context context = mPresenterListener.getContext();
                     if (context != null) {
                         long userId = args.getLong(KEY_USER_ID, 0);
-                        return new CursorLoader(
-                                context,
-                                CONTENT_URI_JOIN_PRODUCT_MASTER_JOIN_COMPANY_MASTER,
-                                null,
-                                PathrakkaranContract.AgentProductListTable.COLUMN_AGENT_ID + " = ? ",
-                                new String[]{"" + userId},
-                                PathrakkaranContract.CompanyMasterTable.COLUMN_COMPANY_NAME
-                        );
+                        return AgentProductModel.getAgentProductModelList(context, userId);
                     }
                 }
         }

@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.os.ResultReceiver;
 import android.util.Log;
@@ -26,9 +25,6 @@ import rkr.binatestation.pathrakkaran.utils.GeneralUtils;
 
 import static android.content.Context.MODE_PRIVATE;
 import static rkr.binatestation.pathrakkaran.database.DatabaseOperationService.KEY_SUCCESS_MESSAGE;
-import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserDetailsTable.COLUMN_NAME;
-import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserDetailsTable.COLUMN_USER_TYPE;
-import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserDetailsTable.CONTENT_URI;
 import static rkr.binatestation.pathrakkaran.models.UserDetailsModel.USER_TYPE_SUPPLIER;
 import static rkr.binatestation.pathrakkaran.utils.Constants.CURSOR_LOADER_LOAD_SUPPLIERS;
 import static rkr.binatestation.pathrakkaran.utils.Constants.END_URL_USER_GET_USERS_LIST;
@@ -139,14 +135,7 @@ class SuppliersInterActor implements SuppliersListeners.InterActorListener, Load
                 if (isPresenterLive()) {
                     Context context = mPresenterListener.getContext();
                     if (context != null) {
-                        return new CursorLoader(
-                                context,
-                                CONTENT_URI,
-                                null,
-                                COLUMN_USER_TYPE + " = ? ",
-                                new String[]{"" + USER_TYPE_SUPPLIER},
-                                COLUMN_NAME
-                        );
+                        return UserDetailsModel.getAll(context, USER_TYPE_SUPPLIER);
                     }
                 }
         }

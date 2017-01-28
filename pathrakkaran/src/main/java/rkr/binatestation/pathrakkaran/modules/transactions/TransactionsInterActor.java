@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.os.ResultReceiver;
 import android.util.Log;
@@ -20,18 +19,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 import rkr.binatestation.pathrakkaran.database.DatabaseOperationService;
-import rkr.binatestation.pathrakkaran.models.UserDetailsModel;
+import rkr.binatestation.pathrakkaran.models.TransactionModel;
 import rkr.binatestation.pathrakkaran.network.VolleySingleTon;
+import rkr.binatestation.pathrakkaran.utils.GeneralUtils;
 
+import static android.content.Context.MODE_PRIVATE;
 import static rkr.binatestation.pathrakkaran.database.DatabaseOperationService.KEY_SUCCESS_MESSAGE;
-import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserDetailsTable.COLUMN_NAME;
-import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserDetailsTable.COLUMN_USER_TYPE;
-import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserDetailsTable.CONTENT_URI;
-import static rkr.binatestation.pathrakkaran.models.UserDetailsModel.USER_TYPE_SUPPLIER;
 import static rkr.binatestation.pathrakkaran.utils.Constants.CURSOR_LOADER_LOAD_TRANSACTIONS;
 import static rkr.binatestation.pathrakkaran.utils.Constants.END_URL_SUPPLIERS_REGISTER;
 import static rkr.binatestation.pathrakkaran.utils.Constants.END_URL_TRANSACTIONS_GET_LIST;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_AGENT_ID;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_DATE;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_TRANSACTIONS_LAST_UPDATED_DATE;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_USER_ID;
 
 /**
@@ -77,10 +76,10 @@ class TransactionsInterActor implements TransactionListeners.InterActorListener,
                             @Override
                             public void onResponse(String response) {
                                 Log.d(TAG, "onResponse() called with: response = [" + response + "]");
-                                DatabaseOperationService.startActionSaveUsers(context, USER_TYPE_SUPPLIER, response, new ResultReceiver(new Handler()) {
+                                DatabaseOperationService.startActionSaveTransactionsList(context, response, new ResultReceiver(new Handler()) {
                                     @Override
                                     protected void onReceiveResult(int resultCode, Bundle resultData) {
-                                        ArrayList<UserDetailsModel> productModelArrayList = resultData.getParcelableArrayList(KEY_SUCCESS_MESSAGE);
+                                        ArrayList<TransactionModel> productModelArrayList = resultData.getParcelableArrayList(KEY_SUCCESS_MESSAGE);
                                         if (isPresenterLive()) {
                                             mPresenterListener.setTransactionList(productModelArrayList);
                                         }
@@ -97,9 +96,11 @@ class TransactionsInterActor implements TransactionListeners.InterActorListener,
                 ) {
                     @Override
                     protected Map<String, String> getParams() {
+                        long lastUpdatedDate = GeneralUtils.getUnixTimeStamp(context.getSharedPreferences(context.getPackageName(), MODE_PRIVATE)
+                                .getLong(KEY_TRANSACTIONS_LAST_UPDATED_DATE, 0));
                         Map<String, String> params = new HashMap<>();
                         params.put(KEY_AGENT_ID, "" + userId);
-
+                        params.put(KEY_DATE, "" + lastUpdatedDate);
                         Log.d(TAG, "getParams() returned: " + getUrl() + "  " + params);
                         return params;
                     }
@@ -149,16 +150,10 @@ class TransactionsInterActor implements TransactionListeners.InterActorListener,
                 if (isPresenterLive()) {
                     Context context = mPresenterListener.getContext();
                     if (context != null) {
-                        return new CursorLoader(
-                                context,
-                                CONTENT_URI,
-                                null,
-                                COLUMN_USER_TYPE + " = ? ",
-                                new String[]{"" + USER_TYPE_SUPPLIER},
-                                COLUMN_NAME
-                        );
+                        return TransactionModel.getAllWithUserDetails(context);
                     }
                 }
+                break;
         }
         return null;
     }
@@ -169,7 +164,7 @@ class TransactionsInterActor implements TransactionListeners.InterActorListener,
         switch (loader.getId()) {
             case CURSOR_LOADER_LOAD_TRANSACTIONS:
                 if (isPresenterLive()) {
-                    mPresenterListener.setTransactionList(UserDetailsModel.getAll(data));
+                    mPresenterListener.setTransactionList(TransactionModel.getAllWithUserDetails(data));
                 }
                 break;
         }

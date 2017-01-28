@@ -48,7 +48,12 @@ public class Constants {
     public static final String KEY_PRODUCT_ID = "product_id";
     public static final String KEY_MASTERS_LAST_UPDATED_DATE = "masters_last_updated_date";
     public static final String KEY_USERS_LAST_UPDATED_DATE = "users_last_updated_date";
+    public static final String KEY_TRANSACTIONS_LAST_UPDATED_DATE = "transactions_last_updated_date";
     public static final String KEY_DATE = "date";
+    public static final String KEY_TRANSACTION_ID = "transaction_id";
+    public static final String KEY_PAYER = "payer";
+    public static final String KEY_PAYEE = "payee";
+    public static final String KEY_AMOUNT = "amount";
     /**
      * Id to identity READ_CONTACTS permission request.
      */
@@ -80,4 +85,6 @@ public class Constants {
     public static final int CURSOR_LOADER_LOAD_SUPPLIERS = 4;
     public static final int CURSOR_LOADER_LOAD_SUBSCRIBERS = 5;
     public static final int CURSOR_LOADER_LOAD_TRANSACTIONS = 6;
+
+    public static final String DATE_PATTERN_DD_MM_YYYY_HH_MM_A = "dd-MM-yyyy hh:mm a";
 }

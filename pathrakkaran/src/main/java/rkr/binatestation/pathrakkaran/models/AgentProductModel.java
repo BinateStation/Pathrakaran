@@ -3,10 +3,12 @@ package rkr.binatestation.pathrakkaran.models;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.v4.content.CursorLoader;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -15,11 +17,14 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import rkr.binatestation.pathrakkaran.database.PathrakkaranContract;
+
 import static android.provider.BaseColumns._ID;
 import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.AgentProductListTable.COLUMN_AGENT_ID;
 import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.AgentProductListTable.COLUMN_PRODUCT_ID;
 import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.AgentProductListTable.COLUMN_SAVE_STATUS;
 import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.AgentProductListTable.CONTENT_URI;
+import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.AgentProductListTable.CONTENT_URI_JOIN_PRODUCT_MASTER_JOIN_COMPANY_MASTER;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_AGENT_ID;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_PRODUCT_ID;
 
@@ -87,8 +92,42 @@ public class AgentProductModel implements Parcelable {
         return contentValues;
     }
 
+    public static CursorLoader getAgentProductModelList(Context context, long agentId) {
+        Log.d(TAG, "getAgentProductModelList() called with: context = [" + context + "], agentId = [" + agentId + "]");
+        return new CursorLoader(
+                context,
+                CONTENT_URI_JOIN_PRODUCT_MASTER_JOIN_COMPANY_MASTER,
+                null,
+                PathrakkaranContract.AgentProductListTable.COLUMN_AGENT_ID + " = ? ",
+                new String[]{"" + agentId},
+                PathrakkaranContract.CompanyMasterTable.COLUMN_COMPANY_NAME
+        );
+    }
+
     public static ArrayList<AgentProductModel> getAgentProductModelList(Cursor cursor) {
         Log.d(TAG, "getAgentProductModelList() called with: cursor = [" + cursor + "]");
+        ArrayList<AgentProductModel> agentProductModelList = new ArrayList<>();
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                do {
+                    agentProductModelList.add(cursorToAgentProductModelJoinProductsMasterJoinCompanyMaster(cursor));
+                } while (cursor.moveToNext());
+            }
+            cursor.close();
+        }
+        Log.d(TAG, "getAgentProductModelList() returned: " + agentProductModelList);
+        return agentProductModelList;
+    }
+
+    public static ArrayList<AgentProductModel> getAgentProductModelList(ContentResolver contentResolver, long agentId) {
+        Log.d(TAG, "getAgentProductModelList() called with: contentResolver = [" + contentResolver + "], agentId = [" + agentId + "]");
+        Cursor cursor = contentResolver.query(
+                CONTENT_URI_JOIN_PRODUCT_MASTER_JOIN_COMPANY_MASTER,
+                null,
+                PathrakkaranContract.AgentProductListTable.COLUMN_AGENT_ID + " = ? ",
+                new String[]{"" + agentId},
+                PathrakkaranContract.CompanyMasterTable.COLUMN_COMPANY_NAME
+        );
         ArrayList<AgentProductModel> agentProductModelList = new ArrayList<>();
         if (cursor != null) {
             if (cursor.moveToFirst()) {

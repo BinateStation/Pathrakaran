@@ -5,7 +5,7 @@ import android.support.v4.app.LoaderManager;
 
 import java.util.List;
 
-import rkr.binatestation.pathrakkaran.models.UserDetailsModel;
+import rkr.binatestation.pathrakkaran.models.TransactionModel;
 
 /**
  * Created by RKR on 28/1/2017.
@@ -18,7 +18,7 @@ interface TransactionListeners {
 
         void hideProgressBar();
 
-        void setRecyclerView(List<UserDetailsModel> userDetailsModelList);
+        void setRecyclerView(List<TransactionModel> transactionModelList);
 
         Context getContext();
     }
@@ -26,7 +26,7 @@ interface TransactionListeners {
     interface PresenterListener {
         void loadTransactionList(LoaderManager loaderManager, long userId);
 
-        void setTransactionList(List<UserDetailsModel> userDetailsModelList);
+        void setTransactionList(List<TransactionModel> transactionModelList);
 
         void addTransaction(Context context, long userId);
 

@@ -20,8 +20,8 @@ import android.view.ViewGroup;
 import java.util.List;
 
 import rkr.binatestation.pathrakkaran.R;
-import rkr.binatestation.pathrakkaran.adapters.UsersAdapter;
-import rkr.binatestation.pathrakkaran.models.UserDetailsModel;
+import rkr.binatestation.pathrakkaran.adapters.TransactionAdapter;
+import rkr.binatestation.pathrakkaran.models.TransactionModel;
 
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_USER_ID;
 
@@ -36,7 +36,7 @@ public class TransactionListFragment extends Fragment implements TransactionList
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private long userId = 0;
     private TransactionListeners.PresenterListener mPresenterListener;
-    private UsersAdapter mUsersAdapter;
+    private TransactionAdapter mTransactionAdapter;
     private AddTransactionFragment mAddTransactionFragment;
     private ActionBar mActionBar;
 
@@ -87,7 +87,7 @@ public class TransactionListFragment extends Fragment implements TransactionList
 
         //Setting Recycler view
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(mUsersAdapter = new UsersAdapter());
+        recyclerView.setAdapter(mTransactionAdapter = new TransactionAdapter());
 
         //Setting addProduct button
         addProduct.setOnClickListener(this);
@@ -155,10 +155,10 @@ public class TransactionListFragment extends Fragment implements TransactionList
     }
 
     @Override
-    public void setRecyclerView(List<UserDetailsModel> userDetailsModelList) {
-        Log.d(TAG, "setRecyclerView() called with: userDetailsModelList = [" + userDetailsModelList + "]");
-        if (mUsersAdapter != null) {
-            mUsersAdapter.setUserDetailsModelList(userDetailsModelList);
+    public void setRecyclerView(List<TransactionModel> transactionModelList) {
+        Log.d(TAG, "setRecyclerView() called with: transactionModelList = [" + transactionModelList + "]");
+        if (mTransactionAdapter != null) {
+            mTransactionAdapter.setTransactionModelList(transactionModelList);
         }
         if (mAddTransactionFragment != null && mAddTransactionFragment.isResumed()) {
             mAddTransactionFragment.hideProgress();

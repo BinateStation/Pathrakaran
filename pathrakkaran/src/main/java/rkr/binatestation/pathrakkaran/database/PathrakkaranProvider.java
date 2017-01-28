@@ -36,6 +36,7 @@ public class PathrakkaranProvider extends ContentProvider {
     private static final int TRANSACTIONS = 5;
 
     private static final int AGENT_PRODUCT_LIST_JOIN_PRODUCT_MASTER_JOIN_COMPANY_MASTER = 6;
+    private static final int TRANSACTIONS_JOIN_USER_DETAILS = 7;
     private static final UriMatcher URI_MATCHER = buildUriMatcher();
     private RKRsPathrakkaranSQLiteHelper mOpenHelper;
     private ContentResolver mContentResolver;
@@ -54,6 +55,7 @@ public class PathrakkaranProvider extends ContentProvider {
         // join related URIs.
         matcher.addURI(authority, PathrakkaranContract.PATH_AGENT_PRODUCT_LIST_JOIN_PRODUCT_MASTER_JOIN_COMPANY_MASTER,
                 AGENT_PRODUCT_LIST_JOIN_PRODUCT_MASTER_JOIN_COMPANY_MASTER);
+        matcher.addURI(authority, PathrakkaranContract.PATH_TRANSACTIONS_JOIN_USER_DETAILS, TRANSACTIONS_JOIN_USER_DETAILS);
         return matcher;
     }
 
@@ -156,6 +158,23 @@ public class PathrakkaranProvider extends ContentProvider {
                 );
                 break;
             }
+            case TRANSACTIONS_JOIN_USER_DETAILS: {
+                SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
+                String joinedTable = TransactionsTable.TABLE_NAME + " JOIN " +
+                        UserDetailsTable.TABLE_NAME + " ON " + TransactionsTable.COLUMN_PAYER +
+                        " = " + UserDetailsTable.COLUMN_USER_ID;
+                queryBuilder.setTables(joinedTable);
+                retCursor = queryBuilder.query(
+                        mOpenHelper.getReadableDatabase(),
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
+            }
             default: {
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
             }
@@ -181,6 +200,8 @@ public class PathrakkaranProvider extends ContentProvider {
                 return TransactionsTable.CONTENT_TYPE;
             case AGENT_PRODUCT_LIST_JOIN_PRODUCT_MASTER_JOIN_COMPANY_MASTER:
                 return AgentProductListTable.CONTENT_TYPE;
+            case TRANSACTIONS_JOIN_USER_DETAILS:
+                return TransactionsTable.CONTENT_TYPE;
 
             // We aren't sure what is being asked of us.
             default:

@@ -3,10 +3,12 @@ package rkr.binatestation.pathrakkaran.models;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.v4.content.CursorLoader;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -120,8 +122,41 @@ public class UserDetailsModel implements Parcelable {
         );
     }
 
+    public static CursorLoader getAll(Context context, int userType) {
+        Log.d(TAG, "getAll() called with: context = [" + context + "]");
+        return new CursorLoader(
+                context,
+                CONTENT_URI,
+                null,
+                COLUMN_USER_TYPE + " = ? ",
+                new String[]{"" + userType},
+                COLUMN_NAME
+        );
+    }
+
     public static ArrayList<UserDetailsModel> getAll(Cursor cursor) {
         Log.d(TAG, "getAll() called with: cursor = [" + cursor + "]");
+        ArrayList<UserDetailsModel> userDetailsModelList = new ArrayList<>();
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                do {
+                    userDetailsModelList.add(cursorToUserDetailsModel(cursor));
+                } while (cursor.moveToNext());
+            }
+        }
+        Log.d(TAG, "getAll() returned: " + userDetailsModelList);
+        return userDetailsModelList;
+    }
+
+    public static ArrayList<UserDetailsModel> getAll(ContentResolver contentResolver, int userType) {
+        Log.d(TAG, "getAll() called with: contentResolver = [" + contentResolver + "], userType = [" + userType + "]");
+        Cursor cursor = contentResolver.query(
+                CONTENT_URI,
+                null,
+                COLUMN_USER_TYPE + " = ? ",
+                new String[]{"" + userType},
+                COLUMN_NAME
+        );
         ArrayList<UserDetailsModel> userDetailsModelList = new ArrayList<>();
         if (cursor != null) {
             if (cursor.moveToFirst()) {
@@ -197,7 +232,7 @@ public class UserDetailsModel implements Parcelable {
         return contentValues;
     }
 
-    private static UserDetailsModel cursorToUserDetailsModel(Cursor cursor) {
+    public static UserDetailsModel cursorToUserDetailsModel(Cursor cursor) {
         Log.d(TAG, "cursorToUserDetailsModel() called with: cursor = [" + cursor + "]");
         UserDetailsModel userDetailsModel = new UserDetailsModel(
                 cursor.getLong(cursor.getColumnIndex(COLUMN_USER_ID)),

@@ -15,6 +15,9 @@ import android.util.Patterns;
 import android.view.View;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import rkr.binatestation.pathrakkaran.R;
 
@@ -150,4 +153,22 @@ public class GeneralUtils {
     public static long getTimeInMillis(long unixTimeStamp) {
         return unixTimeStamp * 1000;
     }
+
+
+    public static String getDateToDisplay(long timeInMillis) {
+        Log.d(TAG, "getDateToDisplay() called with: timeInMillis = [" + timeInMillis + "]");
+        Date date = new Date(timeInMillis);
+        String dateString = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(date);
+        Log.d(TAG, "getDateToDisplay() returned: " + dateString);
+        return dateString;
+    }
+
+    public static String getDate(long timeInMillis, String pattern) {
+        Log.d(TAG, "getDateToDisplay() called with: timeInMillis = [" + timeInMillis + "]");
+        Date date = new Date(timeInMillis);
+        String dateString = new SimpleDateFormat(pattern, Locale.getDefault()).format(date);
+        Log.d(TAG, "getDateToDisplay() returned: " + dateString);
+        return dateString;
+    }
+
 }
