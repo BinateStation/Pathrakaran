@@ -7,6 +7,9 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.ContentLoadingProgressBar;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -30,10 +33,12 @@ public class SuppliersListFragment extends Fragment implements SuppliersListener
 
     private static final String TAG = "SuppliersListFragment";
     private ContentLoadingProgressBar mProgressBar;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
     private long userId = 0;
     private SuppliersListeners.PresenterListener mPresenterListener;
     private UsersAdapter mUsersAdapter;
     private AddSupplierFragment mAddSupplierFragment;
+    private ActionBar mActionBar;
 
     public SuppliersListFragment() {
         // Required empty public constructor
@@ -55,6 +60,12 @@ public class SuppliersListFragment extends Fragment implements SuppliersListener
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        try {
+            AppCompatActivity activity = (AppCompatActivity) getActivity();
+            mActionBar = activity.getSupportActionBar();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         mPresenterListener = new SuppliersPresenter(this);
         userId = getContext().getSharedPreferences(getContext().getPackageName(), Context.MODE_PRIVATE).getLong(KEY_USER_ID, 0);
     }
@@ -72,6 +83,7 @@ public class SuppliersListFragment extends Fragment implements SuppliersListener
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.FL_recycler_view);
         FloatingActionButton addProduct = (FloatingActionButton) view.findViewById(R.id.FL_action_add_product);
         mProgressBar = (ContentLoadingProgressBar) view.findViewById(R.id.FL_progress_bar);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.FL_swipe_refresh);
 
         //Setting Recycler view
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -79,6 +91,14 @@ public class SuppliersListFragment extends Fragment implements SuppliersListener
 
         //Setting addProduct button
         addProduct.setOnClickListener(this);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (isPresenterLive()) {
+                    mPresenterListener.loadSuppliersList(getLoaderManager(), userId);
+                }
+            }
+        });
     }
 
     @Override
@@ -86,6 +106,17 @@ public class SuppliersListFragment extends Fragment implements SuppliersListener
         super.onResume();
         if (isPresenterLive()) {
             mPresenterListener.loadSuppliersList(getLoaderManager(), userId);
+        }
+        setActionBar(
+                getString(R.string.suppliers_list),
+                getString(R.string.app_name)
+        );
+    }
+
+    private void setActionBar(String title, String subtitle) {
+        if (mActionBar != null) {
+            mActionBar.setTitle(title);
+            mActionBar.setSubtitle(subtitle);
         }
     }
 
@@ -117,6 +148,9 @@ public class SuppliersListFragment extends Fragment implements SuppliersListener
     public void hideProgressBar() {
         if (mProgressBar != null) {
             mProgressBar.hide();
+        }
+        if (mSwipeRefreshLayout != null) {
+            mSwipeRefreshLayout.setRefreshing(false);
         }
     }
 

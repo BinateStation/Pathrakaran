@@ -7,6 +7,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -36,6 +37,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     private HomeListeners.PresenterListener mPresenterListener;
 
+    private ActionBar mActionBar;
+
     private boolean isPresenterLive() {
         return mPresenterListener != null;
     }
@@ -49,11 +52,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         mPresenterListener = new HomePresenter(this);
 
-
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(getSharedPreferences(getPackageName(), MODE_PRIVATE).getString(KEY_USER_NAME, getString(R.string.app_name)));
-            getSupportActionBar().setSubtitle(getSharedPreferences(getPackageName(), MODE_PRIVATE).getString(KEY_USER_PHONE, getString(R.string.app_name)));
-        }
+        mActionBar = getSupportActionBar();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -67,6 +66,22 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         //Get Masters
         if (isPresenterLive()) {
             mPresenterListener.getMasters(this);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setActionBar(
+                getSharedPreferences(getPackageName(), MODE_PRIVATE).getString(KEY_USER_NAME, getString(R.string.app_name)),
+                getSharedPreferences(getPackageName(), MODE_PRIVATE).getString(KEY_USER_PHONE, getString(R.string.app_name))
+        );
+    }
+
+    private void setActionBar(String title, String subtitle) {
+        if (mActionBar != null) {
+            mActionBar.setTitle(title);
+            mActionBar.setSubtitle(subtitle);
         }
     }
 
@@ -157,18 +172,25 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_AM_productList:
                 fragment = ProductListFragment.newInstance();
+
                 break;
             case R.id.nav_AM_suppliersList:
                 fragment = SuppliersListFragment.newInstance();
+
                 break;
             case R.id.nav_AM_subscribersList:
                 fragment = SubscribersListFragment.newInstance();
+
                 break;
             case R.id.nav_SM_profile:
             case R.id.nav_AM_profile:
             case R.id.nav_SPM_profile:
                 startActivity(new Intent(HomeActivity.this, UserProfileActivity.class));
                 overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                setActionBar(
+                        getString(R.string.profile),
+                        getString(R.string.app_name)
+                );
         }
 
         if (fragment != null) {

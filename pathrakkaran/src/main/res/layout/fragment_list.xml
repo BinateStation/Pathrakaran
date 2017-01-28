@@ -9,10 +9,17 @@
     android:layout_marginTop="@dimen/activity_vertical_margin"
     tools:context="rkr.binatestation.pathrakkaran.modules.products.ProductListFragment">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/FL_recycler_view"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/FL_swipe_refresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/FL_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </android.support.v4.widget.SwipeRefreshLayout>
+
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/FL_action_add_product"

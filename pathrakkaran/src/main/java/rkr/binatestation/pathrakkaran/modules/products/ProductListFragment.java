@@ -7,6 +7,9 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.ContentLoadingProgressBar;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -31,8 +34,10 @@ public class ProductListFragment extends Fragment implements View.OnClickListene
     private static final String TAG = "ProductListFragment";
 
     private ContentLoadingProgressBar mProgressBar;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
     private ProductAdapter mProductAdapter;
     private long userId = 0;
+    private ActionBar mActionBar;
 
     private ProductsListeners.PresenterListener mPresenterListener;
 
@@ -62,6 +67,12 @@ public class ProductListFragment extends Fragment implements View.OnClickListene
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        try {
+            AppCompatActivity activity = (AppCompatActivity) getActivity();
+            mActionBar = activity.getSupportActionBar();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         mPresenterListener = new ProductsPresenter(this);
         userId = getContext().getSharedPreferences(getContext().getPackageName(), Context.MODE_PRIVATE).getLong(KEY_USER_ID, 0);
     }
@@ -73,6 +84,7 @@ public class ProductListFragment extends Fragment implements View.OnClickListene
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.FL_recycler_view);
         FloatingActionButton addProduct = (FloatingActionButton) view.findViewById(R.id.FL_action_add_product);
         mProgressBar = (ContentLoadingProgressBar) view.findViewById(R.id.FL_progress_bar);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.FL_swipe_refresh);
 
         //Setting Recycler view
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -84,6 +96,31 @@ public class ProductListFragment extends Fragment implements View.OnClickListene
             mPresenterListener.loadProductList(getLoaderManager(), userId);
         }
 
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (isPresenterLive()) {
+                    mPresenterListener.loadProductList(getLoaderManager(), userId);
+                }
+            }
+        });
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setActionBar(
+                getString(R.string.products_list),
+                getString(R.string.app_name)
+        );
+    }
+
+    private void setActionBar(String title, String subtitle) {
+        if (mActionBar != null) {
+            mActionBar.setTitle(title);
+            mActionBar.setSubtitle(subtitle);
+        }
     }
 
     @Override
@@ -122,6 +159,9 @@ public class ProductListFragment extends Fragment implements View.OnClickListene
     public void hideProgressBar() {
         if (mProgressBar != null) {
             mProgressBar.hide();
+        }
+        if (mSwipeRefreshLayout != null) {
+            mSwipeRefreshLayout.setRefreshing(false);
         }
     }
 }

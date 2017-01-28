@@ -104,7 +104,6 @@ public class UserDetailsModel implements Parcelable {
                     userDetailsModelList.add(cursorToUserDetailsModel(cursor));
                 } while (cursor.moveToNext());
             }
-            cursor.close();
         }
         Log.d(TAG, "getAll() returned: " + userDetailsModelList);
         return userDetailsModelList;
