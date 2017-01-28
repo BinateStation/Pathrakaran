@@ -158,4 +158,5 @@
     <string name="confirm_password_empty_msg">Please confirm your password.!</string>
     <string name="password_mismatch_alert_msg">Password mismatch.!</string>
     <string name="balance">Balance</string>
+    <string name="amount">Amount</string>
 </resources>

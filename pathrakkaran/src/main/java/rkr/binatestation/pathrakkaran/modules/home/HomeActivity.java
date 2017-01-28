@@ -14,6 +14,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.android.volley.toolbox.NetworkImageView;
 
@@ -25,10 +27,12 @@ import rkr.binatestation.pathrakkaran.modules.profile.UserProfileActivity;
 import rkr.binatestation.pathrakkaran.modules.subscribers.SubscribersListFragment;
 import rkr.binatestation.pathrakkaran.modules.suppliers.SuppliersListFragment;
 import rkr.binatestation.pathrakkaran.modules.transactions.TransactionListFragment;
+import rkr.binatestation.pathrakkaran.network.VolleySingleTon;
 
 import static rkr.binatestation.pathrakkaran.models.UserDetailsModel.USER_TYPE_AGENT;
 import static rkr.binatestation.pathrakkaran.models.UserDetailsModel.USER_TYPE_SUBSCRIBER;
 import static rkr.binatestation.pathrakkaran.models.UserDetailsModel.USER_TYPE_SUPPLIER;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_USER_IMAGE;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_USER_NAME;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_USER_PHONE;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_USER_TYPE;
@@ -91,11 +95,23 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private void handleNavigationMenuItems(NavigationView navigationView, int type) {
         Log.d(TAG, "handleNavigationMenuItems() called with: navigationView = [" + navigationView + "], type = [" + type + "]");
         Menu menu = navigationView.getMenu();
-        NetworkImageView profileImage = (NetworkImageView) navigationView.findViewById(R.id.NHH_profile_image);
-        if (profileImage != null) {
-            Log.d(TAG, "handleNavigationMenuItems: Profile not null");
-        } else {
-            Log.d(TAG, "handleNavigationMenuItems: Profile null");
+        View headerView = navigationView.getHeaderView(0);
+        if (headerView != null) {
+            NetworkImageView profileImage = (NetworkImageView) headerView.findViewById(R.id.NHH_profile_image);
+            if (profileImage != null) {
+                String imageUrl = getSharedPreferences(getPackageName(), MODE_PRIVATE).getString(KEY_USER_IMAGE, "");
+                profileImage.setImageUrl(
+                        VolleySingleTon.getDomainUrlForImage() + imageUrl,
+                        VolleySingleTon.getInstance(profileImage.getContext()).getImageLoader()
+                );
+                profileImage.setDefaultImageResId(R.drawable.ic_face_24dp);
+                profileImage.setErrorImageResId(R.drawable.ic_face_24dp);
+            }
+            TextView usernameTextView = (TextView) headerView.findViewById(R.id.NHH_user_name);
+            if (usernameTextView != null) {
+                String username = getSharedPreferences(getPackageName(), MODE_PRIVATE).getString(KEY_USER_NAME, "");
+                usernameTextView.setText(username);
+            }
         }
         switch (type) {
             case USER_TYPE_AGENT: {

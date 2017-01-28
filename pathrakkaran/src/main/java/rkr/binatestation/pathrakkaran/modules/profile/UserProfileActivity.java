@@ -63,6 +63,7 @@ import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_NAME;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_POSTCODE;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_USER;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_USER_ID;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_USER_IMAGE;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_USER_TYPE;
 import static rkr.binatestation.pathrakkaran.utils.Constants.REQUEST_EXTERNAL_STORAGE;
 import static rkr.binatestation.pathrakkaran.utils.Constants.REQUEST_LOCATION_PERMISSION;
@@ -380,6 +381,7 @@ public class UserProfileActivity extends AppCompatActivity implements OnMapReady
             int userType = getSharedPreferences(getPackageName(), MODE_PRIVATE).getInt(KEY_USER_TYPE, 0);
             if (userType == userDetailsModel.getUserType()) {
                 mActionSubmitView.setVisibility(View.VISIBLE);
+                getSharedPreferences(getPackageName(), MODE_PRIVATE).edit().putString(KEY_USER_IMAGE, userDetailsModel.getImage()).apply();
             } else {
                 mActionSubmitView.setVisibility(View.INVISIBLE);
             }

@@ -77,7 +77,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
             transactionDateTextView = (TextView) itemView.findViewById(R.id.APLI_company_name);
             balanceLabelTextView = (TextView) itemView.findViewById(R.id.APLI_product_type);
             balanceAmountTextView = (TextView) itemView.findViewById(R.id.APLI_product_price);
-            balanceLabelTextView.setText(R.string.balance);
+            balanceLabelTextView.setText(R.string.amount);
         }
     }
 }
