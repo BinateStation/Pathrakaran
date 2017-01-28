@@ -49,6 +49,7 @@ class SuppliersPresenter implements SuppliersListeners.PresenterListener {
 
     @Override
     public void setSuppliersList(List<UserDetailsModel> userDetailsModelList) {
+        Log.d(TAG, "setSuppliersList() called with: userDetailsModelList = [" + userDetailsModelList + "]");
         if (isViewListener()) {
             mViewListener.setRecyclerView(userDetailsModelList);
             mViewListener.hideProgressBar();

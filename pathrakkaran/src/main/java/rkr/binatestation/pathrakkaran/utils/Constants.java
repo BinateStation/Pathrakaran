@@ -74,4 +74,5 @@ public class Constants {
     public static final int CURSOR_LOADER_LOAD_PRODUCTS = 3;
     public static final int CURSOR_LOADER_LOAD_SUPPLIERS = 4;
     public static final int CURSOR_LOADER_LOAD_SUBSCRIBERS = 5;
+    public static final int CURSOR_LOADER_LOAD_TRANSACTIONS = 6;
 }
