@@ -20,6 +20,8 @@ interface SubscriberListeners {
 
         void setRecyclerView(List<UserDetailsModel> userDetailsModelList);
 
+        void addItem(UserDetailsModel userDetailsModel);
+
         Context getContext();
     }
 
@@ -30,6 +32,7 @@ interface SubscriberListeners {
 
         void registerSubscriber(Context context, String name, String mobile, String email, long userId);
 
+        void addToSubscriberList(UserDetailsModel userDetailsModel);
         Context getContext();
 
     }

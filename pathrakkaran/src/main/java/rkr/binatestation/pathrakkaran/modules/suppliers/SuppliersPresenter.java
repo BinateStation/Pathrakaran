@@ -71,4 +71,13 @@ class SuppliersPresenter implements SuppliersListeners.PresenterListener {
         }
         return null;
     }
+
+    @Override
+    public void addToSupplierList(UserDetailsModel userDetailsModel) {
+        Log.d(TAG, "addToSupplierList() called with: userDetailsModel = [" + userDetailsModel + "]");
+        if (isViewListener()) {
+            mViewListener.addItem(userDetailsModel);
+            mViewListener.hideProgressBar();
+        }
+    }
 }

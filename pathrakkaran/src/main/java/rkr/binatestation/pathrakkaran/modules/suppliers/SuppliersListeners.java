@@ -21,6 +21,8 @@ interface SuppliersListeners {
         void setRecyclerView(List<UserDetailsModel> userDetailsModelList);
 
         Context getContext();
+
+        void addItem(UserDetailsModel userDetailsModel);
     }
 
     interface PresenterListener {
@@ -32,6 +34,7 @@ interface SuppliersListeners {
 
         Context getContext();
 
+        void addToSupplierList(UserDetailsModel userDetailsModel);
     }
 
     interface InterActorListener {

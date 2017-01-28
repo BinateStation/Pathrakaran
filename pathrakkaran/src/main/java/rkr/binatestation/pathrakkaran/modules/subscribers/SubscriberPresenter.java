@@ -65,6 +65,14 @@ class SubscriberPresenter implements SubscriberListeners.PresenterListener {
     }
 
     @Override
+    public void addToSubscriberList(UserDetailsModel userDetailsModel) {
+        if (isViewListener()) {
+            mViewListener.addItem(userDetailsModel);
+            mViewListener.hideProgressBar();
+        }
+    }
+
+    @Override
     public Context getContext() {
         if (isViewListener()) {
             return mViewListener.getContext();

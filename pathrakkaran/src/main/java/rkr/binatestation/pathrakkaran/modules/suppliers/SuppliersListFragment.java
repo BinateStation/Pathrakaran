@@ -160,10 +160,17 @@ public class SuppliersListFragment extends Fragment implements SuppliersListener
         if (mUsersAdapter != null) {
             mUsersAdapter.setUserDetailsModelList(userDetailsModelList);
         }
+
+    }
+
+    @Override
+    public void addItem(UserDetailsModel userDetailsModel) {
+        if (mUsersAdapter != null) {
+            mUsersAdapter.addItem(userDetailsModel);
+        }
         if (mAddSupplierFragment != null && mAddSupplierFragment.isResumed()) {
             mAddSupplierFragment.hideProgress();
             mAddSupplierFragment.dismiss();
         }
     }
-
 }

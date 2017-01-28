@@ -46,6 +46,9 @@ public class Constants {
     public static final String KEY_LONGITUDE = "longitude";
     public static final String KEY_AGENT_ID = "agent_id";
     public static final String KEY_PRODUCT_ID = "product_id";
+    public static final String KEY_MASTERS_LAST_UPDATED_DATE = "masters_last_updated_date";
+    public static final String KEY_USERS_LAST_UPDATED_DATE = "users_last_updated_date";
+    public static final String KEY_DATE = "date";
     /**
      * Id to identity READ_CONTACTS permission request.
      */
@@ -63,10 +66,10 @@ public class Constants {
     public static final String END_URL_MASTERS = "masters";
     public static final String END_URL_PRODUCTS_MY_PRODUCTS = "products/myProducts";
     public static final String END_URL_PRODUCTS_SUBSCRIBE = "products/subscribe";
-    public static final String END_URL_SUPPLIERS_GET_LIST = "suppliers/getList";
     public static final String END_URL_SUPPLIERS_REGISTER = "suppliers/register";
-    public static final String END_URL_SUBSCRIBERS_GET_LIST = "subscribers/getList";
     public static final String END_URL_SUBSCRIBERS_REGISTER = "subscribers/register";
+    public static final String END_URL_USER_GET_USERS_LIST = "user/get_users_list";
+    public static final String END_URL_TRANSACTIONS_GET_LIST = "transactions/getList";
 
     /**
      * Cursor loaders

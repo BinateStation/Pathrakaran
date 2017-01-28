@@ -15,6 +15,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.android.volley.toolbox.NetworkImageView;
+
 import rkr.binatestation.pathrakkaran.R;
 import rkr.binatestation.pathrakkaran.activities.SplashScreen;
 import rkr.binatestation.pathrakkaran.fragments.SMHome;
@@ -89,6 +91,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private void handleNavigationMenuItems(NavigationView navigationView, int type) {
         Log.d(TAG, "handleNavigationMenuItems() called with: navigationView = [" + navigationView + "], type = [" + type + "]");
         Menu menu = navigationView.getMenu();
+        NetworkImageView profileImage = (NetworkImageView) navigationView.findViewById(R.id.NHH_profile_image);
+        if (profileImage != null) {
+            Log.d(TAG, "handleNavigationMenuItems: Profile not null");
+        } else {
+            Log.d(TAG, "handleNavigationMenuItems: Profile null");
+        }
         switch (type) {
             case USER_TYPE_AGENT: {
                 navigationView.setCheckedItem(R.id.nav_AM_home);
@@ -155,7 +163,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         finish();
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.

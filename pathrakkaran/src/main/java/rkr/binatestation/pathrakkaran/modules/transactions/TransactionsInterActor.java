@@ -29,8 +29,8 @@ import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserD
 import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserDetailsTable.CONTENT_URI;
 import static rkr.binatestation.pathrakkaran.models.UserDetailsModel.USER_TYPE_SUPPLIER;
 import static rkr.binatestation.pathrakkaran.utils.Constants.CURSOR_LOADER_LOAD_TRANSACTIONS;
-import static rkr.binatestation.pathrakkaran.utils.Constants.END_URL_SUPPLIERS_GET_LIST;
 import static rkr.binatestation.pathrakkaran.utils.Constants.END_URL_SUPPLIERS_REGISTER;
+import static rkr.binatestation.pathrakkaran.utils.Constants.END_URL_TRANSACTIONS_GET_LIST;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_AGENT_ID;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_USER_ID;
 
@@ -72,7 +72,7 @@ class TransactionsInterActor implements TransactionListeners.InterActorListener,
             if (context != null) {
                 StringRequest stringRequest = new StringRequest(
                         Request.Method.POST,
-                        VolleySingleTon.getDomainUrl() + END_URL_SUPPLIERS_GET_LIST,
+                        VolleySingleTon.getDomainUrl() + END_URL_TRANSACTIONS_GET_LIST,
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {

@@ -140,9 +140,9 @@ public class UserProfileActivity extends AppCompatActivity implements OnMapReady
                                     dataJsonObject.optString(KEY_IMAGE),
                                     dataJsonObject.optInt(KEY_USER_TYPE),
                                     dataJsonObject.optDouble(KEY_LATITUDE),
-                                    dataJsonObject.optDouble(KEY_LONGITUDE)
-
-                            ));
+                                    dataJsonObject.optDouble(KEY_LONGITUDE),
+                                    UserDetailsModel.SAVE_STATUS_SAVED)
+                            );
                         }
                         showAlert("Successfully updated..!");
                     } else {

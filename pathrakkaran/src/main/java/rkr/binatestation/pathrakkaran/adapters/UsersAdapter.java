@@ -34,6 +34,14 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ItemHolder> 
         notifyDataSetChanged();
     }
 
+    public void addItem(UserDetailsModel userDetailsModel) {
+        if (mUserDetailsModelList != null) {
+            int count = getItemCount();
+            mUserDetailsModelList.add(userDetailsModel);
+            notifyItemInserted(count);
+        }
+    }
+
     @Override
     public ItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ItemHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_user_list_item, parent, false));

@@ -1,8 +1,10 @@
 package rkr.binatestation.pathrakkaran.models;
 
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
@@ -12,6 +14,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserDetailsTable.COLUMN_ADDRESS;
 import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserDetailsTable.COLUMN_EMAIL;
@@ -21,6 +24,7 @@ import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserD
 import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserDetailsTable.COLUMN_MOBILE;
 import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserDetailsTable.COLUMN_NAME;
 import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserDetailsTable.COLUMN_POSTCODE;
+import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserDetailsTable.COLUMN_SAVE_STATUS;
 import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserDetailsTable.COLUMN_USER_ID;
 import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserDetailsTable.COLUMN_USER_TYPE;
 import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserDetailsTable.CONTENT_URI;
@@ -55,6 +59,8 @@ public class UserDetailsModel implements Parcelable {
     public static final int USER_TYPE_AGENT = 1;
     public static final int USER_TYPE_SUPPLIER = 2;
     public static final int USER_TYPE_SUBSCRIBER = 3;
+    public static final int SAVE_STATUS_SAVED = 1;
+    public static final int SAVE_STATUS_NOT_SAVED = 2;
     private static final String TAG = "UserDetailsModel";
     private long id;
     private long userId;
@@ -67,8 +73,9 @@ public class UserDetailsModel implements Parcelable {
     private int userType;//1 Agent,2 Supplier,3 Agent;
     private double latitude;
     private double longitude;
+    private int saveStatus;
 
-    public UserDetailsModel(long userId, String name, String address, String postcode, String email, String mobile, String image, int userType, double latitude, double longitude) {
+    public UserDetailsModel(long userId, String name, String address, String postcode, String email, String mobile, String image, int userType, double latitude, double longitude, int saveStatus) {
         this.userId = userId;
         this.name = name;
         this.address = address;
@@ -79,6 +86,7 @@ public class UserDetailsModel implements Parcelable {
         this.userType = userType;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.saveStatus = saveStatus;
     }
 
     private UserDetailsModel(Parcel in) {
@@ -93,6 +101,23 @@ public class UserDetailsModel implements Parcelable {
         userType = in.readInt();
         latitude = in.readDouble();
         longitude = in.readDouble();
+        saveStatus = in.readInt();
+    }
+
+    public static UserDetailsModel getDefault() {
+        return new UserDetailsModel(
+                new Random().nextLong(),
+                "Select User",
+                "",
+                "",
+                "",
+                "",
+                "",
+                USER_TYPE_SUBSCRIBER,
+                0,
+                0,
+                SAVE_STATUS_NOT_SAVED
+        );
     }
 
     public static ArrayList<UserDetailsModel> getAll(Cursor cursor) {
@@ -114,6 +139,17 @@ public class UserDetailsModel implements Parcelable {
         int noOfRowsInserted = contentResolver.bulkInsert(CONTENT_URI, getContentValuesArray(jsonArray));
         Log.d(TAG, "bulkInsert() returned: " + noOfRowsInserted);
         return noOfRowsInserted;
+    }
+
+    public static long insert(ContentResolver contentResolver, UserDetailsModel userDetailsModel) {
+        Log.d(TAG, "insert() called with: contentResolver = [" + contentResolver + "], userDetailsModel = [" + userDetailsModel + "]");
+        Uri uri = contentResolver.insert(
+                CONTENT_URI,
+                getContentValues(userDetailsModel)
+        );
+        long insertId = ContentUris.parseId(uri);
+        Log.d(TAG, "insert() returned: " + insertId);
+        return insertId;
     }
 
     private static ContentValues[] getContentValuesArray(JSONArray jsonArray) {
@@ -141,6 +177,23 @@ public class UserDetailsModel implements Parcelable {
         contentValues.put(COLUMN_USER_TYPE, jsonObject.optInt(KEY_USER_TYPE));
         contentValues.put(COLUMN_LATITUDE, jsonObject.optDouble(KEY_LATITUDE));
         contentValues.put(COLUMN_LONGITUDE, jsonObject.optDouble(KEY_LONGITUDE));
+        contentValues.put(COLUMN_SAVE_STATUS, SAVE_STATUS_SAVED);
+        return contentValues;
+    }
+
+    private static ContentValues getContentValues(UserDetailsModel userDetailsModel) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_USER_ID, userDetailsModel.getUserId());
+        contentValues.put(COLUMN_NAME, userDetailsModel.getName());
+        contentValues.put(COLUMN_ADDRESS, userDetailsModel.getAddress());
+        contentValues.put(COLUMN_POSTCODE, userDetailsModel.getPostcode());
+        contentValues.put(COLUMN_EMAIL, userDetailsModel.getEmail());
+        contentValues.put(COLUMN_MOBILE, userDetailsModel.getMobile());
+        contentValues.put(COLUMN_IMAGE, userDetailsModel.getImage());
+        contentValues.put(COLUMN_USER_TYPE, userDetailsModel.getUserType());
+        contentValues.put(COLUMN_LATITUDE, userDetailsModel.getLatitude());
+        contentValues.put(COLUMN_LONGITUDE, userDetailsModel.getLongitude());
+        contentValues.put(COLUMN_SAVE_STATUS, userDetailsModel.getSaveStatus());
         return contentValues;
     }
 
@@ -156,8 +209,8 @@ public class UserDetailsModel implements Parcelable {
                 cursor.getString(cursor.getColumnIndex(COLUMN_IMAGE)),
                 cursor.getInt(cursor.getColumnIndex(COLUMN_USER_TYPE)),
                 cursor.getDouble(cursor.getColumnIndex(COLUMN_LATITUDE)),
-                cursor.getDouble(cursor.getColumnIndex(COLUMN_LONGITUDE))
-
+                cursor.getDouble(cursor.getColumnIndex(COLUMN_LONGITUDE)),
+                cursor.getInt(cursor.getColumnIndex(COLUMN_SAVE_STATUS))
         );
         userDetailsModel.setId(cursor.getLong(0));
         Log.d(TAG, "cursorToUserDetailsModel() returned: " + userDetailsModel);
@@ -252,6 +305,14 @@ public class UserDetailsModel implements Parcelable {
         this.longitude = longitude;
     }
 
+    public int getSaveStatus() {
+        return saveStatus;
+    }
+
+    public void setSaveStatus(int saveStatus) {
+        this.saveStatus = saveStatus;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -270,5 +331,6 @@ public class UserDetailsModel implements Parcelable {
         dest.writeInt(userType);
         dest.writeDouble(latitude);
         dest.writeDouble(longitude);
+        dest.writeInt(saveStatus);
     }
 }

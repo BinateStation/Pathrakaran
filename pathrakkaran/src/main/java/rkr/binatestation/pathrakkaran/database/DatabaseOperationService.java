@@ -1,14 +1,13 @@
 package rkr.binatestation.pathrakkaran.database;
 
 import android.app.IntentService;
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.os.ResultReceiver;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.volley.Request;
@@ -20,6 +19,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,16 +32,27 @@ import rkr.binatestation.pathrakkaran.network.VolleySingleTon;
 import static android.provider.BaseColumns._ID;
 import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.AgentProductListTable.COLUMN_SAVE_STATUS;
 import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserDetailsTable.COLUMN_NAME;
+import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserDetailsTable.COLUMN_USER_ID;
 import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserDetailsTable.COLUMN_USER_TYPE;
+import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserDetailsTable.CONTENT_URI;
+import static rkr.binatestation.pathrakkaran.models.AgentProductModel.SAVE_STATUS_SAVED;
 import static rkr.binatestation.pathrakkaran.utils.Constants.END_URL_PRODUCTS_SUBSCRIBE;
+import static rkr.binatestation.pathrakkaran.utils.Constants.END_URL_SUBSCRIBERS_REGISTER;
+import static rkr.binatestation.pathrakkaran.utils.Constants.END_URL_SUPPLIERS_REGISTER;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_AGENT_ID;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_COMPANIES;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_DATA;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_EMAIL;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_LOGIN_TYPE;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_MASTERS_LAST_UPDATED_DATE;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_MESSAGE;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_MOBILE;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_NAME;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_PRODUCTS;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_PRODUCT_ID;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_STATUS;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_USER_ID;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_USER_TYPE;
 
 /**
  * This IntentService use to do Database operations in background thread
@@ -61,6 +72,7 @@ public class DatabaseOperationService extends IntentService {
     private static final String ACTION_ADD_PRODUCT_AGENT = "rkr.binatestation.pathrakaran.database.action.ADD_PRODUCT_AGENT";
     private static final String ACTION_SAVE_PRODUCT_AGENT = "rkr.binatestation.pathrakaran.database.action.SAVE_PRODUCT_AGENT";
     private static final String ACTION_SAVE_USERS = "rkr.binatestation.pathrakaran.database.action.SAVE_USERS";
+    private static final String ACTION_ADD_USER = "rkr.binatestation.pathrakaran.database.action.ADD_USER";
 
     private static final String EXTRA_PARAM1 = "extra_param_1";
     private static final String EXTRA_PARAM2 = "extra_param_2";
@@ -129,6 +141,21 @@ public class DatabaseOperationService extends IntentService {
         context.startService(intent);
     }
 
+    /**
+     * Starts this service to perform action Suppliers with the given parameters. If
+     * the service is already performing a task this action will be queued.
+     *
+     * @see IntentService
+     */
+    public static void startActionAddUsers(Context context, long userId, UserDetailsModel userDetailsModel, ResultReceiver resultReceiver) {
+        Intent intent = new Intent(context, DatabaseOperationService.class);
+        intent.setAction(ACTION_ADD_USER);
+        intent.putExtra(EXTRA_PARAM1, userId);
+        intent.putExtra(EXTRA_PARAM2, userDetailsModel);
+        intent.putExtra(KEY_RECEIVER, resultReceiver);
+        context.startService(intent);
+    }
+
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
@@ -157,7 +184,86 @@ public class DatabaseOperationService extends IntentService {
                     handleActionSaveUsers(param1, userType);
                 }
                 break;
+                case ACTION_ADD_USER: {
+                    final long userId = intent.getLongExtra(EXTRA_PARAM1, 0);
+                    final UserDetailsModel userDetailsModel = intent.getParcelableExtra(EXTRA_PARAM2);
+                    mResultReceiver = intent.getParcelableExtra(KEY_RECEIVER);
+                    handleActionAddUsers(userId, userDetailsModel);
+                }
+                break;
             }
+        }
+    }
+
+    private void handleActionAddUsers(final long userId, final UserDetailsModel userDetailsModel) {
+        Log.d(TAG, "handleActionAddUsers() called with: userId = [" + userId + "], userDetailsModel = [" + userDetailsModel + "]");
+        final long insertId = UserDetailsModel.insert(getContentResolver(), userDetailsModel);
+        sendReceiverData(RESULT_CODE_SUCCESS, null);
+        if (insertId > 0) {
+            String endUrl = "";
+            if (UserDetailsModel.USER_TYPE_SUBSCRIBER == userDetailsModel.getUserType()) {
+                endUrl = END_URL_SUBSCRIBERS_REGISTER;
+            } else if (UserDetailsModel.USER_TYPE_SUPPLIER == userDetailsModel.getUserType()) {
+                endUrl = END_URL_SUPPLIERS_REGISTER;
+            }
+            if (!TextUtils.isEmpty(endUrl)) {
+                StringRequest stringRequest = new StringRequest(
+                        Request.Method.POST,
+                        VolleySingleTon.getDomainUrl() + endUrl,
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                Log.d(TAG, "onResponse() called with: response = [" + response + "]");
+                                try {
+                                    JSONObject jsonObject = new JSONObject(response);
+                                    if (jsonObject.has(KEY_STATUS) && 200 == jsonObject.optInt(KEY_STATUS)) {
+                                        if (jsonObject.has(KEY_DATA)) {
+                                            JSONObject object = jsonObject.optJSONObject(KEY_DATA);
+                                            if (object != null) {
+                                                long userId = object.optLong(KEY_USER_ID);
+                                                if (userId != 0) {
+                                                    ContentValues contentValues = new ContentValues();
+                                                    contentValues.put(PathrakkaranContract.UserDetailsTable.COLUMN_SAVE_STATUS, UserDetailsModel.SAVE_STATUS_SAVED);
+                                                    contentValues.put(COLUMN_USER_ID, userId);
+                                                    getContentResolver().update(
+                                                            CONTENT_URI,
+                                                            contentValues,
+                                                            _ID + " = ? ",
+                                                            new String[]{"" + insertId}
+                                                    );
+                                                }
+                                            }
+                                        }
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.e(TAG, "onErrorResponse: ", error);
+                            }
+                        }
+                ) {
+                    @Override
+                    protected Map<String, String> getParams() {
+                        Map<String, String> params = new HashMap<>();
+                        params.put(KEY_AGENT_ID, "" + userId);
+                        params.put(KEY_NAME, userDetailsModel.getName());
+                        params.put(KEY_MOBILE, userDetailsModel.getMobile());
+                        params.put(KEY_EMAIL, userDetailsModel.getEmail());
+                        params.put(KEY_USER_TYPE, "" + userDetailsModel.getUserType());
+                        params.put(KEY_LOGIN_TYPE, "N");
+
+                        Log.d(TAG, "getParams() returned: " + getUrl() + "  " + params);
+                        return params;
+                    }
+                };
+                VolleySingleTon.getInstance(getBaseContext()).addToRequestQueue(getBaseContext(), stringRequest);
+            }
+
         }
     }
 
@@ -171,7 +277,21 @@ public class DatabaseOperationService extends IntentService {
                 if (jsonObject.has(KEY_DATA)) {
                     JSONArray jsonArray = jsonObject.optJSONArray(KEY_DATA);
                     if (jsonArray != null && jsonArray.length() > 0) {
-                        UserDetailsModel.bulkInsert(getContentResolver(), jsonArray);
+                        int noOfRowsInserted = UserDetailsModel.bulkInsert(getContentResolver(), jsonArray);
+                        if (noOfRowsInserted > 0) {
+                            Cursor cursor = getContentResolver().query(
+                                    CONTENT_URI,
+                                    null,
+                                    COLUMN_USER_TYPE + " = ? ",
+                                    new String[]{"" + userType},
+                                    COLUMN_NAME
+                            );
+                            if (cursor != null) {
+                                Bundle bundle = new Bundle();
+                                bundle.putParcelableArrayList(KEY_SUCCESS_MESSAGE, UserDetailsModel.getAll(cursor));
+                                sendReceiverData(RESULT_CODE_SUCCESS, bundle);
+                            }
+                        }
                     }
                 }
             }
@@ -179,18 +299,6 @@ public class DatabaseOperationService extends IntentService {
             e.printStackTrace();
         }
 
-        Cursor cursor = getContentResolver().query(
-                PathrakkaranContract.UserDetailsTable.CONTENT_URI,
-                null,
-                COLUMN_USER_TYPE + " = ? ",
-                new String[]{"" + userType},
-                COLUMN_NAME
-        );
-        if (cursor != null) {
-            Bundle bundle = new Bundle();
-            bundle.putParcelableArrayList(KEY_SUCCESS_MESSAGE, UserDetailsModel.getAll(cursor));
-            sendReceiverData(RESULT_CODE_SUCCESS, bundle);
-        }
     }
 
     private void handleActionSaveProductAgent(String param1) {
@@ -231,7 +339,7 @@ public class DatabaseOperationService extends IntentService {
 
     private void handleActionAddProductAgent(final AgentProductModel agentProductModel) {
         Log.d(TAG, "handleActionAddProductAgent() called with: agentProductModel = [" + agentProductModel + "]");
-        final Uri uri = AgentProductModel.insert(getContentResolver(), agentProductModel);
+        final long insertId = AgentProductModel.insert(getContentResolver(), agentProductModel);
 
         sendReceiverData(RESULT_CODE_SUCCESS, null);
         StringRequest stringRequest = new StringRequest(
@@ -245,12 +353,12 @@ public class DatabaseOperationService extends IntentService {
                             int responseCode = jsonObject.optInt(KEY_STATUS);
                             if (200 == responseCode) {
                                 ContentValues contentValues = new ContentValues();
-                                contentValues.put(COLUMN_SAVE_STATUS, 1);
+                                contentValues.put(COLUMN_SAVE_STATUS, SAVE_STATUS_SAVED);
                                 getContentResolver().update(
                                         PathrakkaranContract.AgentProductListTable.CONTENT_URI,
                                         contentValues,
                                         _ID + " = ? ",
-                                        new String[]{"" + ContentUris.parseId(uri)}
+                                        new String[]{"" + insertId}
                                 );
                             }
                         } catch (JSONException e) {
@@ -292,6 +400,8 @@ public class DatabaseOperationService extends IntentService {
                 if (jsonObject.has(KEY_DATA)) {
                     JSONObject dataJsonObject = jsonObject.optJSONObject(KEY_DATA);
                     if (dataJsonObject != null) {
+                        getSharedPreferences(getPackageName(), MODE_PRIVATE).edit()
+                                .putLong(KEY_MASTERS_LAST_UPDATED_DATE, Calendar.getInstance().getTimeInMillis()).apply();
                         JSONArray companiesJsonArray = dataJsonObject.optJSONArray(KEY_COMPANIES);
                         JSONArray productsJsonArray = dataJsonObject.optJSONArray(KEY_PRODUCTS);
                         if (companiesJsonArray != null && companiesJsonArray.length() > 0) {

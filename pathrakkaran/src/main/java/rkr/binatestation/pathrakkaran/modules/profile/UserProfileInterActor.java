@@ -23,6 +23,7 @@ import rkr.binatestation.pathrakkaran.models.UserDetailsModel;
 import rkr.binatestation.pathrakkaran.network.VolleySingleTon;
 import rkr.binatestation.pathrakkaran.utils.Constants;
 
+import static rkr.binatestation.pathrakkaran.models.UserDetailsModel.SAVE_STATUS_SAVED;
 import static rkr.binatestation.pathrakkaran.utils.Constants.END_URL_USER_PROFILE_UPDATE;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_ADDRESS;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_DATA;
@@ -77,8 +78,8 @@ class UserProfileInterActor implements UserProfileListeners.InterActorListener {
                                         dataJsonObject.optString(KEY_IMAGE),
                                         dataJsonObject.optInt(KEY_USER_TYPE),
                                         dataJsonObject.optDouble(KEY_LATITUDE),
-                                        dataJsonObject.optDouble(KEY_LONGITUDE)
-
+                                        dataJsonObject.optDouble(KEY_LONGITUDE),
+                                        SAVE_STATUS_SAVED
                                 ));
                             }
                         } else {
@@ -205,8 +206,8 @@ class UserProfileInterActor implements UserProfileListeners.InterActorListener {
                                                 dataJsonObject.optString(KEY_IMAGE),
                                                 dataJsonObject.optInt(KEY_USER_TYPE),
                                                 dataJsonObject.optDouble(KEY_LATITUDE),
-                                                dataJsonObject.optDouble(KEY_LONGITUDE)
-
+                                                dataJsonObject.optDouble(KEY_LONGITUDE),
+                                                SAVE_STATUS_SAVED
                                         ));
                                     }
                                 } else {

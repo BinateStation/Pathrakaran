@@ -144,6 +144,13 @@ public class SubscribersListFragment extends Fragment implements SubscriberListe
         if (mUsersAdapter != null) {
             mUsersAdapter.setUserDetailsModelList(userDetailsModelList);
         }
+    }
+
+    @Override
+    public void addItem(UserDetailsModel userDetailsModel) {
+        if (mUsersAdapter != null) {
+            mUsersAdapter.addItem(userDetailsModel);
+        }
         if (mAddSubscriberFragment != null && mAddSubscriberFragment.isResumed()) {
             mAddSubscriberFragment.hideProgress();
             mAddSubscriberFragment.dismiss();

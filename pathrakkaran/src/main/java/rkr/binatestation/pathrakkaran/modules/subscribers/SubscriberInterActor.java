@@ -22,22 +22,20 @@ import java.util.Map;
 import rkr.binatestation.pathrakkaran.database.DatabaseOperationService;
 import rkr.binatestation.pathrakkaran.models.UserDetailsModel;
 import rkr.binatestation.pathrakkaran.network.VolleySingleTon;
+import rkr.binatestation.pathrakkaran.utils.GeneralUtils;
 
+import static android.content.Context.MODE_PRIVATE;
 import static rkr.binatestation.pathrakkaran.database.DatabaseOperationService.KEY_SUCCESS_MESSAGE;
 import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserDetailsTable.COLUMN_NAME;
 import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserDetailsTable.COLUMN_USER_TYPE;
 import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserDetailsTable.CONTENT_URI;
 import static rkr.binatestation.pathrakkaran.models.UserDetailsModel.USER_TYPE_SUBSCRIBER;
 import static rkr.binatestation.pathrakkaran.utils.Constants.CURSOR_LOADER_LOAD_SUBSCRIBERS;
-import static rkr.binatestation.pathrakkaran.utils.Constants.END_URL_SUBSCRIBERS_GET_LIST;
-import static rkr.binatestation.pathrakkaran.utils.Constants.END_URL_SUBSCRIBERS_REGISTER;
+import static rkr.binatestation.pathrakkaran.utils.Constants.END_URL_USER_GET_USERS_LIST;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_AGENT_ID;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_EMAIL;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_LOGIN_TYPE;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_MOBILE;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_NAME;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_DATE;
+import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_USERS_LAST_UPDATED_DATE;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_USER_ID;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_USER_TYPE;
 
 /**
  * Created by RKR on 28/1/2017.
@@ -78,7 +76,7 @@ class SubscriberInterActor implements SubscriberListeners.InterActorListener, Lo
             if (context != null) {
                 StringRequest stringRequest = new StringRequest(
                         Request.Method.POST,
-                        VolleySingleTon.getDomainUrl() + END_URL_SUBSCRIBERS_GET_LIST,
+                        VolleySingleTon.getDomainUrl() + END_URL_USER_GET_USERS_LIST,
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
@@ -87,7 +85,7 @@ class SubscriberInterActor implements SubscriberListeners.InterActorListener, Lo
                                     @Override
                                     protected void onReceiveResult(int resultCode, Bundle resultData) {
                                         ArrayList<UserDetailsModel> userDetailsModelArrayList = resultData.getParcelableArrayList(KEY_SUCCESS_MESSAGE);
-                                        if (isPresenterLive()) {
+                                        if (isPresenterLive() && userDetailsModelArrayList != null && userDetailsModelArrayList.size() > 0) {
                                             mPresenterListener.setSubscriberList(userDetailsModelArrayList);
                                         }
                                     }
@@ -103,8 +101,11 @@ class SubscriberInterActor implements SubscriberListeners.InterActorListener, Lo
                 ) {
                     @Override
                     protected Map<String, String> getParams() {
+                        long lastUpdatedDate = GeneralUtils.getUnixTimeStamp(context.getSharedPreferences(context.getPackageName(), MODE_PRIVATE)
+                                .getLong(KEY_USERS_LAST_UPDATED_DATE, 0));
                         Map<String, String> params = new HashMap<>();
                         params.put(KEY_AGENT_ID, "" + userId);
+                        params.put(KEY_DATE, "" + lastUpdatedDate);
 
                         Log.d(TAG, "getParams() returned: " + getUrl() + "  " + params);
                         return params;
@@ -119,39 +120,19 @@ class SubscriberInterActor implements SubscriberListeners.InterActorListener, Lo
     @Override
     public void register(Context context, final String name, final String mobile, final String email, final int userTypeValue, final long userId) {
         Log.d(TAG, "register() called with: context = [" + context + "], name = [" + name + "], mobile = [" + mobile + "], email = [" + email + "], userTypeValue = [" + userTypeValue + "], userId = [" + userId + "]");
-        StringRequest stringRequest = new StringRequest(
-                Request.Method.POST,
-                VolleySingleTon.getDomainUrl() + END_URL_SUBSCRIBERS_REGISTER,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.d(TAG, "onResponse() called with: response = [" + response + "]");
-                        getSubscribersFromServer(userId);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e(TAG, "onErrorResponse: ", error);
-                    }
-                }
-        ) {
+        final UserDetailsModel userDetailsModel = UserDetailsModel.getDefault();
+        userDetailsModel.setName(name);
+        userDetailsModel.setMobile(mobile);
+        userDetailsModel.setEmail(email);
+        userDetailsModel.setUserType(userTypeValue);
+        DatabaseOperationService.startActionAddUsers(context, userId, userDetailsModel, new ResultReceiver(new Handler()) {
             @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put(KEY_AGENT_ID, "" + userId);
-                params.put(KEY_NAME, name);
-                params.put(KEY_MOBILE, mobile);
-                params.put(KEY_EMAIL, email);
-                params.put(KEY_USER_TYPE, "" + userTypeValue);
-                params.put(KEY_LOGIN_TYPE, "N");
-
-                Log.d(TAG, "getParams() returned: " + getUrl() + "  " + params);
-                return params;
+            protected void onReceiveResult(int resultCode, Bundle resultData) {
+                if (isPresenterLive()) {
+                    mPresenterListener.addToSubscriberList(userDetailsModel);
+                }
             }
-        };
-        VolleySingleTon.getInstance(context).addToRequestQueue(context, stringRequest);
-
+        });
     }
 
     @Override

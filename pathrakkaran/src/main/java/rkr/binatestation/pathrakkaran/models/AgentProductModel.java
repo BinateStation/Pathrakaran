@@ -1,6 +1,7 @@
 package rkr.binatestation.pathrakkaran.models;
 
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
@@ -39,6 +40,9 @@ public class AgentProductModel implements Parcelable {
             return new AgentProductModel[size];
         }
     };
+    public static final int SAVE_STATUS_SAVED = 1;
+    public static final int SAVE_STATUS_NOT_SAVED = 2;
+    public static final int SAVE_STATUS_TEMP = 3;
     private static final String TAG = "AgentProductModel";
     private long id;
     private long productId;
@@ -62,12 +66,13 @@ public class AgentProductModel implements Parcelable {
         companyMasterModel = in.readParcelable(CompanyMasterModel.class.getClassLoader());
     }
 
-    public static Uri insert(ContentResolver contentResolver, AgentProductModel agentProductModel) {
+    public static long insert(ContentResolver contentResolver, AgentProductModel agentProductModel) {
         Log.d(TAG, "insert() called with: contentResolver = [" + contentResolver + "], agentProductModel = [" + agentProductModel + "]");
-        Uri insertId = contentResolver.insert(
+        Uri uri = contentResolver.insert(
                 CONTENT_URI,
                 getContentValues(agentProductModel)
         );
+        long insertId = ContentUris.parseId(uri);
         Log.d(TAG, "insert() returned: " + insertId);
         return insertId;
     }

@@ -19,6 +19,7 @@ public final class PathrakkaranContract {
     static final String PATH_PRODUCT_MASTER = "product_master";
     static final String PATH_AGENT_PRODUCT_LIST = "agent_product_list";
     static final String PATH_USER_DETAILS = "user_details";
+    static final String PATH_TRANSACTIONS = "transactions";
     static final String PATH_AGENT_PRODUCT_LIST_JOIN_PRODUCT_MASTER_JOIN_COMPANY_MASTER = "agent_product_list_join_product_master_join_company_master";
     /**
      * INT,
@@ -164,25 +165,27 @@ public final class PathrakkaranContract {
 
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_USER_DETAILS).build();
         // user id
-        public static final String COLUMN_USER_ID = "user_id";
+        public static final String COLUMN_USER_ID = "UD_user_id";
         // user name
-        public static final String COLUMN_NAME = "name";
+        public static final String COLUMN_NAME = "UD_name";
         // user status
-        public static final String COLUMN_ADDRESS = "address";
+        public static final String COLUMN_ADDRESS = "UD_address";
         // postcode
-        public static final String COLUMN_POSTCODE = "postcode";
+        public static final String COLUMN_POSTCODE = "UD_postcode";
         // user email id
-        public static final String COLUMN_EMAIL = "email";
+        public static final String COLUMN_EMAIL = "UD_email";
         // user mobile number
-        public static final String COLUMN_MOBILE = "mobile";
+        public static final String COLUMN_MOBILE = "UD_mobile";
         // user image url
-        public static final String COLUMN_IMAGE = "image";
+        public static final String COLUMN_IMAGE = "UD_image";
         // user type 1- agent, 2 supplier, 3 subscriber
-        public static final String COLUMN_USER_TYPE = "user_type";
+        public static final String COLUMN_USER_TYPE = "UD_user_type";
         // user latitude
-        public static final String COLUMN_LATITUDE = "latitude";
+        public static final String COLUMN_LATITUDE = "UD_latitude";
         // user longitude
-        public static final String COLUMN_LONGITUDE = "longitude";
+        public static final String COLUMN_LONGITUDE = "UD_longitude";
+        // save status 1- saved, 2 - For saving, 3 - temp
+        public static final String COLUMN_SAVE_STATUS = "UD_save_status";
         // Name of the User details table.
         public static final String TABLE_NAME = PATH_USER_DETAILS;
         static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "." + PATH_USER_DETAILS;
@@ -199,6 +202,40 @@ public final class PathrakkaranContract {
                 COLUMN_USER_TYPE + INTEGER + NOT_NULL + COMMA +
                 COLUMN_LATITUDE + REAL + COMMA +
                 COLUMN_LONGITUDE + REAL +
+                " );";
+
+        // Returns the Uri referencing a Picture with the specified id.
+        static Uri buildUriWithId(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+    }
+
+    public static final class TransactionsTable implements BaseColumns {
+
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_TRANSACTIONS).build();
+        // Transaction id
+        public static final String COLUMN_TRANSACTION_ID = "T_transaction_id";
+        // Payer user id
+        public static final String COLUMN_PAYER = "T_payer";
+        // Payee user id
+        public static final String COLUMN_PAYEE = "T_payee";
+        // transaction amount
+        public static final String COLUMN_AMOUNT = "T_amount";
+        // transaction date time
+        public static final String COLUMN_DATE = "T_date";
+        // save status 1- saved, 2 - For saving, 3 - temp
+        public static final String COLUMN_SAVE_STATUS = "T_save_status";
+        // Name of the User details table.
+        public static final String TABLE_NAME = PATH_TRANSACTIONS;
+        static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "." + PATH_TRANSACTIONS;
+        // Create a table to hold User details.
+        static final String SQL_QUERY_CREATE_TABLE = CREATE_TABLE + TABLE_NAME + " (" +
+                _ID + INTEGER + PRIMARY_KEY + AUTOINCREMENT + COMMA +
+                COLUMN_TRANSACTION_ID + INTEGER + UNIQUE + NOT_NULL + COMMA +
+                COLUMN_PAYER + INTEGER + NOT_NULL + COMMA +
+                COLUMN_PAYEE + INTEGER + NOT_NULL + COMMA +
+                COLUMN_AMOUNT + REAL + COMMA +
+                COLUMN_DATE + REAL +
                 " );";
 
         // Returns the Uri referencing a Picture with the specified id.

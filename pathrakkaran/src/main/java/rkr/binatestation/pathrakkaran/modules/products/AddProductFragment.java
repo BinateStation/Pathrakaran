@@ -36,6 +36,7 @@ import rkr.binatestation.pathrakkaran.models.AgentProductModel;
 import rkr.binatestation.pathrakkaran.models.CompanyMasterModel;
 import rkr.binatestation.pathrakkaran.models.ProductMasterModel;
 
+import static rkr.binatestation.pathrakkaran.models.AgentProductModel.SAVE_STATUS_NOT_SAVED;
 import static rkr.binatestation.pathrakkaran.utils.Constants.CURSOR_LOADER_LOAD_COMPANIES;
 import static rkr.binatestation.pathrakkaran.utils.Constants.CURSOR_LOADER_LOAD_PRODUCTS;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_USER_ID;
@@ -236,7 +237,7 @@ public class AddProductFragment extends DialogFragment implements LoaderManager.
                     DatabaseOperationService.startActionAddProductAgent(getContext(), new AgentProductModel(
                             productMasterModel.getProductId(),
                             getContext().getSharedPreferences(getContext().getPackageName(), Context.MODE_PRIVATE).getLong(KEY_USER_ID, 0),
-                            2
+                            SAVE_STATUS_NOT_SAVED
                     ), new ResultReceiver(new Handler()) {
                         @Override
                         protected void onReceiveResult(int resultCode, Bundle resultData) {

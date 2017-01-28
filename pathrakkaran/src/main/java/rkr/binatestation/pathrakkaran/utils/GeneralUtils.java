@@ -142,4 +142,12 @@ public class GeneralUtils {
         return Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
+    public static long getUnixTimeStamp(long timeInMillis) {
+        return timeInMillis / 1000;
+
+    }
+
+    public static long getTimeInMillis(long unixTimeStamp) {
+        return unixTimeStamp * 1000;
+    }
 }

@@ -18,6 +18,7 @@ import java.util.Arrays;
 import rkr.binatestation.pathrakkaran.database.PathrakkaranContract.AgentProductListTable;
 import rkr.binatestation.pathrakkaran.database.PathrakkaranContract.CompanyMasterTable;
 import rkr.binatestation.pathrakkaran.database.PathrakkaranContract.ProductMasterTable;
+import rkr.binatestation.pathrakkaran.database.PathrakkaranContract.TransactionsTable;
 import rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserDetailsTable;
 
 /**
@@ -32,8 +33,9 @@ public class PathrakkaranProvider extends ContentProvider {
     private static final int PRODUCT_MASTER = 2;
     private static final int AGENT_PRODUCT_LIST = 3;
     private static final int USER_DETAILS = 4;
+    private static final int TRANSACTIONS = 5;
 
-    private static final int AGENT_PRODUCT_LIST_JOIN_PRODUCT_MASTER_JOIN_COMPANY_MASTER = 5;
+    private static final int AGENT_PRODUCT_LIST_JOIN_PRODUCT_MASTER_JOIN_COMPANY_MASTER = 6;
     private static final UriMatcher URI_MATCHER = buildUriMatcher();
     private RKRsPathrakkaranSQLiteHelper mOpenHelper;
     private ContentResolver mContentResolver;
@@ -47,6 +49,7 @@ public class PathrakkaranProvider extends ContentProvider {
         matcher.addURI(authority, PathrakkaranContract.PATH_PRODUCT_MASTER, PRODUCT_MASTER);
         matcher.addURI(authority, PathrakkaranContract.PATH_AGENT_PRODUCT_LIST, AGENT_PRODUCT_LIST);
         matcher.addURI(authority, PathrakkaranContract.PATH_USER_DETAILS, USER_DETAILS);
+        matcher.addURI(authority, PathrakkaranContract.PATH_TRANSACTIONS, TRANSACTIONS);
 
         // join related URIs.
         matcher.addURI(authority, PathrakkaranContract.PATH_AGENT_PRODUCT_LIST_JOIN_PRODUCT_MASTER_JOIN_COMPANY_MASTER,
@@ -122,6 +125,18 @@ public class PathrakkaranProvider extends ContentProvider {
                 );
                 break;
             }
+            case TRANSACTIONS: {
+                retCursor = mOpenHelper.getReadableDatabase().query(
+                        TransactionsTable.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
+            }
             case AGENT_PRODUCT_LIST_JOIN_PRODUCT_MASTER_JOIN_COMPANY_MASTER: {
                 SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
                 String joinedTable = AgentProductListTable.TABLE_NAME + " JOIN " +
@@ -162,6 +177,8 @@ public class PathrakkaranProvider extends ContentProvider {
                 return AgentProductListTable.CONTENT_TYPE;
             case USER_DETAILS:
                 return UserDetailsTable.CONTENT_TYPE;
+            case TRANSACTIONS:
+                return TransactionsTable.CONTENT_TYPE;
             case AGENT_PRODUCT_LIST_JOIN_PRODUCT_MASTER_JOIN_COMPANY_MASTER:
                 return AgentProductListTable.CONTENT_TYPE;
 
@@ -233,6 +250,20 @@ public class PathrakkaranProvider extends ContentProvider {
                 }
                 break;
             }
+            case TRANSACTIONS: {
+                long _id = mOpenHelper.getWritableDatabase().insertWithOnConflict(
+                        TransactionsTable.TABLE_NAME,
+                        null,
+                        values,
+                        SQLiteDatabase.CONFLICT_REPLACE
+                );
+                if (_id > 0) {
+                    returnUri = TransactionsTable.buildUriWithId(_id);
+                } else {
+                    throw new SQLException("Failed to insert row into " + uri);
+                }
+                break;
+            }
             default: {
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
             }
@@ -265,6 +296,11 @@ public class PathrakkaranProvider extends ContentProvider {
             case USER_DETAILS: {
                 rowsDeleted = mOpenHelper.getWritableDatabase().delete(
                         UserDetailsTable.TABLE_NAME, selection, selectionArgs);
+                break;
+            }
+            case TRANSACTIONS: {
+                rowsDeleted = mOpenHelper.getWritableDatabase().delete(
+                        TransactionsTable.TABLE_NAME, selection, selectionArgs);
                 break;
             }
             default: {
@@ -318,6 +354,16 @@ public class PathrakkaranProvider extends ContentProvider {
             case USER_DETAILS: {
                 rowsUpdated = mOpenHelper.getWritableDatabase().updateWithOnConflict(
                         UserDetailsTable.TABLE_NAME,
+                        values,
+                        selection,
+                        selectionArgs,
+                        SQLiteDatabase.CONFLICT_REPLACE
+                );
+                break;
+            }
+            case TRANSACTIONS: {
+                rowsUpdated = mOpenHelper.getWritableDatabase().updateWithOnConflict(
+                        TransactionsTable.TABLE_NAME,
                         values,
                         selection,
                         selectionArgs,
@@ -411,6 +457,27 @@ public class PathrakkaranProvider extends ContentProvider {
                 try {
                     for (ContentValues value : values) {
                         long _id = db.insertWithOnConflict(UserDetailsTable.TABLE_NAME,
+                                null, value, SQLiteDatabase.CONFLICT_REPLACE);
+                        if (_id != -1) {
+                            returnCount++;
+                        }
+                    }
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
+
+                mContentResolver.notifyChange(uri, null);
+                return returnCount;
+            }
+            case TRANSACTIONS: {
+                final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+                int returnCount = 0;
+
+                db.beginTransaction();
+                try {
+                    for (ContentValues value : values) {
+                        long _id = db.insertWithOnConflict(TransactionsTable.TABLE_NAME,
                                 null, value, SQLiteDatabase.CONFLICT_REPLACE);
                         if (_id != -1) {
                             returnCount++;
