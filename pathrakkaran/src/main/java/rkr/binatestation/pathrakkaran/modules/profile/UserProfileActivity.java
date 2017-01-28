@@ -377,6 +377,13 @@ public class UserProfileActivity extends AppCompatActivity implements OnMapReady
         setEditable(false);
         mActionSubmitView.setSelected(false);
         if (userDetailsModel != null) {
+            int userType = getSharedPreferences(getPackageName(), MODE_PRIVATE).getInt(KEY_USER_TYPE, 0);
+            if (userType == userDetailsModel.getUserType()) {
+                mActionSubmitView.setVisibility(View.VISIBLE);
+            } else {
+                mActionSubmitView.setVisibility(View.INVISIBLE);
+            }
+
             mNameEditText.setText(userDetailsModel.getName());
             mEmailEditText.setText(userDetailsModel.getEmail());
             mPhoneNumberEditText.setText(userDetailsModel.getMobile());

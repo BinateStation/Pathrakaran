@@ -118,7 +118,7 @@ class SuppliersInterActor implements SuppliersListeners.InterActorListener, Load
                             @Override
                             public void onResponse(String response) {
                                 Log.d(TAG, "onResponse() called with: response = [" + response + "]");
-                                DatabaseOperationService.startActionSaveUsers(context, response, new ResultReceiver(new Handler()) {
+                                DatabaseOperationService.startActionSaveUsers(context, USER_TYPE_SUPPLIER, response, new ResultReceiver(new Handler()) {
                                     @Override
                                     protected void onReceiveResult(int resultCode, Bundle resultData) {
                                         ArrayList<UserDetailsModel> productModelArrayList = resultData.getParcelableArrayList(KEY_SUCCESS_MESSAGE);

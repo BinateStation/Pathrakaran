@@ -65,6 +65,8 @@ public class Constants {
     public static final String END_URL_PRODUCTS_SUBSCRIBE = "products/subscribe";
     public static final String END_URL_SUPPLIERS_GET_LIST = "suppliers/getList";
     public static final String END_URL_SUPPLIERS_REGISTER = "suppliers/register";
+    public static final String END_URL_SUBSCRIBERS_GET_LIST = "subscribers/getList";
+    public static final String END_URL_SUBSCRIBERS_REGISTER = "subscribers/register";
 
     /**
      * Cursor loaders

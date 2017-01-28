@@ -33,8 +33,6 @@ import static android.provider.BaseColumns._ID;
 import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.AgentProductListTable.COLUMN_SAVE_STATUS;
 import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserDetailsTable.COLUMN_NAME;
 import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserDetailsTable.COLUMN_USER_TYPE;
-import static rkr.binatestation.pathrakkaran.models.UserDetailsModel.USER_TYPE_SUPPLIER;
-import static rkr.binatestation.pathrakkaran.utils.Constants.CURSOR_LOADER_LOAD_AGENT_PRODUCTS;
 import static rkr.binatestation.pathrakkaran.utils.Constants.END_URL_PRODUCTS_SUBSCRIBE;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_AGENT_ID;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_COMPANIES;
@@ -65,6 +63,7 @@ public class DatabaseOperationService extends IntentService {
     private static final String ACTION_SAVE_USERS = "rkr.binatestation.pathrakaran.database.action.SAVE_USERS";
 
     private static final String EXTRA_PARAM1 = "extra_param_1";
+    private static final String EXTRA_PARAM2 = "extra_param_2";
     private static final String KEY_RECEIVER = "receiver";
     private static final String TAG = "DatabaseOperationServic";
 
@@ -121,10 +120,11 @@ public class DatabaseOperationService extends IntentService {
      *
      * @see IntentService
      */
-    public static void startActionSaveUsers(Context context, String response, ResultReceiver resultReceiver) {
+    public static void startActionSaveUsers(Context context, int userType, String response, ResultReceiver resultReceiver) {
         Intent intent = new Intent(context, DatabaseOperationService.class);
         intent.setAction(ACTION_SAVE_USERS);
         intent.putExtra(EXTRA_PARAM1, response);
+        intent.putExtra(EXTRA_PARAM2, userType);
         intent.putExtra(KEY_RECEIVER, resultReceiver);
         context.startService(intent);
     }
@@ -152,15 +152,16 @@ public class DatabaseOperationService extends IntentService {
                 break;
                 case ACTION_SAVE_USERS: {
                     final String param1 = intent.getStringExtra(EXTRA_PARAM1);
+                    final int userType = intent.getIntExtra(EXTRA_PARAM2, 0);
                     mResultReceiver = intent.getParcelableExtra(KEY_RECEIVER);
-                    handleActionSaveUsers(param1);
+                    handleActionSaveUsers(param1, userType);
                 }
                 break;
             }
         }
     }
 
-    private void handleActionSaveUsers(String param1) {
+    private void handleActionSaveUsers(String param1, int userType) {
         Log.d(TAG, "handleActionSaveUsers() called with: param1 = [" + param1 + "]");
         try {
             JSONObject jsonObject = new JSONObject(param1);
@@ -182,13 +183,13 @@ public class DatabaseOperationService extends IntentService {
                 PathrakkaranContract.UserDetailsTable.CONTENT_URI,
                 null,
                 COLUMN_USER_TYPE + " = ? ",
-                new String[]{"" + USER_TYPE_SUPPLIER},
+                new String[]{"" + userType},
                 COLUMN_NAME
         );
         if (cursor != null) {
             Bundle bundle = new Bundle();
             bundle.putParcelableArrayList(KEY_SUCCESS_MESSAGE, UserDetailsModel.getAll(cursor));
-            mResultReceiver.send(CURSOR_LOADER_LOAD_AGENT_PRODUCTS, bundle);
+            sendReceiverData(RESULT_CODE_SUCCESS, bundle);
         }
     }
 

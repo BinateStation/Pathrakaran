@@ -29,8 +29,8 @@ import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserD
 import static rkr.binatestation.pathrakkaran.database.PathrakkaranContract.UserDetailsTable.CONTENT_URI;
 import static rkr.binatestation.pathrakkaran.models.UserDetailsModel.USER_TYPE_SUBSCRIBER;
 import static rkr.binatestation.pathrakkaran.utils.Constants.CURSOR_LOADER_LOAD_SUBSCRIBERS;
-import static rkr.binatestation.pathrakkaran.utils.Constants.END_URL_SUPPLIERS_GET_LIST;
-import static rkr.binatestation.pathrakkaran.utils.Constants.END_URL_SUPPLIERS_REGISTER;
+import static rkr.binatestation.pathrakkaran.utils.Constants.END_URL_SUBSCRIBERS_GET_LIST;
+import static rkr.binatestation.pathrakkaran.utils.Constants.END_URL_SUBSCRIBERS_REGISTER;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_AGENT_ID;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_EMAIL;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_LOGIN_TYPE;
@@ -78,12 +78,12 @@ class SubscriberInterActor implements SubscriberListeners.InterActorListener, Lo
             if (context != null) {
                 StringRequest stringRequest = new StringRequest(
                         Request.Method.POST,
-                        VolleySingleTon.getDomainUrl() + END_URL_SUPPLIERS_GET_LIST,
+                        VolleySingleTon.getDomainUrl() + END_URL_SUBSCRIBERS_GET_LIST,
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
                                 Log.d(TAG, "onResponse() called with: response = [" + response + "]");
-                                DatabaseOperationService.startActionSaveUsers(context, response, new ResultReceiver(new Handler()) {
+                                DatabaseOperationService.startActionSaveUsers(context, USER_TYPE_SUBSCRIBER, response, new ResultReceiver(new Handler()) {
                                     @Override
                                     protected void onReceiveResult(int resultCode, Bundle resultData) {
                                         ArrayList<UserDetailsModel> userDetailsModelArrayList = resultData.getParcelableArrayList(KEY_SUCCESS_MESSAGE);
@@ -121,7 +121,7 @@ class SubscriberInterActor implements SubscriberListeners.InterActorListener, Lo
         Log.d(TAG, "register() called with: context = [" + context + "], name = [" + name + "], mobile = [" + mobile + "], email = [" + email + "], userTypeValue = [" + userTypeValue + "], userId = [" + userId + "]");
         StringRequest stringRequest = new StringRequest(
                 Request.Method.POST,
-                VolleySingleTon.getDomainUrl() + END_URL_SUPPLIERS_REGISTER,
+                VolleySingleTon.getDomainUrl() + END_URL_SUBSCRIBERS_REGISTER,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
