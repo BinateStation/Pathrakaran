@@ -47,11 +47,11 @@ public class LoginActivity extends AppCompatActivity implements LoginListeners.V
 
         mPresenterListener = new LoginPresenter(this);
         // Set up the activity_login form.
-        mContentLoadingProgressBar = (ContentLoadingProgressBar) findViewById(R.id.AL_progress_bar);
-        mFieldPhoneTextInputEditText = (TextInputEditText) findViewById(R.id.AL_field_phone);
-        mFieldPasswordTextInputEditText = (TextInputEditText) findViewById(R.id.AL_filed_password);
-        mFieldPhoneTextInputLayout = (TextInputLayout) findViewById(R.id.AL_field_username_layout);
-        mFieldPasswordTextInputLayout = (TextInputLayout) findViewById(R.id.AL_field_password_layout);
+        mContentLoadingProgressBar = findViewById(R.id.AL_progress_bar);
+        mFieldPhoneTextInputEditText = findViewById(R.id.AL_field_phone);
+        mFieldPasswordTextInputEditText = findViewById(R.id.AL_filed_password);
+        mFieldPhoneTextInputLayout = findViewById(R.id.AL_field_username_layout);
+        mFieldPasswordTextInputLayout = findViewById(R.id.AL_field_password_layout);
 
         mContentLoadingProgressBar.hide();
         mFieldPhoneTextInputEditText.addTextChangedListener(this);
