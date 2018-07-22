@@ -18,7 +18,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
 import rkr.binatestation.pathrakkaran.R;
-import rkr.binatestation.pathrakkaran.activities.SplashScreen;
+import rkr.binatestation.pathrakkaran.activities.SplashActivity;
 import rkr.binatestation.pathrakkaran.modules.register.RegisterActivity;
 
 import static rkr.binatestation.pathrakkaran.utils.GeneralUtils.alert;
@@ -120,7 +120,7 @@ public class LoginActivity extends AppCompatActivity implements LoginListeners.V
     @Override
     public void onSuccessfulLogin(String message) {
         mContentLoadingProgressBar.hide();
-        startActivity(new Intent(LoginActivity.this, SplashScreen.class));
+        startActivity(new Intent(LoginActivity.this, SplashActivity.class));
         finish();
     }
 

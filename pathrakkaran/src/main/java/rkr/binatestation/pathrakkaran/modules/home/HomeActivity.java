@@ -20,14 +20,13 @@ import android.widget.TextView;
 import com.android.volley.toolbox.NetworkImageView;
 
 import rkr.binatestation.pathrakkaran.R;
-import rkr.binatestation.pathrakkaran.activities.SplashScreen;
+import rkr.binatestation.pathrakkaran.activities.SplashActivity;
 import rkr.binatestation.pathrakkaran.fragments.SMHome;
 import rkr.binatestation.pathrakkaran.modules.products.ProductListFragment;
 import rkr.binatestation.pathrakkaran.modules.profile.UserProfileActivity;
 import rkr.binatestation.pathrakkaran.modules.subscribers.SubscribersListFragment;
 import rkr.binatestation.pathrakkaran.modules.suppliers.SuppliersListFragment;
 import rkr.binatestation.pathrakkaran.modules.transactions.TransactionListFragment;
-import rkr.binatestation.pathrakkaran.network.VolleySingleTon;
 
 import static rkr.binatestation.pathrakkaran.models.UserDetailsModel.USER_TYPE_AGENT;
 import static rkr.binatestation.pathrakkaran.models.UserDetailsModel.USER_TYPE_SUBSCRIBER;
@@ -54,19 +53,19 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_activity);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         mPresenterListener = new HomePresenter(this);
 
         mActionBar = getSupportActionBar();
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         handleNavigationMenuItems(navigationView, getSharedPreferences(getPackageName(), MODE_PRIVATE).getInt(KEY_USER_TYPE, 0));
 
@@ -97,17 +96,18 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         Menu menu = navigationView.getMenu();
         View headerView = navigationView.getHeaderView(0);
         if (headerView != null) {
-            NetworkImageView profileImage = (NetworkImageView) headerView.findViewById(R.id.NHH_profile_image);
+            NetworkImageView profileImage = headerView.findViewById(R.id.NHH_profile_image);
             if (profileImage != null) {
                 String imageUrl = getSharedPreferences(getPackageName(), MODE_PRIVATE).getString(KEY_USER_IMAGE, "");
-                profileImage.setImageUrl(
-                        VolleySingleTon.getDomainUrlForImage() + imageUrl,
-                        VolleySingleTon.getInstance(profileImage.getContext()).getImageLoader()
-                );
+                // FIXME: 22-07-2018 the image url
+//                profileImage.setImageUrl(
+//                        JsonObjectRequestFactory.() + imageUrl,
+//                        VolleySingleton.getInstance(profileImage.getContext()).getImageLoader()
+//                );
                 profileImage.setDefaultImageResId(R.drawable.ic_face_24dp);
                 profileImage.setErrorImageResId(R.drawable.ic_face_24dp);
             }
-            TextView usernameTextView = (TextView) headerView.findViewById(R.id.NHH_user_name);
+            TextView usernameTextView = headerView.findViewById(R.id.NHH_user_name);
             if (usernameTextView != null) {
                 String username = getSharedPreferences(getPackageName(), MODE_PRIVATE).getString(KEY_USER_NAME, "");
                 usernameTextView.setText(username);
@@ -142,7 +142,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -175,14 +175,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     private void logout() {
         getSharedPreferences(getPackageName(), MODE_PRIVATE).edit().clear().apply();
-        startActivity(new Intent(HomeActivity.this, SplashScreen.class));
+        startActivity(new Intent(HomeActivity.this, SplashActivity.class));
         finish();
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         Fragment fragment = null;
         switch (item.getItemId()) {
             case R.id.nav_SM_home:

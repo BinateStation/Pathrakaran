@@ -9,6 +9,8 @@ public class Constants {
     /**
      * General Constants Keys
      */
+    public static final String KEY_ID = "id";
+    public static final String KEY_PARAMS = "params";
     public static final String KEY_IS_LOGGED_IN = "is_logged_in";
     public static final String KEY_USER_ID = "user_id";
     public static final String KEY_USER_NAME = "user_name";
@@ -64,6 +66,9 @@ public class Constants {
     /**
      * API End URL
      */
+    public static final String URL_BASE = "http://192.168.56.1:8088/Pathrakkaran/index.php/";
+    public static final String URL_BASE_LIVE = "";
+
     public static final String END_URL_USER_LOGIN = "user/login";
     public static final String END_URL_USER_REGISTER = "user/register";
     public static final String END_URL_USER_PROFILE = "user/profile";

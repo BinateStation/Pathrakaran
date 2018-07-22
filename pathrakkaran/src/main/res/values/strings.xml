@@ -147,9 +147,6 @@
     <string name="route_map">Route Map</string>
     <string name="i_am_here">I am here</string>
     <string name="alert">Alert</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="name_error_message">Name is Mandatory.!</string>
     <string name="mobile_mandatory_alert_message">Phone number is mandatory.!</string>
     <string name="mobile_invalid_alert_msg">Invalid phone number.!</string>
@@ -159,4 +156,11 @@
     <string name="password_mismatch_alert_msg">Password mismatch.!</string>
     <string name="balance">Balance</string>
     <string name="amount">Amount</string>
+
+
+    <string name="default_unknown_error_title">Oops! Service unreachable</string>
+    <string name="default_unknown_error_message">Could not reach the service, please try again later.</string>
+
+    <string name="default_no_networks_error_title">No Internet Connection</string>
+    <string name="default_no_networks_error_message">Please connect to the internet and try again.</string>
 </resources>

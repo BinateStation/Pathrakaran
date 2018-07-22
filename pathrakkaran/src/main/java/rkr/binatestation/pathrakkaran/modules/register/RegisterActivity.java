@@ -14,7 +14,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import rkr.binatestation.pathrakkaran.R;
-import rkr.binatestation.pathrakkaran.activities.SplashScreen;
+import rkr.binatestation.pathrakkaran.activities.SplashActivity;
 import rkr.binatestation.pathrakkaran.modules.login.LoginActivity;
 
 import static rkr.binatestation.pathrakkaran.utils.GeneralUtils.alert;
@@ -53,19 +53,19 @@ public class RegisterActivity extends AppCompatActivity implements TextWatcher, 
             getSupportActionBar().setSubtitle(getString(R.string.you_are_going_to_simplify_your_life));
         }
 
-        mFieldNameTextInputLayout = (TextInputLayout) findViewById(R.id.AR_field_name_layout);
-        mFiledPhoneTextInputLayout = (TextInputLayout) findViewById(R.id.AR_field_phone_layout);
-        mFieldEmailTextInputLayout = (TextInputLayout) findViewById(R.id.AR_field_email_layout);
-        mFieldPasswordTextInputLayout = (TextInputLayout) findViewById(R.id.AR_field_password_layout);
-        mFieldConfirmPasswordTextInputLayout = (TextInputLayout) findViewById(R.id.AR_field_confirm_password_layout);
+        mFieldNameTextInputLayout = findViewById(R.id.AR_field_name_layout);
+        mFiledPhoneTextInputLayout = findViewById(R.id.AR_field_phone_layout);
+        mFieldEmailTextInputLayout = findViewById(R.id.AR_field_email_layout);
+        mFieldPasswordTextInputLayout = findViewById(R.id.AR_field_password_layout);
+        mFieldConfirmPasswordTextInputLayout = findViewById(R.id.AR_field_confirm_password_layout);
 
-        mFieldNameEditText = (EditText) findViewById(R.id.AR_field_name);
-        mFieldPhoneNumberEditText = (EditText) findViewById(R.id.AR_field_phone_number);
-        mFieldEmailEditText = (EditText) findViewById(R.id.AR_field_email);
-        mFieldPasswordEditText = (EditText) findViewById(R.id.AR_field_password);
-        mFieldConfirmPasswordEditText = (EditText) findViewById(R.id.AR_field_confirm_password);
-        mFieldUserTypeSpinner = (Spinner) findViewById(R.id.AR_field_user_type);
-        mContentLoadingProgressBar = (ContentLoadingProgressBar) findViewById(R.id.AR_progress_bar);
+        mFieldNameEditText = findViewById(R.id.AR_field_name);
+        mFieldPhoneNumberEditText = findViewById(R.id.AR_field_phone_number);
+        mFieldEmailEditText = findViewById(R.id.AR_field_email);
+        mFieldPasswordEditText = findViewById(R.id.AR_field_password);
+        mFieldConfirmPasswordEditText = findViewById(R.id.AR_field_confirm_password);
+        mFieldUserTypeSpinner = findViewById(R.id.AR_field_user_type);
+        mContentLoadingProgressBar = findViewById(R.id.AR_progress_bar);
         mContentLoadingProgressBar.hide();
 
         mFieldNameEditText.addTextChangedListener(this);
@@ -179,7 +179,7 @@ public class RegisterActivity extends AppCompatActivity implements TextWatcher, 
 
     @Override
     public void finishRegistering() {
-        startActivity(new Intent(RegisterActivity.this, SplashScreen.class));
+        startActivity(new Intent(RegisterActivity.this, SplashActivity.class));
         finish();
     }
 
