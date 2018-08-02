@@ -31,7 +31,6 @@ import rkr.binatestation.pathrakkaran.modules.transactions.TransactionListFragme
 import static rkr.binatestation.pathrakkaran.models.UserDetailsModel.USER_TYPE_AGENT;
 import static rkr.binatestation.pathrakkaran.models.UserDetailsModel.USER_TYPE_SUBSCRIBER;
 import static rkr.binatestation.pathrakkaran.models.UserDetailsModel.USER_TYPE_SUPPLIER;
-import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_USER_IMAGE;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_USER_NAME;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_USER_PHONE;
 import static rkr.binatestation.pathrakkaran.utils.Constants.KEY_USER_TYPE;
@@ -98,8 +97,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         if (headerView != null) {
             NetworkImageView profileImage = headerView.findViewById(R.id.NHH_profile_image);
             if (profileImage != null) {
-                String imageUrl = getSharedPreferences(getPackageName(), MODE_PRIVATE).getString(KEY_USER_IMAGE, "");
                 // FIXME: 22-07-2018 the image url
+//                String imageUrl = getSharedPreferences(getPackageName(), MODE_PRIVATE).getString(KEY_USER_IMAGE, "");
 //                profileImage.setImageUrl(
 //                        JsonObjectRequestFactory.() + imageUrl,
 //                        VolleySingleton.getInstance(profileImage.getContext()).getImageLoader()
